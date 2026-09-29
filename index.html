@@ -6,84 +6,88 @@
 
   <meta
     name="description"
-    content="Interactive Chapter 15 Simple Harmonic Motion study guide with simulations, worked examples, quizzes, and formula tools."
+    content="Interactive undergraduate study site for Chapter 15: simple harmonic motion, oscillations, damping and resonance."
   />
 
-  <meta name="theme-color" content="#111827" />
-
-  <title>SHM Mastery Lab — Chapter 15 Oscillations</title>
+  <title>Oscillation Grove — SHM Mastery Lab</title>
 
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
 
-  <!-- Reading progress bar -->
-  <div class="progress-track">
+  <div class="sky-overlay"></div>
+
+  <div class="scroll-track">
     <div id="scrollProgress"></div>
   </div>
 
 
-  <!-- =========================================================
+  <!-- ======================================================
        SIDEBAR
-  ========================================================== -->
+  ======================================================= -->
 
   <aside class="sidebar" id="sidebar">
 
     <a class="brand" href="#top">
 
-      <span class="brand-mark">ω</span>
+      <span class="brand-cube">
+        ω
+      </span>
 
       <span>
-        <strong>SHM Mastery</strong>
-        <small>Chapter 15</small>
+        <strong>
+          Oscillation Grove
+        </strong>
+
+        <small>
+          Chapter 15 · SHM
+        </small>
       </span>
 
     </a>
 
 
-    <nav class="nav">
+    <nav class="nav" aria-label="Course navigation">
 
-      <a href="#roadmap">Roadmap</a>
-
-      <a href="#foundations">
-        1. Foundations
+      <a href="#roadmap">
+        🧭 Study map
       </a>
 
-      <a href="#equations">
-        2. Equation atlas
+      <a href="#module1">
+        🌱 1 · Restoring force
       </a>
 
-      <a href="#motion-lab">
-        3. Motion lab
+      <a href="#module2">
+        🧪 2 · Solution & phase
       </a>
 
-      <a href="#energy-lab">
-        4. Energy lab
+      <a href="#module3">
+        🛤 3 · x, v & a
       </a>
 
-      <a href="#phase-lab">
-        5. Phase lab
+      <a href="#module4">
+        🔥 4 · Energy
       </a>
 
-      <a href="#pendulums">
-        6. Pendulums
+      <a href="#module5">
+        🕰 5 · Angular SHM
       </a>
 
-      <a href="#damping">
-        7. Damping + resonance
+      <a href="#module6">
+        🌧 6 · Damping
       </a>
 
-      <a href="#worked">
-        8. Worked examples
+      <a href="#module7">
+        🔔 7 · Resonance
       </a>
 
       <a href="#practice">
-        9. Practice lab
+        📜 Practice papers
       </a>
 
-      <a href="#formula-sheet">
-        10. Formula sheet
+      <a href="#formula-forge">
+        ⚒ Formula forge
       </a>
 
     </nav>
@@ -91,9 +95,11 @@
 
     <div class="sidebar-footer">
 
-      <div class="completion-row">
+      <div class="hud-label">
 
-        <span>Guide progress</span>
+        <span>
+          Course XP
+        </span>
 
         <strong id="completionPct">
           0%
@@ -101,12 +107,14 @@
 
       </div>
 
-      <div class="mini-progress">
-        <div id="completionBar"></div>
+
+      <div class="xp-bar">
+        <i id="completionBar"></i>
       </div>
 
+
       <button
-        class="ghost-button"
+        class="mc-button ghost"
         id="resetProgress"
       >
         Reset progress
@@ -117,36 +125,43 @@
   </aside>
 
 
-  <!-- =========================================================
-       MAIN PAGE
-  ========================================================== -->
+
+  <!-- ======================================================
+       MAIN CONTENT
+  ======================================================= -->
 
   <main id="top">
 
 
-    <!-- =======================================================
+    <!-- ====================================================
          HERO
-    ======================================================== -->
+    ===================================================== -->
 
-    <header class="hero">
+    <header class="hero section-shell">
 
-      <div class="hero-copy">
 
-        <p class="eyebrow">
-          Physics · Chapter 15 · Oscillations
+      <div class="hero-panel mc-panel">
+
+        <p class="pixel-kicker">
+          UNDERGRADUATE PHYSICS · CHAPTER 15
         </p>
 
+
         <h1>
-          Understand simple harmonic motion from the force law
-          all the way to resonance.
+          Simple harmonic motion, built like a world you can walk through.
         </h1>
 
-        <p class="hero-lede">
 
-          This is a concept-first, calculation-ready study site.
+        <p class="hero-copy">
 
-          Every equation is connected to a physical picture,
-          graph, worked problem and interactive simulation.
+          Think of SHM as a landscape with one rule at its centre:
+
+          the farther you move from equilibrium, the harder the
+          system tries to bring you back.
+
+          From that one rule grow the differential equation,
+          sinusoidal motion, phase, energy exchange,
+          pendulums, damping and resonance.
 
         </p>
 
@@ -154,33 +169,34 @@
         <div class="hero-actions">
 
           <a
-            class="primary-button"
-            href="#motion-lab"
+            class="mc-button primary"
+            href="#module1"
           >
-            Open the motion lab
+            Enter the first module
           </a>
 
+
           <a
-            class="secondary-button"
+            class="mc-button"
             href="#practice"
           >
-            Start practice
+            Open practice papers
           </a>
 
         </div>
 
 
-        <div class="hero-chips">
+        <div class="hotbar" aria-label="Core ideas">
 
-          <span>SHM kinematics</span>
+          <span>F = −kx</span>
 
-          <span>springs</span>
-
-          <span>energy</span>
+          <span>x(t)</span>
 
           <span>phase</span>
 
-          <span>pendulums</span>
+          <span>energy</span>
+
+          <span>pendulum</span>
 
           <span>damping</span>
 
@@ -191,27 +207,46 @@
       </div>
 
 
-      <div class="hero-visual card">
+
+      <div class="hero-lab mc-panel">
+
+        <div class="panel-title">
+          LIVE OSCILLATOR HUD
+        </div>
 
         <canvas
           id="heroCanvas"
-          width="720"
+          width="780"
           height="420"
         ></canvas>
 
 
-        <div class="hero-equation">
+        <div class="hud-stats">
 
-          <span>
-            x(t) = A cos(ωt + φ)
-          </span>
+          <div>
 
-          <small>
+            <small>
+              Rule
+            </small>
 
-            The whole topic grows from this equation
-            together with the restoring-force condition.
+            <strong>
+              a = −ω²x
+            </strong>
 
-          </small>
+          </div>
+
+
+          <div>
+
+            <small>
+              Meaning
+            </small>
+
+            <strong>
+              acceleration aims home
+            </strong>
+
+          </div>
 
         </div>
 
@@ -221,25 +256,25 @@
 
 
 
-    <!-- =======================================================
+    <!-- ====================================================
          ROADMAP
-    ======================================================== -->
+    ===================================================== -->
 
     <section
       id="roadmap"
-      class="section"
+      class="section-shell"
     >
 
       <div class="section-heading">
 
         <div>
 
-          <p class="eyebrow">
-            Study roadmap
+          <p class="pixel-kicker">
+            STUDY MAP
           </p>
 
           <h2>
-            The six ideas that organise Chapter 15
+            How the chapter locks together
           </h2>
 
         </div>
@@ -247,170 +282,120 @@
 
         <p>
 
-          Use these as a dependency map.
+          Use this map as the conceptual spine.
 
-          Later ideas become much easier once the earlier
-          connections are understood.
+          Each later module depends on ideas built earlier.
 
         </p>
 
       </div>
 
 
-      <div class="concept-grid">
+
+      <div class="roadmap-grid">
 
 
-        <a
-          class="concept-card"
-          href="#foundations"
-        >
+        <a class="quest-card" href="#module1">
 
           <span>01</span>
 
           <h3>
-            What makes motion SHM?
+            Restoring force
           </h3>
 
           <p>
-
-            Restoring force or acceleration is proportional
-            to displacement and directed toward equilibrium.
-
+            Why equilibrium becomes a dynamical centre.
           </p>
-
-          <b>
-            Start here →
-          </b>
 
         </a>
 
 
-        <a
-          class="concept-card"
-          href="#motion-lab"
-        >
+        <a class="quest-card" href="#module2">
 
           <span>02</span>
 
           <h3>
-            How x, v and a fit together
+            Differential equation
           </h3>
 
           <p>
-
-            Position follows a sine/cosine curve,
-            velocity is shifted by a quarter cycle,
-            and acceleration points opposite displacement.
-
+            Why sinusoidal motion is the natural mathematical answer.
           </p>
-
-          <b>
-            Visualise it →
-          </b>
 
         </a>
 
 
-        <a
-          class="concept-card"
-          href="#energy-lab"
-        >
+        <a class="quest-card" href="#module3">
 
           <span>03</span>
 
           <h3>
-            Why the motion repeats
+            Kinematics & phase
           </h3>
 
           <p>
-
-            Without dissipation, energy continually moves
-            between kinetic and potential energy.
-
+            How position, velocity and acceleration chase one another around a cycle.
           </p>
-
-          <b>
-            Track energy →
-          </b>
 
         </a>
 
 
-        <a
-          class="concept-card"
-          href="#pendulums"
-        >
+        <a class="quest-card" href="#module4">
 
           <span>04</span>
 
           <h3>
-            Beyond a mass and spring
+            Energy
           </h3>
 
           <p>
-
-            Pendulums and torsion systems also behave as SHM
-            when the restoring torque is proportional to
-            angular displacement.
-
+            Why the oscillator keeps moving even when the force points inward.
           </p>
-
-          <b>
-            Compare systems →
-          </b>
 
         </a>
 
 
-        <a
-          class="concept-card"
-          href="#damping"
-        >
+        <a class="quest-card" href="#module5">
 
           <span>05</span>
 
           <h3>
-            What real oscillators do
+            Angular SHM
           </h3>
 
           <p>
-
-            Real systems lose energy.
-
-            Damping therefore causes their oscillation
-            amplitude to decrease with time.
-
+            Why pendulums and torsion systems inherit the same mathematics.
           </p>
-
-          <b>
-            See damping →
-          </b>
 
         </a>
 
 
-        <a
-          class="concept-card"
-          href="#damping"
-        >
+        <a class="quest-card" href="#module6">
 
           <span>06</span>
 
           <h3>
-            Why resonance matters
+            Damping
           </h3>
 
           <p>
-
-            A periodic driving force can transfer energy
-            particularly effectively when its frequency is
-            close to the natural frequency.
-
+            How real systems leak energy and forget their starting amplitude.
           </p>
 
-          <b>
-            Explore resonance →
-          </b>
+        </a>
+
+
+        <a class="quest-card" href="#module7">
+
+          <span>07</span>
+
+          <h3>
+            Resonance
+          </h3>
+
+          <p>
+            How periodic driving can pump energy selectively into a mode.
+          </p>
 
         </a>
 
@@ -418,337 +403,538 @@
       </div>
 
 
-      <div class="source-note warning-note">
+
+      <div class="source-banner mc-panel">
 
         <strong>
-          Important energy distinction
+          Source core vs. enrichment
         </strong>
 
         <p>
 
-          For a spring oscillator,
+          The conceptual sequence follows Chapter 15 of your
+          textbook: simple harmonic motion, energy, angular
+          oscillators, pendulums/circular motion, damping,
+          and forced oscillations/resonance.
 
-          <span class="inline-formula">
-            U = ½kx²
-          </span>
-
-          is the elastic potential energy at position x.
-
-          The quantity
-
-          <span class="inline-formula">
-            E = ½kA²
-          </span>
-
-          is the constant total mechanical energy of an
-          ideal undamped oscillator.
+          The derivations, analogies, active-recall prompts,
+          practice papers and undergraduate extensions are
+          added teaching material rather than copied textbook
+          questions.
 
         </p>
 
       </div>
+
+
+      <!-- Notebook automatically inserted here by app.js -->
+      <div
+        class="notepad-slot"
+        data-note="roadmap"
+      ></div>
 
     </section>
 
 
 
-    <!-- =======================================================
-         FOUNDATIONS
-    ======================================================== -->
+    <!-- ====================================================
+         MODULE 1
+    ===================================================== -->
 
     <section
-      id="foundations"
-      class="section"
+      id="module1"
+      class="section-shell module"
     >
 
       <div class="section-heading">
 
         <div>
 
-          <p class="eyebrow">
-            1 · Foundations
+          <p class="pixel-kicker">
+            MODULE 1 · THE RESTORING RULE
           </p>
 
           <h2>
-            The hallmark of simple harmonic motion
+            Why a system oscillates instead of simply returning and stopping
           </h2>
 
         </div>
 
 
         <button
-          class="complete-button"
-          data-complete="foundations"
+          class="mc-button complete-button"
+          data-complete="module1"
         >
-          Mark section complete
+          Mark complete
         </button>
 
       </div>
 
 
 
-      <div class="two-col">
+      <div class="chapter-grid">
 
 
-        <article class="card prose">
+        <article class="mc-panel lesson-panel">
 
           <h3>
-            Periodic motion is not automatically SHM
+            Start with a picture in your head
           </h3>
 
 
           <p>
 
-            <strong>
-              Periodic motion
-            </strong>
+            Imagine a minecart sitting at the bottom of a shallow valley.
 
-            means motion that repeats after a fixed interval
-            of time.
+            Nudge it to the right.
+
+            Gravity now has a component pulling it back toward
+            the lowest point.
+
+            The farther up the slope you push it, the stronger
+            the tendency to return.
+
+            If the valley is locally shaped like a parabola,
+            that restoring tendency is proportional to displacement.
 
           </p>
 
 
           <p>
 
-            <strong>
-              Simple harmonic motion
-            </strong>
+            A spring does the same thing in one dimension.
 
-            is a special type of periodic motion.
+            Stretch it by
 
-            The acceleration must be proportional to
-            displacement from equilibrium and point in the
-            opposite direction.
-
-          </p>
-
-
-          <div class="formula-box hero-formula">
-
-            <span>
-              a = −ω²x
+            <span class="eq">
+              x
             </span>
 
-            <small>
-              Fundamental kinematic condition for SHM
-            </small>
+            and the spring pulls with
 
-          </div>
-
-
-          <p>
-
-            For a mass attached to an ideal spring,
-            Hooke's law gives
-
-          </p>
-
-
-          <div class="formula-box">
-
-            <span>
+            <span class="eq">
               F = −kx
-            </span>
+            </span>.
 
-            <small>
-              Spring restoring force
-            </small>
+            The minus sign is not decoration.
 
-          </div>
+            It is a directional statement.
 
+            Rightward displacement produces leftward force.
 
-          <p>
-
-            Newton's second law gives
+            Leftward displacement produces rightward force.
 
           </p>
 
 
-          <div class="formula-box">
 
-            <span>
-              ma = −kx
-            </span>
+          <div class="equation-ladder">
+
+
+            <div>
+
+              <small>
+                Step 1 · Hooke's law
+              </small>
+
+              <code>
+                F = −kx
+              </code>
+
+            </div>
+
+
+            <i>
+              combine with Newton's second law ↓
+            </i>
+
+
+            <div>
+
+              <small>
+                Step 2 · Dynamics
+              </small>
+
+              <code>
+                m x¨ = −kx
+              </code>
+
+            </div>
+
+
+            <i>
+              divide by m ↓
+            </i>
+
+
+            <div>
+
+              <small>
+                Step 3 · SHM equation
+              </small>
+
+              <code>
+                x¨ + (k/m)x = 0
+              </code>
+
+            </div>
+
+
+            <i>
+              identify ω² = k/m ↓
+            </i>
+
+
+            <div class="glow">
+
+              <small>
+                Step 4 · Standard form
+              </small>
+
+              <code>
+                x¨ + ω²x = 0
+              </code>
+
+            </div>
 
           </div>
 
 
-          <p>
-
-            Therefore
-
-          </p>
-
-
-          <div class="formula-box">
-
-            <span>
-              a = −(k/m)x
-            </span>
-
-          </div>
-
 
           <p>
 
-            Comparing this with
+            That last line is the mathematical fingerprint
+            of ideal SHM.
 
-            <span class="inline-formula">
+            If acceleration can be written as
+
+            <span class="eq">
               a = −ω²x
-            </span>
+            </span>,
 
-            gives
+            the motion is simple harmonic.
+
+          </p>
+
+        </article>
+
+
+
+        <article class="mc-panel lesson-panel">
+
+          <h3>
+            Why it overshoots equilibrium
+          </h3>
+
+
+          <p>
+
+            At maximum displacement the mass is instantaneously
+            at rest, but the restoring force is largest.
+
+            It accelerates inward.
+
+            By the time it reaches equilibrium, the restoring
+            force has dropped to zero—but the mass now has
+            maximum speed.
 
           </p>
 
 
-          <div class="formula-box hero-formula">
+          <p>
 
-            <span>
+            With nothing instantaneously stopping that momentum,
+            it flies straight through equilibrium.
+
+            The force then reverses and begins braking it.
+
+          </p>
+
+
+
+          <div class="analogy-box">
+
+            <strong>
+              Analogy: running down a hill
+            </strong>
+
+            <p>
+
+              If you run downhill toward the lowest point,
+              you do not stop merely because the slope becomes flat.
+
+              You have acquired speed.
+
+              You continue up the other side until the slope
+              removes that kinetic energy.
+
+              SHM is the same perpetual exchange between
+              “being displaced” and “being in motion”.
+
+            </p>
+
+          </div>
+
+
+
+          <h4>
+            What counts as SHM?
+          </h4>
+
+
+          <div class="mini-table">
+
+
+            <div>
+
+              <code>
+                a = −9x
+              </code>
+
+              <span class="good">
+                SHM
+              </span>
+
+              <small>
+                linear and inward
+              </small>
+
+            </div>
+
+
+            <div>
+
+              <code>
+                a = +9x
+              </code>
+
+              <span class="bad">
+                not SHM
+              </span>
+
+              <small>
+                pushes away from equilibrium
+              </small>
+
+            </div>
+
+
+            <div>
+
+              <code>
+                F = −12x²
+              </code>
+
+              <span class="bad">
+                not exact SHM
+              </span>
+
+              <small>
+                nonlinear in displacement
+              </small>
+
+            </div>
+
+
+          </div>
+
+        </article>
+
+
+      </div>
+
+
+
+      <div class="mc-panel deep-dive">
+
+        <div>
+
+          <p class="pixel-kicker">
+            DERIVATION ROOM
+          </p>
+
+          <h3>
+            Where does
+            <span class="eq">
               ω = √(k/m)
             </span>
+            actually come from?
+          </h3>
 
-          </div>
+        </div>
 
 
-          <p>
+        <p>
 
-            The minus sign is crucial.
+          Start from
 
-            If the object is displaced to the right,
-            the acceleration points left.
+          <span class="eq">
+            m x¨ = −kx
+          </span>.
 
-            If it is displaced to the left,
-            the acceleration points right.
+          Dividing by
 
+          <span class="eq">
+            m
+          </span>
+
+          gives
+
+          <span class="eq">
+            x¨ = −(k/m)x
+          </span>.
+
+          Compare it with the generic SHM relation
+
+          <span class="eq">
+            x¨ = −ω²x
+          </span>.
+
+          The coefficients of x must therefore match:
+
+        </p>
+
+
+        <div class="big-equation">
+          ω² = k/m
+        </div>
+
+
+        <div class="big-equation">
+          ω = √(k/m)
+        </div>
+
+
+        <p>
+
+          The scaling now makes physical sense.
+
+          A larger spring constant
+
+          <span class="eq">
+            k
+          </span>
+
+          means a stronger restoring force for the same
+          displacement, so the system turns around more
+          aggressively and oscillates faster.
+
+        </p>
+
+
+        <p>
+
+          A larger mass
+
+          <span class="eq">
+            m
+          </span>
+
+          means greater inertia.
+
+          The same spring force changes its velocity more slowly,
+          so the oscillation takes longer.
+
+        </p>
+
+      </div>
+
+
+
+      <!-- Interactive mind map -->
+
+      <div class="mindmap-shell mc-panel">
+
+        <div class="panel-title">
+          MINDMAP · MODULE 1
+        </div>
+
+        <div
+          class="mindmap"
+          data-map="module1"
+        ></div>
+
+      </div>
+
+
+
+      <!-- Active recall -->
+
+      <div class="recall-grid">
+
+
+        <article class="recall-card mc-panel">
+
+          <p class="pixel-kicker">
+            ACTIVE RECALL
           </p>
 
-
-        </article>
-
-
-
-        <article class="card">
-
           <h3>
-            What happens during one cycle?
+
+            Why must the minus sign appear in
+
+            <span class="eq">
+              F = −kx
+            </span>?
+
           </h3>
 
 
-          <div class="state-table">
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
 
 
-            <div class="state-row header">
+          <div class="recall-answer">
 
-              <span>Position</span>
+            Because the force must oppose the displacement.
 
-              <span>Speed</span>
-
-              <span>|a|</span>
-
-              <span>Energy</span>
-
-            </div>
-
-
-            <div class="state-row">
-
-              <span>
-                x = +A
-              </span>
-
-              <span>
-                0
-              </span>
-
-              <span>
-                maximum
-              </span>
-
-              <span>
-                maximum PE
-              </span>
-
-            </div>
-
-
-            <div class="state-row">
-
-              <span>
-                x = 0
-              </span>
-
-              <span>
-                maximum
-              </span>
-
-              <span>
-                0
-              </span>
-
-              <span>
-                maximum KE
-              </span>
-
-            </div>
-
-
-            <div class="state-row">
-
-              <span>
-                x = −A
-              </span>
-
-              <span>
-                0
-              </span>
-
-              <span>
-                maximum
-              </span>
-
-              <span>
-                maximum PE
-              </span>
-
-            </div>
-
+            Without the minus sign, the force would push the
+            object farther away from equilibrium rather than
+            restore it.
 
           </div>
 
+        </article>
 
-          <div class="reasoning-chain">
 
-            <span>
-              displace
-            </span>
 
-            <i>→</i>
+        <article class="recall-card mc-panel">
 
-            <span>
-              restoring force
-            </span>
+          <p class="pixel-kicker">
+            ACTIVE RECALL
+          </p>
 
-            <i>→</i>
+          <h3>
 
-            <span>
-              acceleration inward
-            </span>
+            If mass quadruples while k stays fixed,
+            what happens to the period?
 
-            <i>→</i>
+          </h3>
 
-            <span>
-              overshoot
-            </span>
 
-            <i>→</i>
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
 
-            <span>
-              repeat
-            </span>
+
+          <div class="recall-answer">
+
+            Since
+
+            <span class="eq">
+              T = 2π√(m/k)
+            </span>,
+
+            multiplying m by 4 multiplies T by
+
+            <span class="eq">
+              √4 = 2
+            </span>.
+
+            The period doubles.
 
           </div>
-
 
         </article>
 
@@ -757,112 +943,330 @@
 
 
 
-      <div class="three-col compact-top">
+      <details class="worked-example mc-panel">
+
+        <summary>
+          Worked example · build the motion from the force law
+        </summary>
 
 
-        <article class="mini-card">
-
-          <h4>
-            Amplitude A
-          </h4>
-
-          <p>
-
-            Maximum magnitude of displacement from
-            equilibrium.
-
-          </p>
-
-        </article>
-
-
-        <article class="mini-card">
-
-          <h4>
-            Period T
-          </h4>
+        <div>
 
           <p>
 
-            Time required for one complete oscillation.
+            A 0.40 kg mass is attached to a
+            90 N/m spring.
+
+            Find its angular frequency and period.
 
           </p>
 
-        </article>
+
+          <ol>
+
+            <li>
+
+              Write the dynamical relation:
+
+              <span class="eq">
+                m x¨ = −kx
+              </span>.
+
+            </li>
 
 
-        <article class="mini-card">
+            <li>
 
-          <h4>
-            Frequency f
-          </h4>
+              Recognise
+
+              <span class="eq">
+                ω² = k/m = 90/0.40 = 225 s⁻²
+              </span>.
+
+            </li>
+
+
+            <li>
+
+              Therefore
+
+              <span class="eq">
+                ω = 15 rad s⁻¹
+              </span>.
+
+            </li>
+
+
+            <li>
+
+              Then
+
+              <span class="eq">
+                T = 2π/ω = 0.419 s
+              </span>.
+
+            </li>
+
+          </ol>
+
 
           <p>
 
-            Number of complete oscillations per second.
+            <strong>
+              Reasonableness check:
+            </strong>
 
-            Unit: hertz (Hz).
+            a fairly stiff spring and modest mass should
+            oscillate quickly, so a sub-second period is plausible.
 
           </p>
 
-        </article>
+        </div>
+
+      </details>
 
 
-        <article class="mini-card">
+      <div
+        class="notepad-slot"
+        data-note="module1"
+      ></div>
 
-          <h4>
-            Angular frequency ω
-          </h4>
+    </section>
+
+
+
+    <!-- ====================================================
+         MODULE 2
+    ===================================================== -->
+
+    <section
+      id="module2"
+      class="section-shell module"
+    >
+
+      <div class="section-heading">
+
+        <div>
+
+          <p class="pixel-kicker">
+            MODULE 2 · THE SINUSOIDAL SOLUTION
+          </p>
+
+          <h2>
+            Why cosine is not an arbitrary choice
+          </h2>
+
+        </div>
+
+
+        <button
+          class="mc-button complete-button"
+          data-complete="module2"
+        >
+          Mark complete
+        </button>
+
+      </div>
+
+
+
+      <div class="chapter-grid">
+
+
+        <article class="mc-panel lesson-panel">
+
+          <h3>
+            The differential equation is asking for a self-reversing function
+          </h3>
+
 
           <p>
 
-            Rate at which the phase changes.
+            The equation
 
-          </p>
-
-          <p class="inline-formula">
-
-            ω = 2πf = 2π/T
-
-          </p>
-
-        </article>
-
-
-        <article class="mini-card">
-
-          <h4>
-            Phase
-          </h4>
-
-          <p>
-
-            The quantity
-
-            <span class="inline-formula">
-              ωt + φ
+            <span class="eq">
+              x¨ + ω²x = 0
             </span>
 
-            tells us where the oscillator is within its
-            cycle.
+            says something remarkably specific:
+
+            differentiate displacement twice and you should
+            recover the original function multiplied by
+            a negative constant.
+
+          </p>
+
+
+          <p>
+
+            Sine and cosine have exactly that property.
+
+          </p>
+
+
+
+          <div class="equation-ladder">
+
+
+            <div>
+
+              <small>
+                Assume
+              </small>
+
+              <code>
+                x = A cos(ωt + φ)
+              </code>
+
+            </div>
+
+
+            <i>
+              differentiate once ↓
+            </i>
+
+
+            <div>
+
+              <small>
+                Velocity
+              </small>
+
+              <code>
+                v = x˙ = −Aω sin(ωt + φ)
+              </code>
+
+            </div>
+
+
+            <i>
+              differentiate again ↓
+            </i>
+
+
+            <div>
+
+              <small>
+                Acceleration
+              </small>
+
+              <code>
+                a = x¨ = −Aω² cos(ωt + φ)
+              </code>
+
+            </div>
+
+
+            <i>
+              recognise x again ↓
+            </i>
+
+
+            <div class="glow">
+
+              <small>
+                Therefore
+              </small>
+
+              <code>
+                a = −ω²x
+              </code>
+
+            </div>
+
+
+          </div>
+
+
+          <p>
+
+            That is why cosine appears naturally.
+
+            Its second derivative reproduces the same
+            waveform with the opposite sign.
 
           </p>
 
         </article>
 
 
-        <article class="mini-card">
 
-          <h4>
-            Phase constant φ
-          </h4>
+        <article class="mc-panel lesson-panel">
+
+          <h3>
+            Amplitude, frequency and phase play different roles
+          </h3>
+
 
           <p>
 
-            Determines the object's starting position
-            and direction of motion at t = 0.
+            In
+
+            <span class="eq">
+              x(t)=A cos(ωt+φ)
+            </span>,
+
+            the amplitude
+
+            <span class="eq">
+              A
+            </span>
+
+            tells you how far from equilibrium the oscillator
+            can travel.
 
           </p>
+
+
+          <p>
+
+            The angular frequency
+
+            <span class="eq">
+              ω
+            </span>
+
+            tells you how quickly phase advances through a cycle.
+
+            The phase constant
+
+            <span class="eq">
+              φ
+            </span>
+
+            tells you where in that cycle the clock starts.
+
+          </p>
+
+
+          <div class="analogy-box">
+
+            <strong>
+              Analogy: a circular race track
+            </strong>
+
+            <p>
+
+              Imagine phase as your angular location on a circular track.
+
+              <span class="eq">
+                ω
+              </span>
+
+              tells you how quickly you run around it.
+
+              <span class="eq">
+                φ
+              </span>
+
+              tells you where you were standing when the stopwatch began.
+
+              The observed SHM displacement is simply the shadow
+              of your circular position projected onto one axis.
+
+            </p>
+
+          </div>
 
         </article>
 
@@ -871,373 +1275,497 @@
 
 
 
-      <div class="diagnostic card">
+      <div class="mc-panel deep-dive">
+
+        <p class="pixel-kicker">
+          UNDERGRADUATE DERIVATION
+        </p>
+
 
         <h3>
-          Is it SHM?
+          Solving the differential equation with exponentials
         </h3>
 
 
         <p>
 
-          Ask:
+          Suppose
 
-          <em>
+          <span class="eq">
+            x = e^{rt}
+          </span>.
 
-            Can the acceleration or restoring force be
-            written as a negative constant multiplied by
-            displacement?
+          Then
 
-          </em>
+          <span class="eq">
+            x¨ = r²e^{rt}
+          </span>.
+
+          Substitution into
+
+          <span class="eq">
+            x¨ + ω²x = 0
+          </span>
+
+          gives
 
         </p>
 
 
-        <div class="diagnostic-grid">
+        <div class="equation-ladder">
 
 
           <div>
-
             <code>
-              a = −9x
+              r²e^{rt} + ω²e^{rt} = 0
             </code>
-
-            <strong class="yes">
-              Yes
-            </strong>
-
-            <small>
-              ω = 3 rad/s
-            </small>
-
           </div>
 
 
+          <i>
+            e^{rt} ≠ 0 ↓
+          </i>
+
+
           <div>
-
             <code>
-              a = +9x
+              r² + ω² = 0
             </code>
-
-            <strong class="no">
-              No
-            </strong>
-
-            <small>
-              acceleration points away from equilibrium
-            </small>
-
           </div>
 
 
+          <i>
+            solve the characteristic equation ↓
+          </i>
+
+
           <div>
-
             <code>
-              F = −12x
+              r = ±iω
             </code>
-
-            <strong class="yes">
-              Yes
-            </strong>
-
-            <small>
-              linear restoring force
-            </small>
-
           </div>
 
 
-          <div>
+          <i>
+            superpose both solutions ↓
+          </i>
 
+
+          <div class="glow">
             <code>
-              F = −12x²
+              x = C₁e^{iωt} + C₂e^{-iωt}
             </code>
-
-            <strong class="no">
-              No
-            </strong>
-
-            <small>
-              force is not proportional to x
-            </small>
-
           </div>
 
 
         </div>
 
+
+        <p>
+
+          Using Euler's identity,
+
+          <span class="eq">
+            e^{iθ}=cosθ+i sinθ
+          </span>,
+
+          the same solution can be rewritten entirely in real form:
+
+        </p>
+
+
+        <div class="big-equation">
+          x = C cos(ωt) + D sin(ωt)
+        </div>
+
+
+        <p>
+
+          The constants C and D can then be repackaged as
+          an amplitude and phase:
+
+        </p>
+
+
+        <div class="big-equation">
+          x = A cos(ωt + φ)
+        </div>
+
+
+        <p>
+
+          So the trigonometric and complex-exponential
+          representations are not different physics.
+
+          They are different coordinate systems for the same
+          two-dimensional solution space.
+
+        </p>
+
       </div>
 
+
+
+      <div class="mindmap-shell mc-panel">
+
+        <div class="panel-title">
+          MINDMAP · MODULE 2
+        </div>
+
+        <div
+          class="mindmap"
+          data-map="module2"
+        ></div>
+
+      </div>
+
+
+
+      <div class="recall-grid">
+
+
+        <article class="recall-card mc-panel">
+
+          <p class="pixel-kicker">
+            ACTIVE RECALL
+          </p>
+
+          <h3>
+            Why can sine and cosine both describe SHM?
+          </h3>
+
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
+
+          <div class="recall-answer">
+
+            They differ only by a phase shift.
+
+            For example,
+
+            <span class="eq">
+              sin θ = cos(θ − π/2)
+            </span>.
+
+            Changing from sine to cosine does not change
+            the physical motion if the phase constant is
+            adjusted consistently.
+
+          </div>
+
+        </article>
+
+
+
+        <article class="recall-card mc-panel">
+
+          <p class="pixel-kicker">
+            ACTIVE RECALL
+          </p>
+
+          <h3>
+            What does φ physically control?
+          </h3>
+
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
+
+          <div class="recall-answer">
+
+            φ selects where in the oscillation cycle the
+            system is at t=0.
+
+            It therefore determines the initial displacement
+            and, together with the sign of the sine term,
+            the initial direction of motion.
+
+          </div>
+
+        </article>
+
+
+      </div>
+
+
+
+      <div class="mc-panel calculator-panel">
+
+        <p class="pixel-kicker">
+          PHASE SOLVER
+        </p>
+
+        <h3>
+          Convert initial conditions into A and φ
+        </h3>
+
+
+        <div class="input-grid">
+
+
+          <label>
+
+            x₀ / m
+
+            <input
+              id="x0Input"
+              type="number"
+              step="0.001"
+              value="-0.085"
+            >
+
+          </label>
+
+
+          <label>
+
+            v₀ / m s⁻¹
+
+            <input
+              id="v0Input"
+              type="number"
+              step="0.01"
+              value="-0.92"
+            >
+
+          </label>
+
+
+          <label>
+
+            m / kg
+
+            <input
+              id="phaseMInput"
+              type="number"
+              min="0.001"
+              step="0.01"
+              value="0.68"
+            >
+
+          </label>
+
+
+          <label>
+
+            k / N m⁻¹
+
+            <input
+              id="phaseKInput"
+              type="number"
+              min="0.001"
+              step="0.1"
+              value="46"
+            >
+
+          </label>
+
+
+        </div>
+
+
+        <button
+          id="solvePhase"
+          class="mc-button primary"
+        >
+          Solve initial conditions
+        </button>
+
+
+        <div
+          id="phaseResult"
+          class="result-box"
+        ></div>
+
+      </div>
+
+
+
+      <div
+        class="notepad-slot"
+        data-note="module2"
+      ></div>
 
     </section>
 
 
 
-    <!-- =======================================================
-         EQUATION ATLAS
-    ======================================================== -->
+    <!-- ====================================================
+         MODULE 3
+    ===================================================== -->
 
     <section
-      id="equations"
-      class="section"
+      id="module3"
+      class="section-shell module"
     >
 
       <div class="section-heading">
 
         <div>
 
-          <p class="eyebrow">
-            2 · Equation atlas
+          <p class="pixel-kicker">
+            MODULE 3 · POSITION, VELOCITY & ACCELERATION
           </p>
 
           <h2>
-            One connected system — not a list to memorise
+            Three views of the same oscillator
           </h2>
 
         </div>
 
-
         <button
-          class="complete-button"
-          data-complete="equations"
+          class="mc-button complete-button"
+          data-complete="module3"
         >
-          Mark section complete
+          Mark complete
         </button>
 
       </div>
 
 
 
-      <div class="equation-map card">
+      <div class="mc-panel lesson-panel">
+
+        <h3>
+          Imagine three observers watching the same mass
+        </h3>
 
 
-        <div class="equation-node core">
+        <p>
 
-          <span>
-            Displacement
-          </span>
+          The first observer records where the mass is.
 
-          <code>
-            x = A cos(ωt + φ)
-          </code>
+          The second asks how quickly that position is changing.
 
-        </div>
+          The third asks how quickly the velocity itself is changing.
+
+          Those observers measure
+
+          <span class="eq">x</span>,
+
+          <span class="eq">v</span>
+
+          and
+
+          <span class="eq">a</span>.
+
+        </p>
 
 
-        <div class="connector">
-          differentiate ↓
-        </div>
+        <div class="equation-ladder">
 
 
-        <div class="equation-row">
+          <div>
+
+            <small>
+              position
+            </small>
+
+            <code>
+              x = A cos(ωt + φ)
+            </code>
+
+          </div>
 
 
-          <div class="equation-node">
+          <i>
+            differentiate ↓
+          </i>
 
-            <span>
-              Velocity
-            </span>
+
+          <div>
+
+            <small>
+              velocity
+            </small>
 
             <code>
               v = −ωA sin(ωt + φ)
             </code>
 
-            <small>
-              vmax = ωA
-            </small>
-
           </div>
 
 
-          <div class="equation-node">
+          <i>
+            differentiate ↓
+          </i>
 
-            <span>
-              Acceleration
-            </span>
+
+          <div>
+
+            <small>
+              acceleration
+            </small>
 
             <code>
               a = −ω²A cos(ωt + φ)
             </code>
 
-            <small>
+          </div>
+
+
+          <i>
+            substitute x ↓
+          </i>
+
+
+          <div class="glow">
+            <code>
               a = −ω²x
-            </small>
-
-          </div>
-
-
-        </div>
-
-
-        <div class="connector">
-          combine with Newton's second law ↓
-        </div>
-
-
-        <div class="equation-row">
-
-
-          <div class="equation-node">
-
-            <span>
-              Spring force
-            </span>
-
-            <code>
-              F = −kx
             </code>
-
-            <small>
-              k = mω²
-            </small>
-
-          </div>
-
-
-          <div class="equation-node">
-
-            <span>
-              Spring frequency
-            </span>
-
-            <code>
-              ω = √(k/m)
-            </code>
-
-            <small>
-              T = 2π√(m/k)
-            </small>
-
           </div>
 
 
         </div>
 
 
-      </div>
+        <p>
+
+          Notice what differentiation does.
+
+          Each differentiation introduces a factor of ω,
+          so more rapid oscillations produce disproportionately
+          larger acceleration.
+
+        </p>
 
 
+        <p>
 
-      <div class="chooser card">
+          The amplitude of position is
 
+          <span class="eq">
+            A
+          </span>.
 
-        <div>
+          The amplitude of velocity is
 
-          <h3>
-            Equation chooser
-          </h3>
+          <span class="eq">
+            ωA
+          </span>.
 
-          <p>
+          The amplitude of acceleration is
 
-            Select the information given in the problem.
+          <span class="eq">
+            ω²A
+          </span>.
 
-            The website will suggest the shortest route.
-
-          </p>
-
-        </div>
-
-
-
-        <div class="chooser-controls">
-
-
-          <select
-            id="givenSelect"
-            aria-label="Given information"
-          >
-
-            <option value="mk">
-              mass m and spring constant k
-            </option>
-
-            <option value="tf">
-              period T or frequency f
-            </option>
-
-            <option value="xt">
-              position function x(t)
-            </option>
-
-            <option value="xv">
-              position x and velocity v at one instant
-            </option>
-
-            <option value="energy">
-              amplitude A and position x
-            </option>
-
-            <option value="pendulum">
-              pendulum length L
-            </option>
-
-            <option value="damping">
-              m, k and damping b
-            </option>
-
-          </select>
-
-
-          <div
-            id="chooserAnswer"
-            class="chooser-answer"
-          ></div>
-
-
-        </div>
-
+        </p>
 
       </div>
 
 
-    </section>
 
-
-
-    <!-- =======================================================
-         MOTION LAB
-    ======================================================== -->
-
-    <section
-      id="motion-lab"
-      class="section"
-    >
-
-      <div class="section-heading">
-
-        <div>
-
-          <p class="eyebrow">
-            3 · Interactive motion lab
-          </p>
-
-          <h2>
-            See displacement, velocity and acceleration
-            simultaneously
-          </h2>
-
-        </div>
-
-
-        <button
-          class="complete-button"
-          data-complete="motion"
-        >
-          Mark section complete
-        </button>
-
-      </div>
-
-
+      <!-- LIVE MOTION LAB -->
 
       <div class="lab-grid">
 
+        <div class="mc-panel controls-panel">
 
-        <div class="lab-controls card">
-
-          <h3>
-            Spring–mass controls
-          </h3>
+          <p class="pixel-kicker">
+            LIVE SPRING LAB
+          </p>
 
 
           <label>
@@ -1302,7 +1830,7 @@
 
           <label>
 
-            Phase constant φ
+            Phase φ
 
             <output id="phiOut">
               0.00 rad
@@ -1344,7 +1872,7 @@
 
             <button
               id="playMotion"
-              class="primary-button small"
+              class="mc-button primary"
             >
               Play
             </button>
@@ -1352,38 +1880,20 @@
 
             <button
               id="resetMotion"
-              class="ghost-button"
+              class="mc-button"
             >
               Reset t
             </button>
 
           </div>
 
-
-          <p class="lab-tip">
-
-            <strong>
-              Try this:
-            </strong>
-
-            Double the mass.
-
-            The period increases by √2 rather than doubling.
-
-            Then quadruple the spring constant.
-
-            The period halves.
-
-          </p>
-
         </div>
 
 
 
-        <div class="lab-visuals">
+        <div class="lab-main">
 
-
-          <div class="card canvas-card">
+          <div class="mc-panel canvas-panel">
 
             <canvas
               id="springCanvas"
@@ -1394,102 +1904,61 @@
           </div>
 
 
-
           <div class="metric-grid">
 
 
             <div>
-
-              <span>ω</span>
-
-              <strong id="omegaMetric">
-                4.00 rad/s
-              </strong>
-
+              <small>ω</small>
+              <strong id="omegaMetric">—</strong>
             </div>
 
 
             <div>
-
-              <span>T</span>
-
-              <strong id="periodMetric">
-                1.57 s
-              </strong>
-
+              <small>T</small>
+              <strong id="periodMetric">—</strong>
             </div>
 
 
             <div>
-
-              <span>f</span>
-
-              <strong id="freqMetric">
-                0.64 Hz
-              </strong>
-
+              <small>f</small>
+              <strong id="freqMetric">—</strong>
             </div>
 
 
             <div>
-
-              <span>x(t)</span>
-
-              <strong id="xMetric">
-                0.80 m
-              </strong>
-
+              <small>x</small>
+              <strong id="xMetric">—</strong>
             </div>
 
 
             <div>
-
-              <span>v(t)</span>
-
-              <strong id="vMetric">
-                0.00 m/s
-              </strong>
-
+              <small>v</small>
+              <strong id="vMetric">—</strong>
             </div>
 
 
             <div>
-
-              <span>a(t)</span>
-
-              <strong id="aMetric">
-                −12.80 m/s²
-              </strong>
-
+              <small>a</small>
+              <strong id="aMetric">—</strong>
             </div>
 
 
           </div>
 
-
         </div>
-
 
       </div>
 
 
 
-      <div class="two-col compact-top">
+      <div class="chapter-grid">
 
 
-        <div class="card canvas-card">
+        <div class="mc-panel canvas-panel">
 
-          <h3>
-            x, v and a through time
-          </h3>
-
-          <p class="subtle">
-
-            The curves are normalised by their maximum
-            values so their phase relationship is easier
-            to compare.
-
-          </p>
+          <div class="panel-title">
+            x, v AND a ACROSS TWO CYCLES
+          </div>
 
           <canvas
             id="motionPlot"
@@ -1500,20 +1969,11 @@
         </div>
 
 
+        <div class="mc-panel canvas-panel">
 
-        <div class="card canvas-card">
-
-          <h3>
-            Why cosine appears:
-            circular projection
-          </h3>
-
-          <p class="subtle">
-
-            Uniform circular motion projected onto a
-            diameter produces SHM.
-
-          </p>
+          <div class="panel-title">
+            CIRCULAR-PROJECTION MODEL
+          </div>
 
           <canvas
             id="circleCanvas"
@@ -1528,104 +1988,403 @@
 
 
 
-      <div class="insight-strip">
+      <div class="mc-panel deep-dive">
+
+        <h3>
+          Eliminate time: deriving speed directly from position
+        </h3>
 
 
-        <div>
+        <p>
 
-          <strong>
-            At x = ±A
-          </strong>
+          Sometimes a problem gives position but does not give time.
 
-          <span>
-            v = 0,
-            |a| = amax
-          </span>
+          Instead of solving for phase first, eliminate the phase angle.
+
+        </p>
+
+
+        <div class="equation-ladder">
+
+
+          <div>
+            <code>
+              x/A = cos θ
+            </code>
+          </div>
+
+
+          <div>
+            <code>
+              v/(ωA) = −sin θ
+            </code>
+          </div>
+
+
+          <i>
+            square both equations ↓
+          </i>
+
+
+          <div>
+            <code>
+              x²/A² = cos²θ
+            </code>
+          </div>
+
+
+          <div>
+            <code>
+              v²/(ω²A²) = sin²θ
+            </code>
+          </div>
+
+
+          <i>
+            add and use sin²θ + cos²θ = 1 ↓
+          </i>
+
+
+          <div class="glow">
+            <code>
+              v² = ω²(A² − x²)
+            </code>
+          </div>
+
 
         </div>
 
 
-        <div>
+        <p>
 
-          <strong>
-            At x = 0
-          </strong>
+          This equation encodes the geometry of the circular model
+          and the energy structure of SHM at the same time.
 
-          <span>
-            |v| = vmax,
-            a = 0
-          </span>
+        </p>
 
+      </div>
+
+
+
+      <div class="mindmap-shell mc-panel">
+
+        <div class="panel-title">
+          MINDMAP · MODULE 3
         </div>
 
+        <div
+          class="mindmap"
+          data-map="module3"
+        ></div>
 
-        <div>
+      </div>
 
-          <strong>
-            Phase relationship
-          </strong>
 
-          <span>
 
-            v is one quarter cycle from x.
+      <div class="recall-grid">
 
-            a is half a cycle from x.
 
-          </span>
+        <article class="recall-card mc-panel">
 
-        </div>
+          <p class="pixel-kicker">
+            ACTIVE RECALL
+          </p>
+
+          <h3>
+            Where is speed maximum?
+          </h3>
+
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
+
+          <div class="recall-answer">
+
+            At equilibrium,
+
+            <span class="eq">
+              x = 0
+            </span>.
+
+            There,
+
+            <span class="eq">
+              |v| = ωA
+            </span>.
+
+          </div>
+
+        </article>
+
+
+        <article class="recall-card mc-panel">
+
+          <p class="pixel-kicker">
+            ACTIVE RECALL
+          </p>
+
+          <h3>
+            Where is acceleration magnitude maximum?
+          </h3>
+
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
+
+          <div class="recall-answer">
+
+            At the turning points
+
+            <span class="eq">
+              x = ±A
+            </span>,
+
+            because
+
+            <span class="eq">
+              |a| = ω²|x|
+            </span>.
+
+          </div>
+
+        </article>
 
 
       </div>
 
 
+
+      <div
+        class="notepad-slot"
+        data-note="module3"
+      ></div>
+
     </section>
 
 
 
-    <!-- =======================================================
-         ENERGY LAB
-    ======================================================== -->
+    <!-- ====================================================
+         MODULE 4
+    ===================================================== -->
 
     <section
-      id="energy-lab"
-      class="section"
+      id="module4"
+      class="section-shell module"
     >
 
       <div class="section-heading">
 
         <div>
 
-          <p class="eyebrow">
-            4 · Energy in SHM
+          <p class="pixel-kicker">
+            MODULE 4 · ENERGY
           </p>
 
           <h2>
-            Kinetic and potential energy continually trade places
+            SHM as an endless exchange between two stores
           </h2>
 
         </div>
 
-
         <button
-          class="complete-button"
-          data-complete="energy"
+          class="mc-button complete-button"
+          data-complete="module4"
         >
-          Mark section complete
+          Mark complete
         </button>
 
       </div>
 
 
 
-      <div class="lab-grid energy-layout">
+      <div class="chapter-grid">
 
 
-        <div class="lab-controls card">
+        <article class="mc-panel lesson-panel">
 
           <h3>
-            Move the oscillator by hand
+            Imagine energy being poured between two buckets
           </h3>
+
+
+          <p>
+
+            One bucket is spring potential energy.
+
+            The other is kinetic energy.
+
+            In an ideal frictionless oscillator the total amount
+            of water never changes.
+
+            It simply moves between the two buckets.
+
+          </p>
+
+
+          <div class="equation-ladder">
+
+
+            <div>
+
+              <small>
+                spring potential
+              </small>
+
+              <code>
+                U = ½kx²
+              </code>
+
+            </div>
+
+
+            <div>
+
+              <small>
+                kinetic
+              </small>
+
+              <code>
+                K = ½mv²
+              </code>
+
+            </div>
+
+
+            <div class="glow">
+
+              <small>
+                total
+              </small>
+
+              <code>
+                E = K + U = ½kA²
+              </code>
+
+            </div>
+
+
+          </div>
+
+
+          <p>
+
+            At
+
+            <span class="eq">
+              x = ±A
+            </span>,
+
+            the mass is momentarily stationary.
+
+            Therefore K = 0 and all energy is potential.
+
+          </p>
+
+
+          <p>
+
+            At
+
+            <span class="eq">
+              x = 0
+            </span>,
+
+            the spring is instantaneously unstretched relative
+            to equilibrium.
+
+            Therefore U = 0 and all the mechanical energy
+            is kinetic.
+
+          </p>
+
+        </article>
+
+
+
+        <article class="mc-panel lesson-panel">
+
+          <h3>
+            Why energy provides another route to v(x)
+          </h3>
+
+
+          <p>
+
+            Set total energy equal to kinetic plus potential:
+
+          </p>
+
+
+          <div class="big-equation">
+            ½kA² = ½mv² + ½kx²
+          </div>
+
+
+          <p>
+
+            Multiply by two:
+
+          </p>
+
+
+          <div class="big-equation">
+            kA² = mv² + kx²
+          </div>
+
+
+          <p>
+
+            Rearrange:
+
+          </p>
+
+
+          <div class="big-equation">
+            mv² = k(A² − x²)
+          </div>
+
+
+          <p>
+
+            Since
+
+            <span class="eq">
+              k/m = ω²
+            </span>,
+
+          </p>
+
+
+          <div class="big-equation">
+            v² = ω²(A² − x²)
+          </div>
+
+
+          <p>
+
+            This is the exact same relation obtained earlier from
+            trigonometry.
+
+            That agreement is important: the calculus, geometry and
+            energy descriptions are all different views of the same motion.
+
+          </p>
+
+        </article>
+
+
+      </div>
+
+
+
+      <div class="lab-grid energy-grid">
+
+
+        <div class="mc-panel controls-panel">
+
+          <p class="pixel-kicker">
+            ENERGY EXPLORER
+          </p>
 
 
           <label>
@@ -1648,604 +2407,449 @@
           </label>
 
 
+          <div class="energy-bar-row">
 
-          <div class="formula-list">
+            <span>
+              U/E
+            </span>
 
-
-            <div>
-
-              <span>
-                Potential energy
-              </span>
-
-              <code>
-                U = ½kx²
-              </code>
-
+            <div class="energy-bar">
+              <i id="uBar"></i>
             </div>
 
-
-            <div>
-
-              <span>
-                Kinetic energy
-              </span>
-
-              <code>
-                K = ½k(A² − x²)
-              </code>
-
-            </div>
-
-
-            <div>
-
-              <span>
-                Total energy
-              </span>
-
-              <code>
-                E = ½kA²
-              </code>
-
-            </div>
-
+            <strong id="uPct">
+              0%
+            </strong>
 
           </div>
 
 
+          <div class="energy-bar-row">
 
-          <div class="energy-bars">
+            <span>
+              K/E
+            </span>
 
-
-            <div>
-
-              <span>
-                U / E
-              </span>
-
-              <div class="bar">
-
-                <i id="uBar"></i>
-
-              </div>
-
-              <strong id="uPct">
-                0%
-              </strong>
-
+            <div class="energy-bar">
+              <i id="kBar"></i>
             </div>
 
-
-            <div>
-
-              <span>
-                K / E
-              </span>
-
-              <div class="bar">
-
-                <i id="kBar"></i>
-
-              </div>
-
-              <strong id="kPct">
-                100%
-              </strong>
-
-            </div>
-
+            <strong id="kPct">
+              100%
+            </strong>
 
           </div>
-
 
         </div>
 
 
 
-        <div class="card canvas-card">
+        <div class="mc-panel canvas-panel">
 
           <canvas
             id="energyCanvas"
             width="900"
-            height="520"
+            height="500"
           ></canvas>
 
         </div>
 
-
       </div>
 
 
 
-      <div class="three-col compact-top">
+      <div class="mc-panel deep-dive">
+
+        <h3>
+          A useful undergraduate check: prove that total energy is constant
+        </h3>
 
 
-        <article class="mini-card">
+        <p>
 
-          <h4>
-            At equilibrium
-          </h4>
+          Begin with
 
-          <p>
+          <span class="eq">
+            E = ½mv² + ½kx²
+          </span>
 
-            x = 0
+          and differentiate with respect to time:
 
-            therefore
-
-            U = 0
-
-            and
-
-            K = E.
-
-            The object is travelling fastest.
-
-          </p>
-
-        </article>
+        </p>
 
 
-        <article class="mini-card">
-
-          <h4>
-            At the turning points
-          </h4>
-
-          <p>
-
-            x = ±A
-
-            therefore
-
-            K = 0
-
-            and
-
-            U = E.
-
-            The object is instantaneously stationary.
-
-          </p>
-
-        </article>
-
-
-        <article class="mini-card">
-
-          <h4>
-            Energy oscillates faster
-          </h4>
-
-          <p>
-
-            Because U and K contain squared quantities,
-            their values repeat twice during every
-            displacement cycle.
-
-          </p>
-
-        </article>
-
-
-      </div>
-
-
-    </section>
-
-
-
-    <!-- =======================================================
-         PHASE
-    ======================================================== -->
-
-    <section
-      id="phase-lab"
-      class="section"
-    >
-
-      <div class="section-heading">
-
-        <div>
-
-          <p class="eyebrow">
-            5 · Initial conditions and phase
-          </p>
-
-          <h2>
-            Convert x₀ and v₀ into amplitude and phase
-          </h2>
-
+        <div class="big-equation">
+          dE/dt = mv(dv/dt) + kx(dx/dt)
         </div>
 
 
-        <button
-          class="complete-button"
-          data-complete="phase"
-        >
-          Mark section complete
-        </button>
+        <p>
+
+          Since
+
+          <span class="eq">
+            dx/dt = v
+          </span>
+
+          and
+
+          <span class="eq">
+            dv/dt = a
+          </span>,
+
+        </p>
+
+
+        <div class="big-equation">
+          dE/dt = v(ma + kx)
+        </div>
+
+
+        <p>
+
+          But SHM obeys
+
+          <span class="eq">
+            ma = −kx
+          </span>.
+
+          Therefore
+
+        </p>
+
+
+        <div class="big-equation">
+          dE/dt = 0
+        </div>
+
+
+        <p>
+
+          Energy conservation is therefore not merely an assumption
+          pasted onto the motion.
+
+          It follows directly from the conservative restoring force.
+
+        </p>
 
       </div>
 
 
 
-      <div class="two-col">
+      <div class="mindmap-shell mc-panel">
 
-
-        <div class="card prose">
-
-          <h3>
-            The reliable method
-          </h3>
-
-
-          <p>
-            At t = 0:
-          </p>
-
-
-          <div class="formula-box">
-
-            <span>
-              x₀ = A cos φ
-            </span>
-
-          </div>
-
-
-          <div class="formula-box">
-
-            <span>
-              v₀ = −ωA sin φ
-            </span>
-
-          </div>
-
-
-          <p>
-
-            Divide the velocity equation by ω,
-            square both equations and add.
-
-          </p>
-
-
-          <div class="formula-box hero-formula">
-
-            <span>
-              A = √[x₀² + (v₀/ω)²]
-            </span>
-
-          </div>
-
-
-          <p>
-
-            Then calculate phase using both signs:
-
-          </p>
-
-
-          <div class="formula-box">
-
-            <span>
-              φ = atan2(−v₀/ω, x₀)
-            </span>
-
-          </div>
-
-
-          <p class="callout">
-
-            <strong>
-              Common mistake:
-            </strong>
-
-            Using only arccos(x₀/A) does not tell you
-            whether the object is initially moving left
-            or right.
-
-          </p>
-
-
+        <div class="panel-title">
+          MINDMAP · MODULE 4
         </div>
 
+        <div
+          class="mindmap"
+          data-map="module4"
+        ></div>
+
+      </div>
 
 
-        <div class="card calculator">
+
+      <div class="recall-grid">
+
+
+        <article class="recall-card mc-panel">
+
+          <p class="pixel-kicker">
+            ACTIVE RECALL
+          </p>
 
           <h3>
-            Initial-condition solver
+            Why is velocity zero at x = ±A?
           </h3>
 
-
-          <div class="input-grid">
-
-
-            <label>
-
-              x₀ (m)
-
-              <input
-                id="x0Input"
-                type="number"
-                step="0.01"
-                value="-0.085"
-              >
-
-            </label>
-
-
-            <label>
-
-              v₀ (m/s)
-
-              <input
-                id="v0Input"
-                type="number"
-                step="0.01"
-                value="-0.92"
-              >
-
-            </label>
-
-
-            <label>
-
-              m (kg)
-
-              <input
-                id="phaseMInput"
-                type="number"
-                min="0.001"
-                step="0.01"
-                value="0.68"
-              >
-
-            </label>
-
-
-            <label>
-
-              k (N/m)
-
-              <input
-                id="phaseKInput"
-                type="number"
-                min="0.001"
-                step="0.1"
-                value="46"
-              >
-
-            </label>
-
-
-          </div>
-
-
-          <button
-            id="solvePhase"
-            class="primary-button"
-          >
-            Solve
+          <button class="mc-button recall-toggle">
+            Reveal answer
           </button>
 
+          <div class="recall-answer">
 
-          <div
-            id="phaseResult"
-            class="result-box"
-          ></div>
+            At a turning point,
+
+            <span class="eq">
+              U = ½kA²
+            </span>
+
+            already equals the total energy.
+
+            No energy remains for kinetic energy, so K = 0 and v = 0.
+
+          </div>
+
+        </article>
 
 
-        </div>
+        <article class="recall-card mc-panel">
+
+          <p class="pixel-kicker">
+            ACTIVE RECALL
+          </p>
+
+          <h3>
+            Why do K and U vary twice as rapidly as x?
+          </h3>
+
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
+
+          <div class="recall-answer">
+
+            Energy contains squared sinusoidal quantities.
+
+            For example,
+
+            <span class="eq">
+              U ∝ cos²(ωt+φ)
+            </span>,
+
+            and
+
+            <span class="eq">
+              cos²θ = [1 + cos(2θ)]/2
+            </span>.
+
+            The oscillating part therefore has angular frequency 2ω.
+
+          </div>
+
+        </article>
 
 
       </div>
 
 
+
+      <div
+        class="notepad-slot"
+        data-note="module4"
+      ></div>
+
     </section>
 
 
 
-    <!-- =======================================================
-         PENDULUMS
-    ======================================================== -->
+    <!-- ====================================================
+         MODULE 5
+    ===================================================== -->
 
     <section
-      id="pendulums"
-      class="section"
+      id="module5"
+      class="section-shell module"
     >
 
       <div class="section-heading">
 
         <div>
 
-          <p class="eyebrow">
-            6 · Pendulums and angular SHM
+          <p class="pixel-kicker">
+            MODULE 5 · ANGULAR SHM
           </p>
 
           <h2>
-            The same mathematics appears in rotational systems
+            The same mathematical machine in rotational form
           </h2>
 
         </div>
 
-
         <button
-          class="complete-button"
-          data-complete="pendulums"
+          class="mc-button complete-button"
+          data-complete="module5"
         >
-          Mark section complete
+          Mark complete
         </button>
 
       </div>
 
 
 
-      <div class="three-col">
+      <div class="chapter-grid">
 
 
-        <article class="card prose">
+        <article class="mc-panel lesson-panel">
 
           <h3>
-            Simple pendulum
+            Torsion oscillators
           </h3>
 
 
           <p>
 
-            A point mass m suspended from a light string
-            of length L experiences a tangential restoring
-            force
+            A twisted wire or torsion fibre provides a restoring torque
+            proportional to angular displacement:
 
           </p>
 
 
-          <div class="formula-box">
+          <div class="big-equation">
+            τ = −κθ
+          </div>
 
-            <span>
-              Ft = −mg sin θ
-            </span>
+
+          <p>
+
+            Rotational Newton's second law is
+
+          </p>
+
+
+          <div class="big-equation">
+            Iθ¨ = τ
+          </div>
+
+
+          <p>
+
+            Combining them:
+
+          </p>
+
+
+          <div class="equation-ladder">
+
+
+            <div>
+              <code>
+                Iθ¨ = −κθ
+              </code>
+            </div>
+
+
+            <i>
+              divide by I ↓
+            </i>
+
+
+            <div>
+              <code>
+                θ¨ + (κ/I)θ = 0
+              </code>
+            </div>
+
+
+            <i>
+              compare with θ¨ + ω²θ = 0 ↓
+            </i>
+
+
+            <div class="glow">
+              <code>
+                ω = √(κ/I)
+              </code>
+            </div>
+
 
           </div>
 
 
           <p>
 
-            For sufficiently small angles measured in radians,
+            Structurally this is identical to the spring result
+
+            <span class="eq">
+              ω = √(k/m)
+            </span>.
+
+            Translational mass m has simply been replaced by rotational
+            inertia I, while k has been replaced by the torsional constant κ.
 
           </p>
-
-
-          <div class="formula-box">
-
-            <span>
-              sin θ ≈ θ
-            </span>
-
-          </div>
-
-
-          <p>
-
-            The equation then becomes linear and the
-            pendulum behaves approximately as SHM.
-
-          </p>
-
-
-          <div class="formula-box hero-formula">
-
-            <span>
-              ω = √(g/L)
-            </span>
-
-          </div>
-
-
-          <div class="formula-box">
-
-            <span>
-              T = 2π√(L/g)
-            </span>
-
-          </div>
-
-
-          <p class="callout">
-
-            Notice that the period is independent of the
-            bob's mass for the ideal small-angle model.
-
-          </p>
-
 
         </article>
 
 
 
-        <article class="card prose">
+        <article class="mc-panel lesson-panel">
 
           <h3>
-            Physical pendulum
+            Why a pendulum is only approximately SHM
           </h3>
 
 
           <p>
 
-            A rigid object may oscillate around a pivot.
-
-            If h is the distance between the pivot and
-            centre of mass and I is the rotational inertia
-            about the pivot,
+            The tangential restoring force on a simple pendulum is
 
           </p>
 
 
-          <div class="formula-box hero-formula">
-
-            <span>
-              T = 2π√(I/mgh)
-            </span>
-
+          <div class="big-equation">
+            Fₜ = −mg sinθ
           </div>
 
 
           <p>
 
-            A simple pendulum is therefore only one special
-            type of pendulum.
+            The obstacle is the sine.
+
+            Exact SHM requires the restoring term to be directly
+            proportional to displacement.
 
           </p>
-
-
-          <h3>
-            Torsion oscillator
-          </h3>
 
 
           <p>
 
-            If twisting produces a restoring torque
+            For small angles measured in radians,
 
           </p>
 
 
-          <div class="formula-box">
-
-            <span>
-              τ = −κθ
-            </span>
-
+          <div class="big-equation">
+            sinθ ≈ θ
           </div>
 
 
           <p>
 
-            then rotational Newton's second law gives
+            The nonlinear equation then becomes approximately linear:
 
           </p>
 
 
-          <div class="formula-box hero-formula">
+          <div class="big-equation">
+            θ¨ + (g/L)θ ≈ 0
+          </div>
 
-            <span>
-              ω = √(κ/I)
-            </span>
 
+          <p>
+
+            Hence
+
+          </p>
+
+
+          <div class="big-equation">
+            ω = √(g/L)
+          </div>
+
+
+          <div class="big-equation">
+            T = 2π√(L/g)
           </div>
 
 
         </article>
 
 
+      </div>
 
-        <article class="card calculator">
 
-          <h3>
-            Pendulum explorer
-          </h3>
+
+      <div class="lab-grid">
+
+
+        <div class="mc-panel controls-panel">
+
+          <p class="pixel-kicker">
+            PENDULUM GROVE
+          </p>
 
 
           <label>
@@ -2270,7 +2874,7 @@
 
           <label>
 
-            Starting angle
+            Initial angle
 
             <output id="pendAngleOut">
               10°
@@ -2288,49 +2892,191 @@
           </label>
 
 
-          <div class="result-box">
+          <div class="metric-grid compact">
 
-            <p>
+            <div>
+              <small>T</small>
+              <strong id="pendPeriod">—</strong>
+            </div>
 
-              Period:
-
-              <strong id="pendPeriod">
-                2.01 s
-              </strong>
-
-            </p>
-
-
-            <p>
-
-              Angular frequency:
-
-              <strong id="pendOmega">
-                3.13 rad/s
-              </strong>
-
-            </p>
+            <div>
+              <small>ω</small>
+              <strong id="pendOmega">—</strong>
+            </div>
 
           </div>
 
+        </div>
+
+
+        <div class="mc-panel canvas-panel">
 
           <canvas
             id="pendulumCanvas"
-            width="500"
-            height="420"
+            width="650"
+            height="500"
           ></canvas>
 
+        </div>
 
-          <p class="subtle">
+      </div>
 
-            The animation uses the small-angle SHM
-            approximation.
 
-            At large amplitudes a real pendulum is not
-            exactly simple harmonic.
 
+      <div class="mc-panel deep-dive">
+
+        <h3>
+          Physical pendulum: why rotational inertia matters
+        </h3>
+
+
+        <p>
+
+          A real rigid body swinging about a pivot cannot generally
+          be treated as a point mass at one radius.
+
+          Its mass is distributed through space.
+
+          That distribution enters through the moment of inertia I.
+
+        </p>
+
+
+        <p>
+
+          For a centre of mass located distance h from the pivot,
+          the gravitational torque is approximately
+
+        </p>
+
+
+        <div class="big-equation">
+          τ ≈ −mghθ
+        </div>
+
+
+        <p>
+
+          Hence
+
+        </p>
+
+
+        <div class="equation-ladder">
+
+          <div>
+            <code>
+              Iθ¨ = −mghθ
+            </code>
+          </div>
+
+          <i>
+            rearrange ↓
+          </i>
+
+          <div>
+            <code>
+              θ¨ + (mgh/I)θ = 0
+            </code>
+          </div>
+
+          <i>
+            identify ω² ↓
+          </i>
+
+          <div>
+            <code>
+              ω² = mgh/I
+            </code>
+          </div>
+
+          <i>
+            convert to period ↓
+          </i>
+
+          <div class="glow">
+            <code>
+              T = 2π√(I/mgh)
+            </code>
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="mindmap-shell mc-panel">
+
+        <div class="panel-title">
+          MINDMAP · MODULE 5
+        </div>
+
+        <div
+          class="mindmap"
+          data-map="module5"
+        ></div>
+
+      </div>
+
+
+
+      <div class="recall-grid">
+
+
+        <article class="recall-card mc-panel">
+
+          <p class="pixel-kicker">
+            ACTIVE RECALL
           </p>
 
+          <h3>
+            Why must θ be measured in radians in sinθ ≈ θ?
+          </h3>
+
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
+
+          <div class="recall-answer">
+
+            The Taylor expansion is
+
+            <span class="eq">
+              sinθ = θ − θ³/6 + ...
+            </span>
+
+            only when θ is expressed in radians.
+
+            Degrees introduce an additional conversion factor.
+
+          </div>
+
+        </article>
+
+
+        <article class="recall-card mc-panel">
+
+          <p class="pixel-kicker">
+            ACTIVE RECALL
+          </p>
+
+          <h3>
+            Why is the ideal pendulum period independent of bob mass?
+          </h3>
+
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
+
+          <div class="recall-answer">
+
+            Increasing the mass increases the gravitational restoring
+            force and the inertia by the same factor.
+
+            The mass cancels from the equation of motion.
+
+          </div>
 
         </article>
 
@@ -2338,220 +3084,168 @@
       </div>
 
 
+
+      <div
+        class="notepad-slot"
+        data-note="module5"
+      ></div>
+
     </section>
 
 
 
-    <!-- =======================================================
-         DAMPING + RESONANCE
-    ======================================================== -->
+    <!-- ====================================================
+         MODULE 6
+    ===================================================== -->
 
     <section
-      id="damping"
-      class="section"
+      id="module6"
+      class="section-shell module"
     >
 
       <div class="section-heading">
 
         <div>
 
-          <p class="eyebrow">
-            7 · Damping and forced oscillations
+          <p class="pixel-kicker">
+            MODULE 6 · DAMPING
           </p>
 
           <h2>
-            From ideal oscillators to real systems
+            How real oscillators gradually forget their motion
           </h2>
 
         </div>
 
 
         <button
-          class="complete-button"
-          data-complete="damping"
+          class="mc-button complete-button"
+          data-complete="module6"
         >
-          Mark section complete
+          Mark complete
         </button>
 
       </div>
 
 
 
-      <div class="two-col">
+      <div class="chapter-grid">
 
 
-        <article class="card prose">
+        <article class="mc-panel lesson-panel">
 
           <h3>
-            Damped SHM
+            Drag attacks velocity, not position
           </h3>
 
 
           <p>
 
-            A common model for a damping force is
+            A common damping model is
 
           </p>
 
 
-          <div class="formula-box">
-
-            <span>
-              Fd = −bv
-            </span>
-
+          <div class="big-equation">
+            Fd = −bv
           </div>
 
 
           <p>
 
-            The equation of motion becomes
+            The minus sign means the drag force always opposes motion.
+
+            Combine spring force and damping:
 
           </p>
 
 
-          <div class="formula-box">
-
-            <span>
-              mx'' + bx' + kx = 0
-            </span>
-
+          <div class="big-equation">
+            m x¨ = −kx − bx˙
           </div>
 
 
           <p>
 
-            For underdamped motion,
+            Rearranging gives
 
           </p>
 
 
-          <div class="formula-box hero-formula">
-
-            <span>
-              x = A₀e^(−bt/2m) cos(ωdt + φ)
-            </span>
-
-          </div>
-
-
-          <div class="formula-box">
-
-            <span>
-              ωd = √(k/m − b²/4m²)
-            </span>
-
+          <div class="big-equation">
+            m x¨ + b x˙ + kx = 0
           </div>
 
 
           <p>
 
-            The exponential term determines the shrinking
-            amplitude envelope.
+            The new x˙ term changes the roots of the differential equation.
+
+            The result depends on how large b is compared with
+
+            <span class="eq">
+              2√(mk)
+            </span>.
 
           </p>
-
-
-          <p>
-
-            Because mechanical energy is proportional to
-            amplitude squared,
-
-          </p>
-
-
-          <div class="formula-box">
-
-            <span>
-              E(t) = E₀e^(−bt/m)
-            </span>
-
-          </div>
-
 
         </article>
 
 
 
-        <article class="card prose">
+        <article class="mc-panel lesson-panel">
 
           <h3>
-            Forced oscillations
+            Three damping regimes
           </h3>
 
 
-          <p>
-
-            Suppose an external force acts periodically:
-
-          </p>
+          <div class="mini-table">
 
 
-          <div class="formula-box">
+            <div>
+              <code>b &lt; 2√mk</code>
+              <span class="good">underdamped</span>
+              <small>oscillates while decaying</small>
+            </div>
 
-            <span>
-              F(t) = F₀ cos(ωt)
-            </span>
+
+            <div>
+              <code>b = 2√mk</code>
+              <span>critical</span>
+              <small>fastest return without oscillation</small>
+            </div>
+
+
+            <div>
+              <code>b &gt; 2√mk</code>
+              <span class="bad">overdamped</span>
+              <small>slow non-oscillatory return</small>
+            </div>
+
 
           </div>
 
 
-          <p>
-
-            After the transient behaviour dies away,
-            the oscillator moves at the
+          <div class="analogy-box">
 
             <strong>
-              driving frequency
+              Visualise three doors
             </strong>
 
-            rather than necessarily at its natural frequency.
+            <p>
 
-          </p>
+              An underdamped door swings past the closed position several times.
 
+              A critically damped door reaches closed position quickly without
+              overshooting.
 
-          <h3>
-            Resonance
-          </h3>
+              An overdamped door crawls slowly toward closed because its damper
+              resists motion too strongly.
 
-
-          <p>
-
-            The response becomes particularly large when the
-            driving frequency is near the natural frequency.
-
-          </p>
-
-
-          <div class="formula-box hero-formula">
-
-            <span>
-              ωdrive ≈ ω₀
-            </span>
+            </p>
 
           </div>
-
-
-          <p>
-
-            Damping controls how sharp and high the resonance
-            peak becomes.
-
-          </p>
-
-
-          <p class="callout">
-
-            <strong>
-              Key idea:
-            </strong>
-
-            Resonance is fundamentally about efficient
-            transfer of energy from a periodic driver into
-            an oscillator.
-
-          </p>
-
 
         </article>
 
@@ -2560,19 +3254,19 @@
 
 
 
-      <div class="lab-grid compact-top">
+      <div class="lab-grid">
 
 
-        <div class="lab-controls card">
+        <div class="mc-panel controls-panel">
 
-          <h3>
-            Damping simulator
-          </h3>
+          <p class="pixel-kicker">
+            DAMPING LAB
+          </p>
 
 
           <label>
 
-            Damping coefficient b
+            Damping b
 
             <output id="dampingOut">
               0.40 kg/s
@@ -2582,7 +3276,7 @@
               id="dampingInput"
               type="range"
               min="0"
-              max="3.5"
+              max="10"
               step="0.05"
               value="0.4"
             >
@@ -2590,76 +3284,298 @@
           </label>
 
 
-          <div class="metric-grid two-metric">
+          <div class="metric-grid compact">
 
             <div>
-
-              <span>
-                ωd
-              </span>
-
-              <strong id="dampedOmega">
-                —
-              </strong>
-
+              <small>ωd / regime</small>
+              <strong id="dampedOmega">—</strong>
             </div>
-
 
             <div>
-
-              <span>
-                amplitude half-life
-              </span>
-
-              <strong id="ampHalfLife">
-                —
-              </strong>
-
+              <small>A half-life</small>
+              <strong id="ampHalfLife">—</strong>
             </div>
-
 
           </div>
-
-
-          <p class="lab-tip">
-
-            Increasing b makes the envelope decay more
-            rapidly.
-
-          </p>
-
 
         </div>
 
 
-        <div class="card canvas-card">
+        <div class="mc-panel canvas-panel">
 
           <canvas
             id="dampingCanvas"
             width="900"
-            height="420"
+            height="440"
           ></canvas>
 
         </div>
+
+      </div>
+
+
+
+      <div class="mc-panel deep-dive">
+
+        <h3>
+          Why amplitude and energy decay at different exponential rates
+        </h3>
+
+
+        <p>
+
+          In the underdamped case the displacement envelope behaves as
+
+        </p>
+
+
+        <div class="big-equation">
+          A(t) = A₀e^{-bt/2m}
+        </div>
+
+
+        <p>
+
+          But oscillator energy scales as amplitude squared:
+
+        </p>
+
+
+        <div class="big-equation">
+          E ∝ A²
+        </div>
+
+
+        <p>
+
+          Therefore
+
+        </p>
+
+
+        <div class="big-equation">
+          E(t) = E₀e^{-bt/m}
+        </div>
+
+
+        <p>
+
+          The exponent has doubled.
+
+          Energy therefore falls twice as rapidly in the exponent
+          as amplitude.
+
+        </p>
+
+
+        <p>
+
+          Consequently,
+
+        </p>
+
+
+        <div class="big-equation">
+          t½,amplitude = 2m ln2 / b
+        </div>
+
+
+        <div class="big-equation">
+          t½,energy = m ln2 / b
+        </div>
+
+      </div>
+
+
+
+      <div class="mindmap-shell mc-panel">
+
+        <div class="panel-title">
+          MINDMAP · MODULE 6
+        </div>
+
+        <div
+          class="mindmap"
+          data-map="module6"
+        ></div>
+
+      </div>
+
+
+
+      <div
+        class="notepad-slot"
+        data-note="module6"
+      ></div>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         MODULE 7
+    ===================================================== -->
+
+    <section
+      id="module7"
+      class="section-shell module"
+    >
+
+      <div class="section-heading">
+
+        <div>
+
+          <p class="pixel-kicker">
+            MODULE 7 · FORCED OSCILLATIONS & RESONANCE
+          </p>
+
+          <h2>
+            When an external rhythm repeatedly feeds the oscillator
+          </h2>
+
+        </div>
+
+
+        <button
+          class="mc-button complete-button"
+          data-complete="module7"
+        >
+          Mark complete
+        </button>
+
+      </div>
+
+
+
+      <div class="chapter-grid">
+
+
+        <article class="mc-panel lesson-panel">
+
+          <h3>
+            Imagine pushing a swing
+          </h3>
+
+
+          <p>
+
+            One push does not define resonance.
+
+            Resonance is about repeated timing.
+
+            Push at random phases and some pushes add energy while
+            others remove it.
+
+            Push in step with the motion and each push can reinforce
+            the previous one.
+
+          </p>
+
+
+          <p>
+
+            A driven oscillator obeys
+
+          </p>
+
+
+          <div class="big-equation">
+            m x¨ + b x˙ + kx = F₀ cos(ωt)
+          </div>
+
+
+          <p>
+
+            The left side describes the oscillator.
+
+            The right side describes an external periodic driver.
+
+          </p>
+
+
+          <p>
+
+            After transient motion dies away, the steady-state
+            oscillator follows the driving frequency ω.
+
+            Its natural frequency still matters because it determines
+            how strongly the system responds.
+
+          </p>
+
+        </article>
+
+
+
+        <article class="mc-panel lesson-panel">
+
+          <h3>
+            Resonance is an energy-transfer phenomenon
+          </h3>
+
+
+          <p>
+
+            For weak damping, the response becomes particularly large
+            when the driving frequency lies near the natural frequency.
+
+          </p>
+
+
+          <div class="big-equation">
+            ωdrive ≈ ω₀
+          </div>
+
+
+          <p>
+
+            This does not mean the oscillator somehow "prefers"
+            a frequency psychologically.
+
+            It means the forcing remains favourably phased so that
+            positive work is repeatedly done on the oscillator.
+
+          </p>
+
+
+          <div class="analogy-box">
+
+            <strong>
+              Analogy: adding coins to a moving minecart
+            </strong>
+
+            <p>
+
+              Add momentum at precisely the right points in each trip
+              and successive contributions accumulate.
+
+              Add them at the wrong time and one contribution can undo
+              part of another.
+
+            </p>
+
+          </div>
+
+        </article>
 
 
       </div>
 
 
 
-      <div class="lab-grid compact-top">
+      <div class="lab-grid">
 
 
-        <div class="lab-controls card">
+        <div class="mc-panel controls-panel">
 
-          <h3>
-            Resonance explorer
-          </h3>
+          <p class="pixel-kicker">
+            RESONANCE LAB
+          </p>
 
 
           <label>
 
-            Damping
+            Damping control
 
             <output id="resDampingOut">
               0.30
@@ -2679,10 +3595,10 @@
 
           <label>
 
-            Driving frequency
+            Driving angular frequency
 
             <output id="driveFreqOut">
-              4.0 rad/s
+              4.00 rad/s
             </output>
 
             <input
@@ -2702,1459 +3618,644 @@
             class="result-box"
           ></div>
 
-
         </div>
 
 
-        <div class="card canvas-card">
+        <div class="mc-panel canvas-panel">
 
           <canvas
             id="resonanceCanvas"
             width="900"
-            height="420"
+            height="440"
           ></canvas>
 
         </div>
 
+      </div>
+
+
+
+      <div class="mc-panel deep-dive">
+
+        <h3>
+          The steady-state response formula
+        </h3>
+
+
+        <p>
+
+          For
+
+          <span class="eq">
+            m x¨ + b x˙ + kx = F₀ cosωt
+          </span>,
+
+          the steady-state displacement amplitude can be written
+
+        </p>
+
+
+        <div class="big-equation">
+          X(ω) =
+          F₀ /
+          √[(k − mω²)² + (bω)²]
+        </div>
+
+
+        <p>
+
+          The denominator contains two competing effects.
+
+          The term
+
+          <span class="eq">
+            k − mω²
+          </span>
+
+          represents the mismatch between restoring stiffness
+          and inertial response.
+
+        </p>
+
+
+        <p>
+
+          Near
+
+          <span class="eq">
+            k ≈ mω²
+          </span>,
+
+          that part becomes small.
+
+          If damping is also weak, the denominator becomes small and
+          therefore the amplitude becomes large.
+
+        </p>
+
+
+        <p>
+
+          Damping prevents the amplitude from diverging.
+
+          Increasing damping lowers the peak and broadens it,
+          making the oscillator less frequency-selective.
+
+        </p>
 
       </div>
 
 
-    </section>
+
+      <div class="mindmap-shell mc-panel">
+
+        <div class="panel-title">
+          MINDMAP · MODULE 7
+        </div>
+
+        <div
+          class="mindmap"
+          data-map="module7"
+        ></div>
+
+      </div>
 
 
 
-    <!-- =======================================================
-         WORKED EXAMPLES
-    ======================================================== -->
+      <div class="recall-grid">
 
-    <section
-      id="worked"
-      class="section"
-    >
 
-      <div class="section-heading">
+        <article class="recall-card mc-panel">
 
-        <div>
-
-          <p class="eyebrow">
-            8 · Worked examples
+          <p class="pixel-kicker">
+            ACTIVE RECALL
           </p>
-
-          <h2>
-            Learn a repeatable problem-solving method
-          </h2>
-
-        </div>
-
-
-        <button
-          class="complete-button"
-          data-complete="worked"
-        >
-          Mark section complete
-        </button>
-
-      </div>
-
-
-
-      <div class="method-banner card">
-
-        <span>
-          1
-        </span>
-
-        <p>
-          Identify the oscillator and equilibrium position.
-        </p>
-
-
-        <span>
-          2
-        </span>
-
-        <p>
-          Write the governing SHM relation.
-        </p>
-
-
-        <span>
-          3
-        </span>
-
-        <p>
-          Translate the given information into variables.
-        </p>
-
-
-        <span>
-          4
-        </span>
-
-        <p>
-          Solve symbolically before inserting numbers.
-        </p>
-
-
-        <span>
-          5
-        </span>
-
-        <p>
-          Check units and physical reasonableness.
-        </p>
-
-      </div>
-
-
-
-      <div class="worked-grid">
-
-
-        <details class="worked-card" open>
-
-          <summary>
-            Example 1 — Find T and f from m and k
-          </summary>
-
-
-          <div class="worked-body">
-
-            <p>
-
-              A 0.50 kg block oscillates on a spring with
-              spring constant 200 N/m.
-
-              Find its angular frequency, period and
-              frequency.
-
-            </p>
-
-
-            <h4>
-              Step 1: identify the governing equation
-            </h4>
-
-
-            <div class="formula-box">
-
-              <span>
-                ω = √(k/m)
-              </span>
-
-            </div>
-
-
-            <h4>
-              Step 2: substitute
-            </h4>
-
-
-            <p>
-
-              ω = √(200 / 0.50)
-
-            </p>
-
-
-            <p>
-
-              ω = √400
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                ω = 20 rad/s
-              </strong>
-
-            </p>
-
-
-            <h4>
-              Step 3: calculate period
-            </h4>
-
-
-            <p>
-
-              T = 2π/ω
-
-            </p>
-
-
-            <p>
-
-              T = 2π/20
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                T = 0.314 s
-              </strong>
-
-            </p>
-
-
-            <h4>
-              Step 4: calculate frequency
-            </h4>
-
-
-            <p>
-
-              f = 1/T
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                f = 3.18 Hz
-              </strong>
-
-            </p>
-
-
-            <div class="answer-box">
-
-              ω = 20 rad/s,
-              T = 0.314 s,
-              f = 3.18 Hz
-
-            </div>
-
-
-          </div>
-
-        </details>
-
-
-
-        <details class="worked-card">
-
-          <summary>
-            Example 2 — Maximum speed and acceleration
-          </summary>
-
-
-          <div class="worked-body">
-
-            <p>
-
-              An oscillator has amplitude
-              A = 0.12 m
-              and frequency
-              f = 2.5 Hz.
-
-              Find its maximum speed and acceleration.
-
-            </p>
-
-
-            <p>
-
-              First find angular frequency:
-
-            </p>
-
-
-            <p>
-
-              ω = 2πf
-
-            </p>
-
-
-            <p>
-
-              ω = 2π(2.5)
-
-            </p>
-
-
-            <p>
-
-              ω = 15.71 rad/s
-
-            </p>
-
-
-            <p>
-
-              Maximum speed:
-
-            </p>
-
-
-            <div class="formula-box">
-
-              <span>
-                vmax = ωA
-              </span>
-
-            </div>
-
-
-            <p>
-
-              vmax = 15.71 × 0.12
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                vmax = 1.89 m/s
-              </strong>
-
-            </p>
-
-
-            <p>
-
-              Maximum acceleration:
-
-            </p>
-
-
-            <div class="formula-box">
-
-              <span>
-                amax = ω²A
-              </span>
-
-            </div>
-
-
-            <p>
-
-              amax = (15.71)²(0.12)
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                amax ≈ 29.6 m/s²
-              </strong>
-
-            </p>
-
-
-          </div>
-
-        </details>
-
-
-
-        <details class="worked-card">
-
-          <summary>
-            Example 3 — Speed at a particular position
-          </summary>
-
-
-          <div class="worked-body">
-
-            <p>
-
-              A spring oscillator has amplitude 0.20 m,
-              spring constant 80 N/m and mass 0.50 kg.
-
-              Find the speed when x = 0.12 m.
-
-            </p>
-
-
-            <p>
-
-              Use
-
-            </p>
-
-
-            <div class="formula-box">
-
-              <span>
-                v² = ω²(A² − x²)
-              </span>
-
-            </div>
-
-
-            <p>
-
-              Calculate ω:
-
-            </p>
-
-
-            <p>
-
-              ω = √(80/0.50)
-
-            </p>
-
-
-            <p>
-
-              ω = √160
-
-            </p>
-
-
-            <p>
-
-              ω ≈ 12.65 rad/s
-
-            </p>
-
-
-            <p>
-
-              Then
-
-            </p>
-
-
-            <p>
-
-              v = ω√(A² − x²)
-
-            </p>
-
-
-            <p>
-
-              v = 12.65√(0.20² − 0.12²)
-
-            </p>
-
-
-            <p>
-
-              v = 12.65√0.0256
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                |v| ≈ 2.02 m/s
-              </strong>
-
-            </p>
-
-
-            <p class="callout">
-
-              There are two possible velocity directions
-              at this position.
-
-              Energy determines the speed but not the
-              sign of velocity.
-
-            </p>
-
-
-          </div>
-
-        </details>
-
-
-
-        <details class="worked-card">
-
-          <summary>
-            Example 4 — Energy of a spring oscillator
-          </summary>
-
-
-          <div class="worked-body">
-
-            <p>
-
-              A spring with k = 50 N/m oscillates with
-              amplitude 0.30 m.
-
-              Find the total mechanical energy.
-
-            </p>
-
-
-            <div class="formula-box">
-
-              <span>
-                E = ½kA²
-              </span>
-
-            </div>
-
-
-            <p>
-
-              E = ½(50)(0.30²)
-
-            </p>
-
-
-            <p>
-
-              E = 25(0.09)
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                E = 2.25 J
-              </strong>
-
-            </p>
-
-
-          </div>
-
-        </details>
-
-
-
-        <details class="worked-card">
-
-          <summary>
-            Example 5 — Potential and kinetic energy
-          </summary>
-
-
-          <div class="worked-body">
-
-            <p>
-
-              For the previous oscillator,
-              find U and K when x = 0.18 m.
-
-            </p>
-
-
-            <p>
-
-              Potential energy:
-
-            </p>
-
-
-            <div class="formula-box">
-
-              <span>
-                U = ½kx²
-              </span>
-
-            </div>
-
-
-            <p>
-
-              U = ½(50)(0.18²)
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                U = 0.81 J
-              </strong>
-
-            </p>
-
-
-            <p>
-
-              Because
-
-              E = K + U,
-
-            </p>
-
-
-            <p>
-
-              K = 2.25 − 0.81
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                K = 1.44 J
-              </strong>
-
-            </p>
-
-
-          </div>
-
-        </details>
-
-
-
-        <details class="worked-card">
-
-          <summary>
-            Example 6 — Simple pendulum
-          </summary>
-
-
-          <div class="worked-body">
-
-            <p>
-
-              Find the period of a 0.80 m simple pendulum
-              near Earth's surface.
-
-            </p>
-
-
-            <div class="formula-box">
-
-              <span>
-                T = 2π√(L/g)
-              </span>
-
-            </div>
-
-
-            <p>
-
-              T = 2π√(0.80/9.81)
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                T ≈ 1.79 s
-              </strong>
-
-            </p>
-
-
-            <p class="callout">
-
-              The mass of the bob is irrelevant in the
-              ideal small-angle expression.
-
-            </p>
-
-
-          </div>
-
-        </details>
-
-
-
-        <details class="worked-card">
-
-          <summary>
-            Example 7 — Determine phase from initial conditions
-          </summary>
-
-
-          <div class="worked-body">
-
-            <p>
-
-              Suppose x₀ = 0 and the oscillator is moving
-              in the positive x direction with maximum
-              speed.
-
-            </p>
-
-
-            <p>
-
-              Using
-
-            </p>
-
-
-            <div class="formula-box">
-
-              <span>
-                x = A cos(ωt + φ)
-              </span>
-
-            </div>
-
-
-            <p>
-
-              at t = 0:
-
-            </p>
-
-
-            <p>
-
-              0 = A cos φ
-
-            </p>
-
-
-            <p>
-
-              Therefore φ may be ±π/2.
-
-            </p>
-
-
-            <p>
-
-              Velocity is
-
-            </p>
-
-
-            <div class="formula-box">
-
-              <span>
-                v = −ωA sin(ωt + φ)
-              </span>
-
-            </div>
-
-
-            <p>
-
-              We need v &gt; 0.
-
-              Therefore sin φ must be negative.
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                φ = −π/2
-              </strong>
-
-            </p>
-
-
-          </div>
-
-        </details>
-
-
-
-        <details class="worked-card">
-
-          <summary>
-            Example 8 — Compare two spring oscillators
-          </summary>
-
-
-          <div class="worked-body">
-
-            <p>
-
-              Oscillator B has four times the mass of
-              oscillator A but the same spring constant.
-
-              How do their periods compare?
-
-            </p>
-
-
-            <div class="formula-box">
-
-              <span>
-                T = 2π√(m/k)
-              </span>
-
-            </div>
-
-
-            <p>
-
-              Therefore
-
-            </p>
-
-
-            <p>
-
-              TB / TA = √(mB/mA)
-
-            </p>
-
-
-            <p>
-
-              TB / TA = √4
-
-            </p>
-
-
-            <p>
-
-              <strong>
-                TB = 2TA
-              </strong>
-
-            </p>
-
-
-          </div>
-
-        </details>
-
-
-
-        <details class="worked-card">
-
-          <summary>
-            Example 9 — Resonance concept
-          </summary>
-
-
-          <div class="worked-body">
-
-            <p>
-
-              An oscillator has a natural angular frequency
-              of 8 rad/s.
-
-              Compare drivers at 2, 7.8 and 20 rad/s.
-
-            </p>
-
-
-            <p>
-
-              The 7.8 rad/s driver is closest to the
-              natural frequency.
-
-            </p>
-
-
-            <p>
-
-              It will therefore generally produce the
-              strongest steady-state response, assuming
-              comparable driving force amplitudes and
-              ordinary damping.
-
-            </p>
-
-
-            <p class="callout">
-
-              The exact resonance frequency and peak size
-              depend on damping.
-
-            </p>
-
-
-          </div>
-
-        </details>
-
-
-      </div>
-
-
-    </section>
-
-
-
-    <!-- =======================================================
-         PRACTICE
-    ======================================================== -->
-
-    <section
-      id="practice"
-      class="section"
-    >
-
-      <div class="section-heading">
-
-        <div>
-
-          <p class="eyebrow">
-            9 · Practice lab
-          </p>
-
-          <h2>
-            Test yourself instead of rereading
-          </h2>
-
-        </div>
-
-
-        <button
-          class="complete-button"
-          data-complete="practice"
-        >
-          Mark section complete
-        </button>
-
-      </div>
-
-
-
-      <div class="practice-layout">
-
-
-        <div class="card practice-panel">
-
-
-          <div class="practice-head">
-
-
-            <div>
-
-              <small>
-                Topic
-              </small>
-
-              <select id="practiceTopic">
-
-                <option value="mixed">
-                  Mixed questions
-                </option>
-
-                <option value="basics">
-                  SHM foundations
-                </option>
-
-                <option value="kinematics">
-                  x, v and a
-                </option>
-
-                <option value="springs">
-                  Spring oscillators
-                </option>
-
-                <option value="energy">
-                  Energy
-                </option>
-
-                <option value="pendulum">
-                  Pendulums
-                </option>
-
-                <option value="damping">
-                  Damping + resonance
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <div class="score">
-
-              <span id="scoreCorrect">
-                0
-              </span>
-
-              /
-
-              <span id="scoreTotal">
-                0
-              </span>
-
-              correct
-
-            </div>
-
-
-          </div>
-
-
-
-          <div
-            id="questionCard"
-            class="question-card"
-          ></div>
-
-
-
-          <div class="practice-actions">
-
-
-            <button
-              id="showHint"
-              class="secondary-button"
-            >
-              Hint
-            </button>
-
-
-            <button
-              id="checkAnswer"
-              class="primary-button"
-            >
-              Check answer
-            </button>
-
-
-            <button
-              id="nextQuestion"
-              class="ghost-button"
-            >
-              New question
-            </button>
-
-
-          </div>
-
-
-
-          <div
-            id="practiceFeedback"
-            class="feedback"
-          ></div>
-
-
-        </div>
-
-
-
-        <aside class="card practice-help">
 
           <h3>
-            Before you reveal the answer
+            At what frequency does the long-term response oscillate?
           </h3>
 
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
 
-          <ol>
+          <div class="recall-answer">
 
-            <li>
-              Draw or imagine the equilibrium position.
-            </li>
+            At the driving frequency.
 
-            <li>
-              Write down the quantity being requested.
-            </li>
+            The system's natural frequency controls the magnitude
+            and phase of the response, but the steady-state particular
+            solution follows the external forcing frequency.
 
-            <li>
-              Identify the shortest relevant equation.
-            </li>
+          </div>
 
-            <li>
-              Work symbolically where possible.
-            </li>
-
-            <li>
-              Check units and limiting behaviour.
-            </li>
-
-          </ol>
+        </article>
 
 
-          <hr>
+        <article class="recall-card mc-panel">
 
-
-          <h3>
-            Concept questions to master
-          </h3>
-
-
-          <ul>
-
-            <li>
-              Where is velocity maximum?
-            </li>
-
-            <li>
-              Where is acceleration maximum?
-            </li>
-
-            <li>
-              Why does increasing mass increase period?
-            </li>
-
-            <li>
-              Why does amplitude not change the period of an
-              ideal spring?
-            </li>
-
-            <li>
-              Why is a pendulum only approximately SHM?
-            </li>
-
-            <li>
-              How does damping affect amplitude and energy?
-            </li>
-
-            <li>
-              What physically happens at resonance?
-            </li>
-
-          </ul>
-
-
-        </aside>
-
-
-      </div>
-
-
-    </section>
-
-
-
-    <!-- =======================================================
-         FORMULA SHEET
-    ======================================================== -->
-
-    <section
-      id="formula-sheet"
-      class="section"
-    >
-
-      <div class="section-heading">
-
-        <div>
-
-          <p class="eyebrow">
-            10 · Formula sheet
+          <p class="pixel-kicker">
+            ACTIVE RECALL
           </p>
 
-          <h2>
-            The equations worth knowing — organised by purpose
-          </h2>
+          <h3>
+            What does increasing damping do to resonance?
+          </h3>
 
-        </div>
+          <button class="mc-button recall-toggle">
+            Reveal answer
+          </button>
 
+          <div class="recall-answer">
 
-        <button
-          class="complete-button"
-          data-complete="formula"
-        >
-          Mark section complete
-        </button>
+            The resonance peak becomes lower and broader because
+            more energy is dissipated per cycle.
 
-      </div>
+          </div>
 
+        </article>
 
-
-      <div class="formula-search card">
-
-        <input
-          id="formulaSearch"
-          type="search"
-          placeholder="Search: period, pendulum, energy, velocity..."
-        >
 
       </div>
 
 
 
       <div
-        id="formulaGrid"
-        class="formula-grid"
-      >
+        class="notepad-slot"
+        data-note="module7"
+      ></div>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         PRACTICE PAPERS
+    ===================================================== -->
+
+    <section
+      id="practice"
+      class="section-shell"
+    >
+
+      <div class="section-heading">
+
+        <div>
+
+          <p class="pixel-kicker">
+            PRACTICE HALL
+          </p>
+
+          <h2>
+            Physics paper + mathematical methods paper
+          </h2>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="paper-toolbar mc-panel">
+
+
+        <div class="paper-tabs">
+
+          <button
+            class="mc-button paper-tab active"
+            data-paper="physics"
+          >
+            Physics paper
+          </button>
+
+
+          <button
+            class="mc-button paper-tab"
+            data-paper="maths"
+          >
+            Maths methods
+          </button>
+
+        </div>
+
+
+
+        <div class="paper-controls">
+
+          <span
+            class="paper-timer"
+            id="paperTimer"
+          >
+            60:00
+          </span>
+
+
+          <button
+            id="startTimer"
+            class="mc-button"
+          >
+            Start timer
+          </button>
+
+
+          <button
+            id="newPaper"
+            class="mc-button"
+          >
+            Generate new paper
+          </button>
+
+
+          <button
+            id="printPaper"
+            class="mc-button"
+          >
+            Print
+          </button>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="paper-heading mc-panel">
+
+        <p class="pixel-kicker">
+          GENERATED ASSESSMENT
+        </p>
+
+        <h3 id="paperTitle">
+          Physics Paper
+        </h3>
+
+        <p id="paperInfo">
+          60 min · original SHM questions
+        </p>
+
+
+        <div class="exam-advice">
+
+          <strong>
+            Suggested method:
+          </strong>
+
+          attempt every question without notes first.
+
+          Then reveal the mark scheme.
+
+          Any question you miss should become an item in the
+          notebook underneath its associated module.
+
+        </div>
+
+      </div>
+
+
+
+      <div id="paperContainer"></div>
+
+
+
+      <!-- ==================================================
+           QUICK PRACTICE
+      =================================================== -->
+
+      <div class="quick-practice mc-panel">
+
+        <p class="pixel-kicker">
+          INFINITE QUICK PRACTICE
+        </p>
+
+        <h3>
+          Retrieval practice generator
+        </h3>
+
+
+        <div class="practice-header">
+
+
+          <label>
+
+            Topic
+
+            <select id="practiceTopic">
+
+              <option value="mixed">
+                Mixed
+              </option>
+
+              <option value="basics">
+                Foundations
+              </option>
+
+              <option value="kinematics">
+                Kinematics
+              </option>
+
+              <option value="springs">
+                Springs
+              </option>
+
+              <option value="energy">
+                Energy
+              </option>
+
+              <option value="pendulum">
+                Pendulum
+              </option>
+
+              <option value="damping">
+                Damping & resonance
+              </option>
+
+            </select>
+
+          </label>
+
+
+
+          <div class="score-board">
+
+            <small>
+              SCORE
+            </small>
+
+            <strong>
+              <span id="scoreCorrect">0</span>
+              /
+              <span id="scoreTotal">0</span>
+            </strong>
+
+          </div>
+
+        </div>
+
+
+
+        <div id="questionCard"></div>
+
+
+        <div class="button-row">
+
+          <button
+            id="showHint"
+            class="mc-button"
+          >
+            Hint
+          </button>
+
+          <button
+            id="checkAnswer"
+            class="mc-button primary"
+          >
+            Check
+          </button>
+
+          <button
+            id="nextQuestion"
+            class="mc-button"
+          >
+            New question
+          </button>
+
+        </div>
+
+
+        <div
+          id="practiceFeedback"
+          class="feedback"
+        ></div>
+
+      </div>
+
+
+
+      <div
+        class="notepad-slot"
+        data-note="practice"
+      ></div>
+
+    </section>
+
+
+
+    <!-- ====================================================
+         FORMULA FORGE
+    ===================================================== -->
+
+    <section
+      id="formula-forge"
+      class="section-shell"
+    >
+
+      <div class="section-heading">
+
+        <div>
+
+          <p class="pixel-kicker">
+            FORMULA FORGE
+          </p>
+
+          <h2>
+            Equations organised by where they come from
+          </h2>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="mc-panel formula-search">
+
+        <input
+          id="formulaSearch"
+          type="search"
+          placeholder="Search: spring, period, energy, pendulum, damping..."
+        >
+
+      </div>
+
+
+
+      <div class="formula-grid">
 
 
         <article
-          class="formula-card"
-          data-keywords="displacement position motion cosine phase"
+          class="formula-card mc-panel"
+          data-keywords="hooke spring force restoring"
         >
-
-          <small>
-            Displacement
-          </small>
-
-          <code>
-            x = A cos(ωt + φ)
-          </code>
-
+          <small>Restoring force</small>
+          <code>F = −kx</code>
+          <p>Starting physical law for an ideal linear spring.</p>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="velocity speed maximum"
+          class="formula-card mc-panel"
+          data-keywords="differential equation acceleration"
         >
-
-          <small>
-            Velocity
-          </small>
-
-          <code>
-            v = −ωA sin(ωt + φ)
-          </code>
-
-          <code>
-            vmax = ωA
-          </code>
-
+          <small>SHM fingerprint</small>
+          <code>x¨ + ω²x = 0</code>
+          <p>Any variable obeying this equation undergoes ideal SHM.</p>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="acceleration maximum shm condition"
+          class="formula-card mc-panel"
+          data-keywords="position displacement phase solution"
         >
-
-          <small>
-            Acceleration
-          </small>
-
-          <code>
-            a = −ω²x
-          </code>
-
-          <code>
-            amax = ω²A
-          </code>
-
+          <small>Displacement solution</small>
+          <code>x = A cos(ωt + φ)</code>
+          <p>General sinusoidal position with amplitude and phase.</p>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="period frequency angular frequency"
+          class="formula-card mc-panel"
+          data-keywords="velocity speed derivative"
         >
-
-          <small>
-            Frequency relationships
-          </small>
-
-          <code>
-            f = 1/T
-          </code>
-
-          <code>
-            ω = 2πf = 2π/T
-          </code>
-
+          <small>Velocity</small>
+          <code>v = −ωA sin(ωt + φ)</code>
+          <code>vmax = ωA</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="spring hooke force"
+          class="formula-card mc-panel"
+          data-keywords="acceleration derivative maximum"
         >
-
-          <small>
-            Spring force
-          </small>
-
-          <code>
-            F = −kx
-          </code>
-
+          <small>Acceleration</small>
+          <code>a = −ω²x</code>
+          <code>amax = ω²A</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="spring period mass frequency"
+          class="formula-card mc-panel"
+          data-keywords="frequency period angular"
         >
-
-          <small>
-            Spring oscillator
-          </small>
-
-          <code>
-            ω = √(k/m)
-          </code>
-
-          <code>
-            T = 2π√(m/k)
-          </code>
-
+          <small>Frequency conversion</small>
+          <code>ω = 2πf = 2π/T</code>
+          <code>f = 1/T</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="energy total spring amplitude"
+          class="formula-card mc-panel"
+          data-keywords="spring mass period natural frequency"
         >
-
-          <small>
-            Total energy
-          </small>
-
-          <code>
-            E = ½kA²
-          </code>
-
+          <small>Mass–spring oscillator</small>
+          <code>ω = √(k/m)</code>
+          <code>T = 2π√(m/k)</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="energy potential spring position"
+          class="formula-card mc-panel"
+          data-keywords="energy total potential kinetic"
         >
-
-          <small>
-            Spring potential energy
-          </small>
-
-          <code>
-            U = ½kx²
-          </code>
-
+          <small>Energy</small>
+          <code>U = ½kx²</code>
+          <code>K = ½mv²</code>
+          <code>E = ½kA²</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="kinetic energy speed velocity position"
+          class="formula-card mc-panel"
+          data-keywords="velocity position eliminate time"
         >
-
-          <small>
-            Kinetic energy
-          </small>
-
-          <code>
-            K = ½mv²
-          </code>
-
-          <code>
-            K = ½k(A² − x²)
-          </code>
-
+          <small>Speed from position</small>
+          <code>v² = ω²(A² − x²)</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="speed position amplitude"
+          class="formula-card mc-panel"
+          data-keywords="pendulum simple gravity"
         >
-
-          <small>
-            Speed without time
-          </small>
-
-          <code>
-            v² = ω²(A² − x²)
-          </code>
-
+          <small>Simple pendulum</small>
+          <code>ω = √(g/L)</code>
+          <code>T = 2π√(L/g)</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="simple pendulum period gravity length"
+          class="formula-card mc-panel"
+          data-keywords="physical pendulum inertia"
         >
-
-          <small>
-            Simple pendulum
-          </small>
-
-          <code>
-            ω = √(g/L)
-          </code>
-
-          <code>
-            T = 2π√(L/g)
-          </code>
-
+          <small>Physical pendulum</small>
+          <code>T = 2π√(I/mgh)</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="physical pendulum inertia centre mass pivot"
+          class="formula-card mc-panel"
+          data-keywords="torsion angular rotation"
         >
-
-          <small>
-            Physical pendulum
-          </small>
-
-          <code>
-            T = 2π√(I/mgh)
-          </code>
-
+          <small>Torsion oscillator</small>
+          <code>τ = −κθ</code>
+          <code>ω = √(κ/I)</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="torsion angular oscillator"
+          class="formula-card mc-panel"
+          data-keywords="damping force velocity"
         >
-
-          <small>
-            Torsion oscillator
-          </small>
-
-          <code>
-            τ = −κθ
-          </code>
-
-          <code>
-            ω = √(κ/I)
-          </code>
-
+          <small>Damping force</small>
+          <code>Fd = −bv</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="damping damped oscillator envelope"
+          class="formula-card mc-panel"
+          data-keywords="damped differential equation"
         >
-
-          <small>
-            Damped oscillator
-          </small>
-
-          <code>
-            x = A₀e^(−bt/2m) cos(ωdt + φ)
-          </code>
-
+          <small>Damped equation</small>
+          <code>mx¨ + bx˙ + kx = 0</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="damping angular frequency"
+          class="formula-card mc-panel"
+          data-keywords="damped angular frequency"
         >
-
-          <small>
-            Damped frequency
-          </small>
-
-          <code>
-            ωd = √(k/m − b²/4m²)
-          </code>
-
+          <small>Underdamped frequency</small>
+          <code>ωd = √(k/m − b²/4m²)</code>
         </article>
 
 
         <article
-          class="formula-card"
-          data-keywords="damping energy decay"
+          class="formula-card mc-panel"
+          data-keywords="damping amplitude envelope exponential"
         >
+          <small>Amplitude envelope</small>
+          <code>A(t)=A₀e^{-bt/2m}</code>
+        </article>
 
-          <small>
-            Energy decay
-          </small>
 
+        <article
+          class="formula-card mc-panel"
+          data-keywords="damping energy exponential decay"
+        >
+          <small>Energy decay</small>
+          <code>E(t)=E₀e^{-bt/m}</code>
+        </article>
+
+
+        <article
+          class="formula-card mc-panel"
+          data-keywords="forced resonance response amplitude"
+        >
+          <small>Driven response</small>
           <code>
-            E = E₀e^(−bt/m)
+            X =
+            F₀ /
+            √[(k−mω²)²+(bω)²]
           </code>
-
         </article>
 
 
@@ -4162,10 +4263,14 @@
 
 
 
-      <div class="exam-checklist card">
+      <div class="mc-panel final-check">
+
+        <p class="pixel-kicker">
+          EXAM CHECKPOINT
+        </p>
 
         <h3>
-          Before finishing any SHM problem
+          Before saying “I understand SHM”, check that you can do these from memory
         </h3>
 
 
@@ -4174,90 +4279,111 @@
 
           <label>
             <input type="checkbox">
-            I identified equilibrium.
+            Derive x¨ + ω²x = 0 from Hooke + Newton.
           </label>
 
 
           <label>
             <input type="checkbox">
-            I distinguished f from ω.
+            Explain the minus sign physically.
           </label>
 
 
           <label>
             <input type="checkbox">
-            I used radians for phase.
+            Differentiate x(t) to obtain v(t) and a(t).
           </label>
 
 
           <label>
             <input type="checkbox">
-            My acceleration points toward equilibrium.
+            Explain the x–v–a phase relationship without a graph.
           </label>
 
 
           <label>
             <input type="checkbox">
-            I distinguished U from total E.
+            Derive v² = ω²(A²−x²).
           </label>
 
 
           <label>
             <input type="checkbox">
-            I checked SI units.
+            Move fluently between ω, f and T.
           </label>
 
 
           <label>
             <input type="checkbox">
-            I checked whether the pendulum angle is small.
+            Explain energy exchange through one complete cycle.
           </label>
 
 
           <label>
             <input type="checkbox">
-            I checked whether damping can be ignored.
+            Derive the small-angle pendulum result.
+          </label>
+
+
+          <label>
+            <input type="checkbox">
+            Explain why a large-angle pendulum is not exact SHM.
+          </label>
+
+
+          <label>
+            <input type="checkbox">
+            Distinguish under-, critical- and over-damping.
+          </label>
+
+
+          <label>
+            <input type="checkbox">
+            Explain resonance as energy transfer.
+          </label>
+
+
+          <label>
+            <input type="checkbox">
+            Interpret the driven-response denominator physically.
           </label>
 
 
         </div>
 
-
       </div>
 
+
+
+      <div
+        class="notepad-slot"
+        data-note="formula-forge"
+      ></div>
 
     </section>
 
 
 
-    <!-- =======================================================
-         FOOTER
-    ======================================================== -->
-
-    <footer>
+    <footer class="section-shell">
 
       <strong>
-        SHM Mastery Lab
+        OSCILLATION GROVE
       </strong>
 
       <p>
-
-        Interactive study guide for simple harmonic motion
-        and Chapter 15 oscillations.
-
+        Chapter 15 · Simple Harmonic Motion
       </p>
 
       <a href="#top">
-        Back to top ↑
+        Return to spawn ↑
       </a>
 
     </footer>
 
-
   </main>
 
 
-  <!-- Load JavaScript after the page -->
+
   <script src="app.js"></script>
 
 </body>
