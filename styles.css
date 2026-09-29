@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Pixelify+Sans:wght@400;500;600;700&display=swap");
+
 :root {
   --bg: #0b0f0b;
   --panel: rgba(18, 23, 18, 0.91);
@@ -6,6 +8,7 @@
 
   --text: #f7f1dc;
   --muted: #c9c0a3;
+
   --line: rgba(255, 238, 196, 0.16);
 
   --wood: #8b5a2b;
@@ -43,9 +46,11 @@
   box-sizing: border-box;
 }
 
+
 html {
   scroll-behavior: smooth;
 }
+
 
 body {
   margin: 0;
@@ -82,14 +87,14 @@ body {
       transparent 30rem
     ),
 
-    url("minecraft-bg.jpg")
+    url("minecraft-bg.jpe")
     center top / cover fixed,
 
     #0b0f0b;
 }
 
 
-/* Pixel-grid overlay */
+/* Slight pixel-grid texture */
 
 body::before {
   content: "";
@@ -172,7 +177,7 @@ code {
 
 
 /* =========================================================
-   SCROLL BAR
+   SCROLL PROGRESS
 ========================================================= */
 
 .scroll-track {
@@ -273,8 +278,7 @@ code {
 
   color: #0c1b17;
 
-  background:
-    var(--diamond);
+  background: var(--diamond);
 
   border:
     4px solid #286979;
@@ -348,8 +352,7 @@ code {
     inset 0 -3px 0
     rgba(0, 0, 0, 0.18);
 
-  transition:
-    0.12s ease;
+  transition: 0.12s ease;
 }
 
 
@@ -431,7 +434,7 @@ code {
 
 
 /* =========================================================
-   MAIN LAYOUT
+   PAGE LAYOUT
 ========================================================= */
 
 main {
@@ -451,20 +454,8 @@ main {
 }
 
 
-section {
-  scroll-margin-top: 18px;
-}
-
-
-.section-shell:not(.hero) {
-  padding-top: 94px;
-
-  padding-bottom: 22px;
-}
-
-
 /* =========================================================
-   MINECRAFT PANEL
+   PANELS
 ========================================================= */
 
 .mc-panel {
@@ -537,7 +528,46 @@ section {
 
 
 /* =========================================================
-   TYPOGRAPHY
+   HERO
+========================================================= */
+
+.hero {
+  min-height: 94vh;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(420px, 0.95fr);
+
+  gap: 26px;
+
+  align-items: center;
+
+  padding-top: 76px;
+
+  padding-bottom: 68px;
+}
+
+
+.hero-panel,
+.hero-lab {
+  padding: 28px;
+}
+
+
+.hero-panel {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(38, 31, 22, 0.90),
+      rgba(23, 27, 18, 0.92)
+    );
+}
+
+
+/* =========================================================
+   TEXT
 ========================================================= */
 
 .pixel-kicker {
@@ -636,57 +666,6 @@ p {
 }
 
 
-.eq {
-  color: #f8efca;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: 1.07em;
-}
-
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero {
-  min-height: 94vh;
-
-  display: grid;
-
-  grid-template-columns:
-    minmax(0, 1.05fr)
-    minmax(420px, 0.95fr);
-
-  gap: 26px;
-
-  align-items: center;
-
-  padding-top: 76px;
-
-  padding-bottom: 68px;
-}
-
-
-.hero-panel,
-.hero-lab {
-  padding: 28px;
-}
-
-
-.hero-panel {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(38, 31, 22, 0.90),
-      rgba(23, 27, 18, 0.92)
-    );
-}
-
-
 .hero-copy {
   color: #e1d7bd;
 
@@ -714,8 +693,20 @@ p {
 }
 
 
+.eq {
+  color: #f8efca;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 1.07em;
+}
+
+
 /* =========================================================
-   MINECRAFT BUTTONS
+   BUTTONS
 ========================================================= */
 
 .mc-button {
@@ -734,8 +725,6 @@ p {
 
   border:
     3px solid #47453f;
-
-  border-radius: 0;
 
   background:
     linear-gradient(
@@ -764,6 +753,8 @@ p {
     rgba(0, 0, 0, 0.28),
 
     3px 3px 0 #111;
+
+  border-radius: 0;
 
   transition:
     transform 0.08s ease,
@@ -802,8 +793,7 @@ p {
       #2f9d83
     );
 
-  border-color:
-    #266f62;
+  border-color: #266f62;
 
   color: #071a16;
 
@@ -820,8 +810,7 @@ p {
       #44392e
     );
 
-  border-color:
-    #3b3028;
+  border-color: #3b3028;
 }
 
 
@@ -832,8 +821,7 @@ p {
       #465f2d
     );
 
-  border-color:
-    #344922;
+  border-color: #344922;
 }
 
 
@@ -844,8 +832,7 @@ p {
       #318a58
     );
 
-  border-color:
-    #226944;
+  border-color: #226944;
 
   color: #092114;
 
@@ -854,7 +841,7 @@ p {
 
 
 /* =========================================================
-   HOTBAR
+   HERO HOTBAR
 ========================================================= */
 
 .hotbar {
@@ -900,7 +887,7 @@ p {
 
 
 /* =========================================================
-   CANVAS
+   CANVAS + HUD
 ========================================================= */
 
 .hero-lab canvas,
@@ -972,8 +959,20 @@ p {
 
 
 /* =========================================================
-   SECTION HEADINGS
+   SECTION HEADERS
 ========================================================= */
+
+section {
+  scroll-margin-top: 18px;
+}
+
+
+.section-shell:not(.hero) {
+  padding-top: 94px;
+
+  padding-bottom: 22px;
+}
+
 
 .section-heading {
   display: flex;
@@ -1059,8 +1058,7 @@ p {
   transform:
     translateY(-3px);
 
-  border-color:
-    #75634b;
+  border-color: #75634b;
 }
 
 
@@ -1089,8 +1087,7 @@ p {
   padding:
     18px 20px;
 
-  border-color:
-    #6b5539;
+  border-color: #6b5539;
 
   background:
     linear-gradient(
@@ -1116,7 +1113,7 @@ p {
 
 
 /* =========================================================
-   LESSON GRID
+   LESSON LAYOUT
 ========================================================= */
 
 .chapter-grid {
@@ -1161,7 +1158,7 @@ p {
 
 
 /* =========================================================
-   EQUATION LADDERS
+   EQUATIONS
 ========================================================= */
 
 .equation-ladder {
@@ -1242,8 +1239,7 @@ p {
 
 .equation-ladder.horizontal {
   grid-template-columns:
-    auto auto auto
-    auto auto auto auto;
+    auto auto auto auto auto auto auto;
 
   align-items: center;
 }
@@ -1289,7 +1285,7 @@ p {
 
 
 /* =========================================================
-   ANALOGIES / TIPS
+   ANALOGIES
 ========================================================= */
 
 .analogy-box,
@@ -1304,8 +1300,7 @@ p {
     rgba(139, 90, 43, 0.15);
 
   border-left:
-    5px solid
-    var(--wood);
+    5px solid var(--wood);
 
   box-shadow:
     inset 0 0 0 1px
@@ -1382,7 +1377,7 @@ p {
 
 
 /* =========================================================
-   DEEP DIVE / CALCULATORS
+   DEEP DIVE / CALCULATOR
 ========================================================= */
 
 .deep-dive,
@@ -1428,41 +1423,8 @@ p {
 }
 
 
-.big-equation {
-  margin:
-    12px 0;
-
-  padding:
-    13px 15px;
-
-  background:
-    rgba(6, 12, 10, 0.54);
-
-  border:
-    3px solid
-    rgba(103, 232, 249, 0.18);
-
-  color: #fff7dc;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    clamp(
-      1.05rem,
-      2vw,
-      1.35rem
-    );
-
-  overflow-wrap:
-    anywhere;
-}
-
-
 /* =========================================================
-   FORM INPUTS
+   INPUTS
 ========================================================= */
 
 .input-grid {
@@ -1483,8 +1445,7 @@ p {
 
 .input-grid label,
 .controls-panel label,
-.practice-head label,
-.practice-header label {
+.practice-head label {
   color: #d9ceb2;
 
   font-size: 10px;
@@ -1534,8 +1495,7 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  border-color:
-    #4e968a;
+  border-color: #4e968a;
 }
 
 
@@ -1558,7 +1518,7 @@ textarea:focus {
 
 
 /* =========================================================
-   MINDMAP
+   MINDMAPS
 ========================================================= */
 
 .mindmap-shell {
@@ -1658,8 +1618,7 @@ textarea:focus {
       #2f6650
     );
 
-  border-color:
-    #224a3d;
+  border-color: #224a3d;
 }
 
 
@@ -1796,8 +1755,6 @@ textarea:focus {
   gap: 14px;
 
   align-items: start;
-
-  margin-top: 15px;
 }
 
 
@@ -1805,13 +1762,6 @@ textarea:focus {
   display: grid;
 
   gap: 14px;
-}
-
-
-.lab-main {
-  display: grid;
-
-  gap: 10px;
 }
 
 
@@ -1847,8 +1797,7 @@ textarea:focus {
 
   width: 100%;
 
-  accent-color:
-    #67d3c0;
+  accent-color: #67d3c0;
 }
 
 
@@ -1873,7 +1822,7 @@ textarea:focus {
 
 
 /* =========================================================
-   METRIC HUD
+   METRICS
 ========================================================= */
 
 .metric-grid {
@@ -1891,8 +1840,7 @@ textarea:focus {
 }
 
 
-.metric-grid.two,
-.metric-grid.compact {
+.metric-grid.two {
   grid-template-columns:
     repeat(
       2,
@@ -1991,12 +1939,6 @@ textarea:focus {
    ENERGY LAB
 ========================================================= */
 
-.energy-grid,
-.energy-lab {
-  margin-top: 15px;
-}
-
-
 .energy-bars {
   display: grid;
 
@@ -2006,8 +1948,7 @@ textarea:focus {
 }
 
 
-.energy-bars > div,
-.energy-bar-row {
+.energy-bars > div {
   display: grid;
 
   grid-template-columns:
@@ -2020,13 +1961,10 @@ textarea:focus {
   color: #d6ccb2;
 
   font-size: 10px;
-
-  margin-top: 10px;
 }
 
 
-.bar,
-.energy-bar {
+.bar {
   height: 13px;
 
   background: #0b100b;
@@ -2036,8 +1974,7 @@ textarea:focus {
 }
 
 
-.bar i,
-.energy-bar i {
+.bar i {
   display: block;
 
   width: 0;
@@ -2050,14 +1987,10 @@ textarea:focus {
       var(--cherry) 0 12px,
       #c56d89 12px 14px
     );
-
-  transition:
-    width 0.15s linear;
 }
 
 
-.bar.green i,
-.energy-bar-row:nth-of-type(3) .energy-bar i {
+.bar.green i {
   background:
     repeating-linear-gradient(
       90deg,
@@ -2068,7 +2001,7 @@ textarea:focus {
 
 
 /* =========================================================
-   DAMPING REGIMES
+   DAMPING
 ========================================================= */
 
 .regime-list {
@@ -2154,20 +2087,8 @@ textarea:focus {
 }
 
 
-.paper-controls {
-  display: flex;
-
-  flex-wrap: wrap;
-
-  gap: 8px;
-
-  align-items: center;
-}
-
-
-.timer,
-.paper-timer {
-  min-width: 74px;
+.timer {
+  min-width: 68px;
 
   padding:
     8px 10px;
@@ -2185,38 +2106,7 @@ textarea:focus {
 }
 
 
-.paper-heading {
-  padding: 20px;
-
-  margin-bottom: 12px;
-}
-
-
-.paper-heading p:last-child {
-  margin-bottom: 0;
-}
-
-
-.exam-advice {
-  margin-top: 14px;
-
-  padding:
-    12px 14px;
-
-  background:
-    rgba(241, 199, 91, 0.07);
-
-  border-left:
-    5px solid var(--gold);
-
-  color: #e7dcc2;
-
-  font-size: 12px;
-}
-
-
-.paper-container,
-#paperContainer {
+.paper-container {
   display: grid;
 
   gap: 10px;
@@ -2291,13 +2181,6 @@ textarea:focus {
    QUICK PRACTICE
 ========================================================= */
 
-.quick-practice {
-  margin-top: 34px;
-
-  padding: 20px;
-}
-
-
 .practice-layout {
   display: grid;
 
@@ -2317,8 +2200,7 @@ textarea:focus {
 }
 
 
-.practice-head,
-.practice-header {
+.practice-head {
   display: flex;
 
   justify-content:
@@ -2332,62 +2214,19 @@ textarea:focus {
 }
 
 
-.practice-head label,
-.practice-header label {
+.practice-head label {
   min-width: 220px;
 }
 
 
-.score,
-.score-board {
+.score {
   color: #d6ccb2;
 
   font-size: 11px;
 }
 
 
-.score-board {
-  min-width: 96px;
-
-  padding:
-    9px 12px;
-
-  text-align: center;
-
-  background:
-    rgba(0, 0, 0, 0.22);
-
-  border:
-    3px solid
-    rgba(255, 255, 255, 0.07);
-}
-
-
-.score-board small,
-.score-board strong {
-  display: block;
-}
-
-
-.score-board small {
-  color: #c8bfa4;
-
-  font-size: 8px;
-
-  letter-spacing:
-    0.1em;
-}
-
-
-.score-board strong {
-  margin-top: 3px;
-
-  color: var(--gold);
-}
-
-
-.question-card,
-#questionCard {
+.question-card {
   min-height: 220px;
 
   padding: 18px;
@@ -2417,8 +2256,7 @@ textarea:focus {
 
   gap: 9px;
 
-  align-items:
-    flex-start;
+  align-items: flex-start;
 
   padding: 9px;
 
@@ -2430,12 +2268,6 @@ textarea:focus {
     rgba(255, 255, 255, 0.07);
 
   cursor: pointer;
-}
-
-
-.answer-option:hover {
-  border-color:
-    rgba(103, 232, 249, 0.30);
 }
 
 
@@ -2628,56 +2460,7 @@ textarea:focus {
 
 
 /* =========================================================
-   FINAL CHECKLIST
-========================================================= */
-
-.final-check {
-  margin-top: 18px;
-
-  padding: 22px;
-}
-
-
-.check-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
-
-  gap:
-    10px 18px;
-
-  margin-top: 14px;
-}
-
-
-.check-grid label {
-  padding: 9px;
-
-  background:
-    rgba(0, 0, 0, 0.14);
-
-  border:
-    2px solid
-    rgba(255, 255, 255, 0.05);
-
-  color: #ddd3ba;
-
-  font-size: 11px;
-}
-
-
-.check-grid input {
-  accent-color:
-    var(--emerald);
-}
-
-
-/* =========================================================
-   DIGITAL NOTEPAD
+   DIGITAL NOTEBOOK
 ========================================================= */
 
 .notepad-slot {
@@ -2809,36 +2592,11 @@ textarea:focus {
 }
 
 
-/* Typed note box */
-
-.note-side textarea {
-  min-height: 210px;
-
-  color: #171710;
-
-  background: #f3e8c3;
-
-  border-color: #5b442c;
-
-  box-shadow:
-    inset 0 0 0 2px
-    #d7c793;
-
-  line-height: 1.5;
-}
-
-
-.note-side textarea:focus {
-  border-color: #8a6b45;
-}
-
-
 /* =========================================================
    FOOTER
 ========================================================= */
 
-.footer,
-footer.section-shell {
+.footer {
   display: flex;
 
   justify-content:
@@ -2858,8 +2616,7 @@ footer.section-shell {
 }
 
 
-.footer p,
-footer.section-shell p {
+.footer p {
   margin:
     5px 0 0;
 
@@ -2867,15 +2624,8 @@ footer.section-shell p {
 }
 
 
-footer.section-shell a {
-  color: var(--diamond);
-
-  text-decoration: none;
-}
-
-
 /* =========================================================
-   RESPONSIVE — MEDIUM SCREENS
+   RESPONSIVE
 ========================================================= */
 
 @media (max-width: 1180px) {
@@ -2936,10 +2686,6 @@ footer.section-shell a {
 
 }
 
-
-/* =========================================================
-   RESPONSIVE — TABLETS
-========================================================= */
 
 @media (max-width: 850px) {
 
@@ -3008,8 +2754,7 @@ footer.section-shell a {
   .section-heading {
     flex-direction: column;
 
-    align-items:
-      flex-start;
+    align-items: flex-start;
 
     gap: 12px;
   }
@@ -3042,21 +2787,7 @@ footer.section-shell a {
   .paper-toolbar {
     flex-direction: column;
 
-    align-items:
-      flex-start;
-  }
-
-
-  .paper-controls {
-    width: 100%;
-  }
-
-
-  .practice-header,
-  .practice-head {
-    flex-direction: column;
-
-    align-items: stretch;
+    align-items: flex-start;
   }
 
 
@@ -3070,10 +2801,6 @@ footer.section-shell a {
 
 }
 
-
-/* =========================================================
-   RESPONSIVE — PHONES
-========================================================= */
 
 @media (max-width: 560px) {
 
@@ -3089,8 +2816,7 @@ footer.section-shell a {
 
   .roadmap-grid,
   .formula-grid,
-  .input-grid,
-  .check-grid {
+  .input-grid {
     grid-template-columns:
       1fr;
   }
@@ -3112,8 +2838,7 @@ footer.section-shell a {
 
 
   .metric-grid,
-  .metric-grid.two,
-  .metric-grid.compact {
+  .metric-grid.two {
     grid-template-columns:
       repeat(
         2,
@@ -3134,19 +2859,17 @@ footer.section-shell a {
   }
 
 
-  .footer,
-  footer.section-shell {
+  .footer {
     flex-direction: column;
 
-    align-items:
-      flex-start;
+    align-items: flex-start;
   }
 
 }
 
 
 /* =========================================================
-   PRINT MODE FOR PRACTICE PAPERS
+   PRINT PAPER
 ========================================================= */
 
 @media print {
@@ -3170,12 +2893,10 @@ footer.section-shell a {
   #module7,
   .compact-heading,
   .practice-layout,
-  .quick-practice,
   .notepad-slot,
   #formula-forge,
   footer,
   .paper-tabs,
-  .paper-controls,
   .paper-toolbar .button-row {
     display:
       none !important;
@@ -3212,21 +2933,8 @@ footer.section-shell a {
   }
 
 
-  .paper-heading {
-    color: black;
-
-    background: white;
-
-    border:
-      1px solid #888;
-
-    box-shadow: none;
-  }
-
-
   .paper-question {
-    break-inside:
-      avoid;
+    break-inside: avoid;
 
     color: black;
 
@@ -3260,10 +2968,6 @@ footer.section-shell a {
 }
 
 
-/* =========================================================
-   ACCESSIBILITY
-========================================================= */
-
 @media (
   prefers-reduced-motion:
   reduce
@@ -3282,6 +2986,1406 @@ footer.section-shell a {
 
     animation-duration:
       0.01ms !important;
+  }
+
+}
+
+
+/* =========================================================
+   ZEN CHERRY-GROVE THEME OVERRIDE
+   Keep this entire block at the END of the stylesheet.
+========================================================= */
+
+:root {
+  --bg: #0c0b12;
+
+  --panel:
+    rgba(24, 19, 20, 0.76);
+
+  --panel-2:
+    rgba(35, 25, 24, 0.82);
+
+  --panel-3:
+    rgba(46, 31, 29, 0.80);
+
+  --text: #f5eadf;
+  --muted: #c9b9ad;
+
+  --line:
+    rgba(255, 220, 184, 0.14);
+
+  --wood: #7a432c;
+  --wood-dark: #342018;
+
+  --grass: #536d3e;
+  --leaf: #31513a;
+
+  --water: #4d99a5;
+  --diamond: #8acbd0;
+
+  --emerald: #74a36c;
+
+  --redstone: #c35d58;
+
+  --gold: #e9ad56;
+
+  --cherry: #d48295;
+  --cherry-deep: #804658;
+
+  --shadow:
+    rgba(0, 0, 0, 0.44);
+}
+
+
+html {
+  background: #0b0910;
+}
+
+
+body {
+  font-family:
+    "Nunito",
+    "Segoe UI",
+    system-ui,
+    sans-serif;
+
+  font-size: 15px;
+
+  letter-spacing:
+    0.005em;
+
+  background: #0b0910;
+
+  overflow-x: hidden;
+}
+
+
+body::before {
+  opacity: 0.10;
+
+  background-size:
+    22px 22px;
+}
+
+
+/* =========================================================
+   VIDEO WORLD BACKGROUND
+========================================================= */
+
+.world-video {
+  position: fixed;
+
+  inset:
+    -2vh -2vw;
+
+  width: 104vw;
+
+  height: 104vh;
+
+  object-fit: cover;
+
+  z-index: -8;
+
+  pointer-events: none;
+
+  filter:
+    brightness(0.58)
+    saturate(0.94)
+    contrast(1.04)
+    sepia(0.03);
+
+  transform:
+    scale(1.02);
+
+  animation:
+    zenWorldDrift
+    18s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+.world-tint {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: -7;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(9, 14, 28, 0.14),
+      rgba(18, 8, 13, 0.36) 65%,
+      rgba(10, 8, 9, 0.56)
+    ),
+
+    radial-gradient(
+      circle at 72% 33%,
+      rgba(239, 141, 64, 0.17),
+      transparent 22rem
+    ),
+
+    radial-gradient(
+      circle at 34% 21%,
+      rgba(212, 130, 151, 0.10),
+      transparent 30rem
+    ),
+
+    radial-gradient(
+      circle at 50% 74%,
+      rgba(62, 128, 132, 0.10),
+      transparent 28rem
+    );
+
+  backdrop-filter:
+    blur(0.7px);
+}
+
+
+.lantern-haze {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: -6;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 71% 46%,
+      rgba(255, 174, 73, 0.15),
+      transparent 10rem
+    ),
+
+    radial-gradient(
+      circle at 29% 54%,
+      rgba(255, 171, 64, 0.10),
+      transparent 8rem
+    ),
+
+    radial-gradient(
+      circle at 54% 56%,
+      rgba(255, 190, 99, 0.10),
+      transparent 9rem
+    );
+
+  mix-blend-mode: screen;
+
+  animation:
+    lanternBreathe
+    4.8s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+@keyframes zenWorldDrift {
+
+  from {
+    transform:
+      scale(1.025)
+      translate3d(
+        -0.2%,
+        -0.15%,
+        0
+      );
+  }
+
+  to {
+    transform:
+      scale(1.04)
+      translate3d(
+        0.25%,
+        0.18%,
+        0
+      );
+  }
+
+}
+
+
+@keyframes lanternBreathe {
+
+  0% {
+    opacity: 0.68;
+  }
+
+  40% {
+    opacity: 0.9;
+  }
+
+  63% {
+    opacity: 0.74;
+  }
+
+  100% {
+    opacity: 1;
+  }
+
+}
+
+
+/* =========================================================
+   CHERRY PETALS
+========================================================= */
+
+.petal-layer {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  overflow: hidden;
+}
+
+
+.cherry-petal {
+  position: absolute;
+
+  top: -8vh;
+
+  width:
+    var(
+      --petal-size,
+      8px
+    );
+
+  height:
+    calc(
+      var(
+        --petal-size,
+        8px
+      ) * 0.62
+    );
+
+  border-radius:
+    70% 30% 70% 30%;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(245, 176, 192, 0.92),
+      rgba(176, 91, 118, 0.75)
+    );
+
+  box-shadow:
+    0 0 5px
+    rgba(237, 150, 177, 0.23);
+
+  opacity:
+    var(
+      --petal-opacity,
+      0.68
+    );
+
+  transform:
+    rotate(
+      var(
+        --petal-rotation,
+        0deg
+      )
+    );
+
+  animation:
+    petalFall
+    var(
+      --petal-duration,
+      14s
+    )
+    linear
+    var(
+      --petal-delay,
+      0s
+    )
+    infinite;
+}
+
+
+@keyframes petalFall {
+
+  0% {
+    transform:
+      translate3d(
+        0,
+        -10vh,
+        0
+      )
+      rotate(0deg);
+  }
+
+  30% {
+    transform:
+      translate3d(
+        var(
+          --drift-a,
+          38px
+        ),
+        28vh,
+        0
+      )
+      rotate(120deg);
+  }
+
+  65% {
+    transform:
+      translate3d(
+        var(
+          --drift-b,
+          -28px
+        ),
+        66vh,
+        0
+      )
+      rotate(250deg);
+  }
+
+  100% {
+    transform:
+      translate3d(
+        var(
+          --drift-c,
+          55px
+        ),
+        112vh,
+        0
+      )
+      rotate(430deg);
+  }
+
+}
+
+
+/* =========================================================
+   OPTIONAL VISUAL RAIN
+========================================================= */
+
+.rain-visual {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transition:
+    opacity 0.8s ease;
+
+  background-image:
+    repeating-linear-gradient(
+      104deg,
+      transparent 0 14px,
+      rgba(190, 220, 230, 0.12)
+      14px 15px,
+      transparent 15px 29px
+    ),
+
+    repeating-linear-gradient(
+      104deg,
+      transparent 0 33px,
+      rgba(210, 230, 236, 0.07)
+      33px 34px,
+      transparent 34px 53px
+    );
+
+  background-size:
+    180px 240px,
+    270px 330px;
+
+  animation:
+    rainSlide
+    0.62s
+    linear
+    infinite;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.25),
+      black 35%,
+      rgba(0, 0, 0, 0.65)
+    );
+}
+
+
+.rain-visual.active {
+  opacity: 0.52;
+}
+
+
+@keyframes rainSlide {
+
+  from {
+    background-position:
+      0 -240px,
+      80px -330px;
+  }
+
+  to {
+    background-position:
+      -45px 0,
+      10px 0;
+  }
+
+}
+
+
+/* =========================================================
+   CAMPFIRE GLOW
+========================================================= */
+
+.fire-glow {
+  position: fixed;
+
+  left: 8%;
+
+  bottom: -15vh;
+
+  width: 40vw;
+
+  height: 42vh;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(255, 130, 46, 0.24),
+      rgba(255, 94, 34, 0.07) 45%,
+      transparent 72%
+    );
+
+  filter:
+    blur(24px);
+
+  transition:
+    opacity 0.8s ease;
+}
+
+
+.fire-glow.active {
+  opacity: 1;
+
+  animation:
+    fireGlowPulse
+    1.9s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+
+@keyframes fireGlowPulse {
+
+  0% {
+    transform:
+      scale(0.96);
+
+    filter:
+      blur(25px)
+      brightness(0.85);
+  }
+
+  55% {
+    transform:
+      scale(1.02);
+
+    filter:
+      blur(28px)
+      brightness(1.12);
+  }
+
+  100% {
+    transform:
+      scale(0.99);
+
+    filter:
+      blur(26px)
+      brightness(0.98);
+  }
+
+}
+
+
+/* =========================================================
+   AMBIENT SOUND DOCK
+========================================================= */
+
+.ambient-dock {
+  position: fixed;
+
+  right: 18px;
+
+  bottom: 18px;
+
+  z-index: 100;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 7px;
+
+  border:
+    1px solid
+    rgba(255, 213, 174, 0.18);
+
+  border-radius: 14px;
+
+  background:
+    rgba(22, 15, 15, 0.70);
+
+  box-shadow:
+    0 10px 30px
+    rgba(0, 0, 0, 0.34),
+
+    inset 0 1px
+    rgba(255, 255, 255, 0.04);
+
+  backdrop-filter:
+    blur(14px)
+    saturate(1.12);
+}
+
+
+.ambient-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  height: 34px;
+
+  padding:
+    0 9px;
+
+  border:
+    1px solid
+    rgba(255, 221, 194, 0.12);
+
+  border-radius: 9px;
+
+  color: #eadbce;
+
+  background:
+    rgba(255, 255, 255, 0.035);
+
+  cursor: pointer;
+
+  font-family:
+    "Pixelify Sans",
+    "Trebuchet MS",
+    sans-serif;
+
+  font-size: 12px;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.ambient-button:hover {
+  background:
+    rgba(255, 183, 111, 0.08);
+
+  border-color:
+    rgba(255, 196, 140, 0.28);
+
+  transform:
+    translateY(-1px);
+}
+
+
+.ambient-button[
+  aria-pressed="true"
+] {
+  background:
+    rgba(192, 105, 73, 0.22);
+
+  border-color:
+    rgba(234, 166, 104, 0.42);
+
+  color: #fff0d8;
+}
+
+
+.ambient-button small {
+  color: #a99586;
+
+  font-size: 9px;
+}
+
+
+.ambient-button[
+  aria-pressed="true"
+] small {
+  color: #f0be87;
+}
+
+
+.ambient-icon {
+  font-size: 14px;
+}
+
+
+.ambient-volume {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    0 7px;
+
+  color: #dcbda3;
+}
+
+
+.ambient-volume input {
+  width: 76px;
+
+  accent-color: #c77c58;
+}
+
+
+/* =========================================================
+   ZEN TYPOGRAPHY
+========================================================= */
+
+h1,
+h2,
+h3,
+h4,
+.brand,
+.panel-title,
+.pixel-kicker,
+.mc-button,
+.quest-card > span,
+.ambient-button {
+  font-family:
+    "Pixelify Sans",
+    "Trebuchet MS",
+    sans-serif;
+
+  letter-spacing:
+    0.012em;
+}
+
+
+h1 {
+  font-weight: 600;
+
+  text-shadow:
+    0 2px 16px
+    rgba(0, 0, 0, 0.5);
+}
+
+
+h2 {
+  font-weight: 600;
+
+  text-shadow:
+    0 2px 12px
+    rgba(0, 0, 0, 0.42);
+}
+
+
+h3,
+h4 {
+  font-weight: 600;
+}
+
+
+p,
+li,
+.lesson-panel,
+.deep-dive,
+.recall-answer,
+.result-box,
+.paper-question {
+  font-family:
+    "Nunito",
+    "Segoe UI",
+    sans-serif;
+}
+
+
+/* =========================================================
+   SOFTER COMPACT CARDS
+========================================================= */
+
+.mc-panel,
+.quest-card {
+  border:
+    1px solid
+    rgba(241, 198, 161, 0.15);
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(34, 24, 23, 0.76),
+      rgba(17, 19, 17, 0.72)
+    );
+
+  box-shadow:
+    0 14px 34px
+    rgba(0, 0, 0, 0.28),
+
+    inset 0 1px
+    rgba(255, 255, 255, 0.035);
+
+  backdrop-filter:
+    blur(10px)
+    saturate(1.1);
+}
+
+
+.mc-panel::before {
+  border: 0;
+}
+
+
+.quest-card {
+  box-shadow:
+    0 10px 28px
+    rgba(0, 0, 0, 0.24);
+}
+
+
+.quest-card:hover {
+  border-color:
+    rgba(231, 154, 180, 0.32);
+
+  transform:
+    translateY(-2px);
+}
+
+
+/* =========================================================
+   ZEN SIDEBAR
+========================================================= */
+
+.sidebar {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(25, 16, 18, 0.86),
+      rgba(14, 17, 15, 0.84)
+    );
+
+  border-right:
+    1px solid
+    rgba(255, 207, 169, 0.12);
+
+  box-shadow:
+    10px 0 38px
+    rgba(0, 0, 0, 0.24);
+
+  backdrop-filter:
+    blur(16px)
+    saturate(1.1);
+}
+
+
+.brand-cube {
+  border:
+    1px solid
+    rgba(255, 214, 181, 0.20);
+
+  border-radius: 10px;
+
+  color: #261514;
+
+  background:
+    linear-gradient(
+      145deg,
+      #e4a36e,
+      #bd6b5e
+    );
+
+  box-shadow:
+    0 8px 22px
+    rgba(130, 61, 42, 0.30),
+
+    inset 0 1px
+    rgba(255, 255, 255, 0.28);
+}
+
+
+.nav a {
+  border:
+    1px solid transparent;
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  box-shadow: none;
+
+  color: #d4c3b8;
+}
+
+
+.nav a:hover,
+.nav a.active {
+  transform: none;
+
+  background:
+    rgba(214, 125, 142, 0.08);
+
+  border-color:
+    rgba(231, 154, 180, 0.14);
+
+  color: #f6e9dd;
+}
+
+
+/* =========================================================
+   ZEN BUTTONS
+========================================================= */
+
+.mc-button {
+  min-height: 34px;
+
+  padding:
+    7px 11px;
+
+  border:
+    1px solid
+    rgba(255, 218, 185, 0.15);
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      #57423a,
+      #3b302c
+    );
+
+  color: #f0e4d6;
+
+  text-shadow: none;
+
+  box-shadow:
+    0 4px 12px
+    rgba(0, 0, 0, 0.20),
+
+    inset 0 1px
+    rgba(255, 255, 255, 0.05);
+
+  font-size: 12px;
+}
+
+
+.mc-button.primary {
+  color: #2b1613;
+
+  background:
+    linear-gradient(
+      135deg,
+      #e6b06d,
+      #cf7f66 58%,
+      #bd6b78
+    );
+
+  border-color:
+    rgba(255, 215, 167, 0.34);
+}
+
+
+.mc-button:hover {
+  transform:
+    translateY(-1px);
+
+  filter:
+    brightness(1.06);
+}
+
+
+.mc-button:active {
+  transform:
+    translateY(0);
+
+  box-shadow:
+    0 2px 7px
+    rgba(0, 0, 0, 0.25);
+}
+
+
+.pixel-kicker {
+  color: #dda365;
+
+  font-size: 10px;
+
+  letter-spacing:
+    0.16em;
+}
+
+
+.panel-title {
+  background:
+    rgba(128, 71, 49, 0.16);
+
+  border:
+    1px solid
+    rgba(224, 155, 107, 0.20);
+
+  border-radius: 7px;
+
+  color: #e6c6a4;
+}
+
+
+/* =========================================================
+   COMPACT READING CARDS
+========================================================= */
+
+.lesson-panel,
+.deep-dive,
+.calculator-panel,
+.recall-card,
+.paper-question,
+.note-station,
+.practice-panel,
+.exam-method,
+.formula-card,
+.hero-panel,
+.hero-lab {
+  padding:
+    16px 18px;
+}
+
+
+.lesson-panel p,
+.deep-dive p,
+.worked-example > div,
+.recall-answer,
+.source-banner p,
+.exam-method li,
+.paper-question p {
+  max-width: 70ch;
+}
+
+
+.chapter-grid {
+  gap: 12px;
+}
+
+
+.roadmap-grid {
+  gap: 10px;
+}
+
+
+.quest-card {
+  min-height: 140px;
+
+  padding: 15px;
+}
+
+
+.quest-card h3 {
+  margin-top: 10px;
+
+  margin-bottom: 6px;
+}
+
+
+.section-shell:not(.hero) {
+  padding-top: 76px;
+}
+
+
+.section-heading {
+  margin-bottom: 18px;
+}
+
+
+.section-heading > p {
+  font-size: 12px;
+
+  max-width: 360px;
+}
+
+
+/* =========================================================
+   COMPACT EQUATIONS
+========================================================= */
+
+.big-equation,
+.equation-ladder > div,
+.equation-row-compact code,
+.formula-card code,
+.result-box {
+  border:
+    1px solid
+    rgba(225, 182, 144, 0.14);
+
+  border-radius: 8px;
+
+  background:
+    rgba(19, 14, 13, 0.48);
+
+  box-shadow:
+    inset 0 1px
+    rgba(255, 255, 255, 0.025);
+}
+
+
+.big-equation {
+  padding:
+    10px 12px;
+
+  margin:
+    9px 0;
+
+  font-size: 1.06rem;
+}
+
+
+.equation-ladder > div {
+  padding:
+    9px 11px;
+}
+
+
+.analogy-box,
+.tip-box {
+  border-left:
+    3px solid #a86848;
+
+  background:
+    rgba(151, 91, 59, 0.09);
+
+  border-radius:
+    0 8px 8px 0;
+}
+
+
+/* =========================================================
+   SMALLER INPUTS + TEXT BOXES
+========================================================= */
+
+input[type="number"],
+input[type="search"],
+select,
+textarea {
+  border:
+    1px solid
+    rgba(233, 197, 163, 0.18);
+
+  border-radius: 7px;
+
+  background:
+    rgba(14, 13, 12, 0.68);
+
+  box-shadow:
+    inset 0 1px 4px
+    rgba(0, 0, 0, 0.18);
+}
+
+
+input[type="number"],
+input[type="search"],
+select {
+  padding:
+    7px 9px;
+}
+
+
+/* =========================================================
+   SMALLER DIGITAL NOTEBOOKS
+========================================================= */
+
+.note-canvas-wrap {
+  border:
+    1px solid
+    rgba(87, 56, 37, 0.6);
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(255, 238, 194, 0.36);
+}
+
+
+.note-canvas {
+  height: 230px;
+}
+
+
+.note-side textarea {
+  min-height: 112px;
+
+  max-height: 190px;
+
+  background: #efe2bd;
+
+  border:
+    1px solid #8f7454;
+
+  color: #241c16;
+}
+
+
+.notepad-slot {
+  margin-top: 12px;
+}
+
+
+.note-grid {
+  gap: 10px;
+
+  grid-template-columns:
+    1.45fr 0.55fr;
+}
+
+
+.note-head {
+  margin-bottom: 8px;
+}
+
+
+.note-head h3 {
+  font-size: 1rem;
+}
+
+
+/* =========================================================
+   COMPACT PRACTICE
+========================================================= */
+
+.paper-answer-area {
+  min-height: 54px;
+
+  border:
+    1px dashed
+    rgba(255, 220, 185, 0.15);
+
+  border-radius: 7px;
+}
+
+
+.practice-intro,
+.paper-toolbar,
+.paper-heading,
+.quick-practice {
+  padding:
+    14px 16px;
+}
+
+
+.question-card,
+#questionCard {
+  min-height: 160px;
+
+  padding: 14px;
+}
+
+
+/* =========================================================
+   TEAL REFLECTIONS
+========================================================= */
+
+.canvas-panel canvas,
+.hero-lab canvas {
+  border:
+    1px solid
+    rgba(115, 183, 190, 0.14);
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(7, 15, 18, 0.44),
+      rgba(17, 20, 17, 0.46)
+    );
+}
+
+
+.hotbar span {
+  min-height: 38px;
+
+  border:
+    1px solid
+    rgba(239, 207, 178, 0.12);
+
+  border-radius: 7px;
+
+  background:
+    rgba(19, 14, 13, 0.56);
+
+  box-shadow: none;
+}
+
+
+/* =========================================================
+   ZEN VIEW
+========================================================= */
+
+body.zen-focus .sidebar {
+  opacity: 0.14;
+
+  filter:
+    blur(0.3px);
+
+  transition:
+    opacity 0.5s ease;
+}
+
+
+body.zen-focus .sidebar:hover {
+  opacity: 0.92;
+}
+
+
+body.zen-focus .world-video {
+  filter:
+    brightness(0.67)
+    saturate(1.03)
+    contrast(1.03);
+}
+
+
+body.zen-focus .world-tint {
+  opacity: 0.72;
+}
+
+
+body.zen-focus .mc-panel {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30, 21, 20, 0.69),
+      rgba(15, 18, 16, 0.66)
+    );
+}
+
+
+/* =========================================================
+   ZEN MOBILE
+========================================================= */
+
+@media (max-width: 850px) {
+
+  .ambient-dock {
+    left: 10px;
+
+    right: 10px;
+
+    bottom: 10px;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+  }
+
+
+  .ambient-volume input {
+    width: 90px;
+  }
+
+
+  .note-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .note-canvas {
+    height: 210px;
+  }
+
+}
+
+
+@media (max-width: 560px) {
+
+  .ambient-button
+  span:not(.ambient-icon),
+  .ambient-button small {
+    display: none;
+  }
+
+
+  .ambient-button {
+    width: 36px;
+
+    padding: 0;
+
+    justify-content: center;
+  }
+
+
+  .ambient-volume {
+    max-width: 115px;
+  }
+
+
+  .lesson-panel,
+  .deep-dive,
+  .calculator-panel,
+  .recall-card,
+  .paper-question,
+  .note-station,
+  .hero-panel,
+  .hero-lab {
+    padding: 14px;
+  }
+
+
+  .section-shell:not(.hero) {
+    padding-top: 58px;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+
+  .world-video,
+  .lantern-haze,
+  .cherry-petal,
+  .rain-visual,
+  .fire-glow {
+    animation:
+      none !important;
   }
 
 }
