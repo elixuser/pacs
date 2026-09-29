@@ -1,46 +1,72 @@
 (() => {
   "use strict";
 
+  /* =========================================================
+     SHORT HELPERS
+  ========================================================= */
+
   const $ = id =>
     document.getElementById(id);
 
   const $$ = selector =>
     [...document.querySelectorAll(selector)];
 
-  const clamp = (value, min, max) =>
-    Math.min(max, Math.max(min, value));
+  const clamp = (x, min, max) =>
+    Math.min(max, Math.max(min, x));
 
-  const fmt = (value, digits = 2) =>
-    Number.isFinite(value)
-      ? Number(value).toFixed(digits)
+  const fmt = (x, digits = 2) =>
+    Number.isFinite(x)
+      ? Number(x).toFixed(digits)
       : "—";
 
-  const css = (name, fallback) =>
+  const rand = (min, max) =>
+    min + Math.random() * (max - min);
+
+  const randInt = (min, max) =>
+    Math.floor(
+      rand(min, max + 1)
+    );
+
+  const choose = arr =>
+    arr[
+      Math.floor(
+        Math.random() *
+        arr.length
+      )
+    ];
+
+  const css = (
+    variable,
+    fallback
+  ) =>
     getComputedStyle(
       document.documentElement
     )
-      .getPropertyValue(name)
+      .getPropertyValue(variable)
       .trim() || fallback;
 
-  /* ========================================================
-     CANVAS HELPERS
-  ======================================================== */
 
-  function prepCanvas(canvas) {
-    if (!canvas) return null;
+  /* =========================================================
+     CANVAS PREPARATION
+  ========================================================= */
 
-    const dpr =
+  function prepareCanvas(canvas) {
+    if (!canvas) {
+      return null;
+    }
+
+    const ratio =
       Math.max(
         1,
         window.devicePixelRatio || 1
       );
 
-    const logicalWidth =
+    const attrWidth =
       Number(
         canvas.getAttribute("width")
       ) || 800;
 
-    const logicalHeight =
+    const attrHeight =
       Number(
         canvas.getAttribute("height")
       ) || 400;
@@ -49,25 +75,33 @@
       Math.max(
         280,
         canvas.clientWidth ||
-          logicalWidth
+          attrWidth
       );
 
     const height =
       width *
-      logicalHeight /
-      logicalWidth;
+      attrHeight /
+      attrWidth;
+
+    const pixelWidth =
+      Math.round(
+        width * ratio
+      );
+
+    const pixelHeight =
+      Math.round(
+        height * ratio
+      );
 
     if (
-      canvas.width !==
-        Math.round(width * dpr) ||
-      canvas.height !==
-        Math.round(height * dpr)
+      canvas.width !== pixelWidth ||
+      canvas.height !== pixelHeight
     ) {
       canvas.width =
-        Math.round(width * dpr);
+        pixelWidth;
 
       canvas.height =
-        Math.round(height * dpr);
+        pixelHeight;
 
       canvas.style.height =
         `${height}px`;
@@ -77,10 +111,10 @@
       canvas.getContext("2d");
 
     ctx.setTransform(
-      dpr,
+      ratio,
       0,
       0,
-      dpr,
+      ratio,
       0,
       0
     );
@@ -99,6 +133,7 @@
     };
   }
 
+
   function drawGrid(
     ctx,
     w,
@@ -110,7 +145,7 @@
     ctx.save();
 
     ctx.strokeStyle =
-      "rgba(148,163,184,.10)";
+      "rgba(255,255,255,.075)";
 
     ctx.lineWidth = 1;
 
@@ -121,7 +156,10 @@
     ) {
       const x =
         pad +
-        (w - 2 * pad) *
+        (
+          w -
+          2 * pad
+        ) *
         i /
         nx;
 
@@ -147,7 +185,10 @@
     ) {
       const y =
         pad +
-        (h - 2 * pad) *
+        (
+          h -
+          2 * pad
+        ) *
         j /
         ny;
 
@@ -169,20 +210,23 @@
     ctx.restore();
   }
 
-  function label(
+
+  function canvasLabel(
     ctx,
     text,
     x,
     y,
-    align = "left"
+    align = "left",
+    colour =
+      "rgba(247,241,220,.74)"
   ) {
     ctx.save();
 
     ctx.fillStyle =
-      "rgba(203,213,225,.74)";
+      colour;
 
     ctx.font =
-      "11px ui-sans-serif, system-ui";
+      "11px ui-monospace, monospace";
 
     ctx.textAlign =
       align;
@@ -195,6 +239,7 @@
 
     ctx.restore();
   }
+
 
   function drawArrow(
     ctx,
@@ -244,21 +289,27 @@
     ctx.lineTo(
       x2 -
         10 *
-        Math.cos(angle - 0.5),
-
+        Math.cos(
+          angle - 0.5
+        ),
       y2 -
         10 *
-        Math.sin(angle - 0.5)
+        Math.sin(
+          angle - 0.5
+        )
     );
 
     ctx.lineTo(
       x2 -
         10 *
-        Math.cos(angle + 0.5),
-
+        Math.cos(
+          angle + 0.5
+        ),
       y2 -
         10 *
-        Math.sin(angle + 0.5)
+        Math.sin(
+          angle + 0.5
+        )
     );
 
     ctx.closePath();
@@ -268,35 +319,40 @@
     ctx.restore();
   }
 
-  /* ========================================================
+
+  /* =========================================================
      SCROLL PROGRESS
-  ======================================================== */
+  ========================================================= */
 
   function updateScrollProgress() {
-    const doc =
+    const root =
       document.documentElement;
 
-    const max =
-      doc.scrollHeight -
-      innerHeight;
+    const maximum =
+      root.scrollHeight -
+      window.innerHeight;
 
-    const progress =
-      max > 0
-        ? scrollY / max
+    const fraction =
+      maximum > 0
+        ? window.scrollY /
+          maximum
         : 0;
 
-    if ($("scrollProgress")) {
-      $("scrollProgress")
-        .style.width =
+    const bar =
+      $("scrollProgress");
+
+    if (bar) {
+      bar.style.width =
         `${clamp(
-          progress,
+          fraction,
           0,
           1
         ) * 100}%`;
     }
   }
 
-  addEventListener(
+
+  window.addEventListener(
     "scroll",
     updateScrollProgress,
     {
@@ -306,21 +362,25 @@
 
   updateScrollProgress();
 
-  /* ========================================================
+
+  /* =========================================================
      ACTIVE NAVIGATION
-  ======================================================== */
+  ========================================================= */
 
   const sections =
-    $$("main section[id]");
+    $$(
+      "main section[id]"
+    );
 
   const navLinks =
     $$(".nav a");
+
 
   if (
     "IntersectionObserver"
     in window
   ) {
-    const observer =
+    const navObserver =
       new IntersectionObserver(
         entries => {
           const visible =
@@ -330,12 +390,17 @@
                   entry.isIntersecting
               )
               .sort(
-                (a, b) =>
+                (
+                  a,
+                  b
+                ) =>
                   b.intersectionRatio -
                   a.intersectionRatio
               )[0];
 
-          if (!visible) return;
+          if (!visible) {
+            return;
+          }
 
           navLinks.forEach(
             link => {
@@ -356,43 +421,48 @@
           threshold:
             [
               0.05,
-              0.25,
-              0.6
+              0.2,
+              0.5
             ]
         }
       );
 
     sections.forEach(
       section =>
-        observer.observe(
+        navObserver.observe(
           section
         )
     );
   }
 
-  /* ========================================================
-     SECTION COMPLETION
-  ======================================================== */
+
+  /* =========================================================
+     COURSE COMPLETION
+  ========================================================= */
 
   const completionButtons =
-    $$("[data-complete]");
+    $$(
+      "[data-complete]"
+    );
 
   let completed =
     new Set(
       JSON.parse(
         localStorage.getItem(
-          "shm-completed"
+          "oscillation-grove-completed"
         ) || "[]"
       )
     );
 
+
   function renderCompletion() {
     completionButtons.forEach(
       button => {
+        const key =
+          button.dataset.complete;
+
         const done =
-          completed.has(
-            button.dataset.complete
-          );
+          completed.has(key);
 
         button.classList.toggle(
           "done",
@@ -401,8 +471,8 @@
 
         button.textContent =
           done
-            ? "✓ Completed"
-            : "Mark section complete";
+            ? "✓ Module complete"
+            : "Mark complete";
       }
     );
 
@@ -428,6 +498,7 @@
     }
   }
 
+
   completionButtons.forEach(
     button => {
       button.addEventListener(
@@ -445,7 +516,7 @@
           }
 
           localStorage.setItem(
-            "shm-completed",
+            "oscillation-grove-completed",
             JSON.stringify(
               [...completed]
             )
@@ -457,6 +528,7 @@
     }
   );
 
+
   $("resetProgress")
     ?.addEventListener(
       "click",
@@ -464,216 +536,1481 @@
         completed.clear();
 
         localStorage.removeItem(
-          "shm-completed"
+          "oscillation-grove-completed"
         );
 
         renderCompletion();
       }
     );
 
+
   renderCompletion();
 
-  /* ========================================================
-     EQUATION CHOOSER
-  ======================================================== */
 
-  const chooserText = {
-    mk: `
-      <b>Shortest route:</b>
-      use
-      <span class="inline-formula">
-        ω = √(k/m)
-      </span>,
-      then
-      <span class="inline-formula">
-        T = 2π/ω
-      </span>
-      and
-      <span class="inline-formula">
-        f = 1/T
-      </span>.
-    `,
+  /* =========================================================
+     ACTIVE RECALL REVEALS
+  ========================================================= */
 
-    tf: `
-      <b>Convert first:</b>
-      <span class="inline-formula">
-        f = 1/T
-      </span>
-      and
-      <span class="inline-formula">
-        ω = 2πf = 2π/T
-      </span>.
-    `,
+  $$(".recall-toggle")
+    .forEach(
+      button => {
+        button.addEventListener(
+          "click",
+          () => {
+            const card =
+              button.closest(
+                ".recall-card"
+              );
 
-    xt: `
-      <b>
-        Compare with the
-        standard form:
-      </b>
+            const answer =
+              card?.querySelector(
+                ".recall-answer"
+              );
 
-      <span class="inline-formula">
-        x = A cos(ωt + φ)
-      </span>.
+            if (!answer) {
+              return;
+            }
 
-      The outside coefficient
-      is A; the coefficient of
-      t is ω.
+            answer.classList.toggle(
+              "show"
+            );
 
-      Differentiate for v and a.
-    `,
+            button.textContent =
+              answer.classList.contains(
+                "show"
+              )
+                ? "Hide answer"
+                : "Reveal answer";
+          }
+        );
+      }
+    );
 
-    xv: `
-      <b>
-        Use the no-time relation:
-      </b>
 
-      <span class="inline-formula">
-        v² = ω²(A² − x²)
-      </span>.
+  /* =========================================================
+     INTERACTIVE MINDMAPS
+  ========================================================= */
 
-      If x and v are initial
-      conditions,
+  const mindmaps = {
 
-      <span class="inline-formula">
-        A = √[x² + (v/ω)²]
-      </span>.
-    `,
+    module1: {
+      nodes: [
+        {
+          id: "centre",
+          label:
+            "Linear restoring force",
+          sub:
+            "F = −kx",
+          x: 50,
+          y: 47,
+          core: true
+        },
 
-    energy: `
-      <b>Use conservation:</b>
+        {
+          id: "newton",
+          label:
+            "Newton II",
+          sub:
+            "F = ma",
+          x: 19,
+          y: 22
+        },
 
-      <span class="inline-formula">
-        E = ½kA²
-      </span>,
+        {
+          id: "ode",
+          label:
+            "Equation of motion",
+          sub:
+            "x¨ + (k/m)x = 0",
+          x: 50,
+          y: 15
+        },
 
-      <span class="inline-formula">
-        U = ½kx²
-      </span>,
+        {
+          id: "omega",
+          label:
+            "Natural frequency",
+          sub:
+            "ω = √(k/m)",
+          x: 81,
+          y: 23
+        },
 
-      then
+        {
+          id: "accel",
+          label:
+            "Acceleration",
+          sub:
+            "a = −ω²x",
+          x: 80,
+          y: 70
+        },
 
-      <span class="inline-formula">
-        K = E − U
-      </span>.
-    `,
+        {
+          id: "equilibrium",
+          label:
+            "Equilibrium",
+          sub:
+            "x = 0",
+          x: 20,
+          y: 72
+        },
 
-    pendulum: `
-      <b>
-        Small-angle pendulum:
-      </b>
+        {
+          id: "period",
+          label:
+            "Period",
+          sub:
+            "T = 2π√(m/k)",
+          x: 50,
+          y: 84
+        }
+      ],
 
-      <span class="inline-formula">
-        ω = √(g/L)
-      </span>
+      links: [
+        ["newton", "centre"],
+        ["centre", "ode"],
+        ["ode", "omega"],
+        ["omega", "accel"],
+        ["centre", "equilibrium"],
+        ["omega", "period"],
+        ["centre", "accel"]
+      ]
+    },
 
-      and
 
-      <span class="inline-formula">
-        T = 2π√(L/g)
-      </span>.
-    `,
+    module2: {
+      nodes: [
+        {
+          id: "ode",
+          label:
+            "SHM ODE",
+          sub:
+            "x¨ + ω²x = 0",
+          x: 50,
+          y: 48,
+          core: true
+        },
 
-    damping: `
-      <b>
-        For an underdamped
-        spring:
-      </b>
+        {
+          id: "trial",
+          label:
+            "Trial solution",
+          sub:
+            "e^{rt}",
+          x: 18,
+          y: 22
+        },
 
-      <span class="inline-formula">
-        ωd =
-        √(k/m − b²/4m²)
-      </span>
+        {
+          id: "roots",
+          label:
+            "Complex roots",
+          sub:
+            "r = ±iω",
+          x: 50,
+          y: 16
+        },
 
-      and the amplitude
-      envelope is
+        {
+          id: "euler",
+          label:
+            "Euler identity",
+          sub:
+            "e^{iθ}=cosθ+i sinθ",
+          x: 82,
+          y: 22
+        },
 
-      <span class="inline-formula">
-        A₀e<sup>−bt/2m</sup>
-      </span>.
-    `
+        {
+          id: "trig",
+          label:
+            "Real solution",
+          sub:
+            "C cosωt + D sinωt",
+          x: 80,
+          y: 69
+        },
+
+        {
+          id: "phase",
+          label:
+            "Amplitude–phase form",
+          sub:
+            "A cos(ωt+φ)",
+          x: 50,
+          y: 84
+        },
+
+        {
+          id: "initial",
+          label:
+            "Initial conditions",
+          sub:
+            "x₀, v₀ determine A,φ",
+          x: 19,
+          y: 70
+        }
+      ],
+
+      links: [
+        ["ode", "trial"],
+        ["trial", "roots"],
+        ["roots", "euler"],
+        ["euler", "trig"],
+        ["trig", "phase"],
+        ["initial", "phase"],
+        ["phase", "ode"]
+      ]
+    },
+
+
+    module3: {
+      nodes: [
+        {
+          id: "x",
+          label:
+            "Position",
+          sub:
+            "A cosθ",
+          x: 50,
+          y: 48,
+          core: true
+        },
+
+        {
+          id: "v",
+          label:
+            "Velocity",
+          sub:
+            "−ωA sinθ",
+          x: 20,
+          y: 20
+        },
+
+        {
+          id: "a",
+          label:
+            "Acceleration",
+          sub:
+            "−ω²A cosθ",
+          x: 80,
+          y: 20
+        },
+
+        {
+          id: "phase",
+          label:
+            "Phase",
+          sub:
+            "θ = ωt+φ",
+          x: 50,
+          y: 15
+        },
+
+        {
+          id: "vmax",
+          label:
+            "Max speed",
+          sub:
+            "ωA at x=0",
+          x: 18,
+          y: 76
+        },
+
+        {
+          id: "amax",
+          label:
+            "Max acceleration",
+          sub:
+            "ω²A at |x|=A",
+          x: 82,
+          y: 76
+        },
+
+        {
+          id: "eliminate",
+          label:
+            "No-time relation",
+          sub:
+            "v²=ω²(A²−x²)",
+          x: 50,
+          y: 87
+        }
+      ],
+
+      links: [
+        ["phase", "x"],
+        ["x", "v"],
+        ["x", "a"],
+        ["v", "vmax"],
+        ["a", "amax"],
+        ["vmax", "eliminate"],
+        ["amax", "eliminate"],
+        ["x", "eliminate"]
+      ]
+    },
+
+
+    module4: {
+      nodes: [
+        {
+          id: "total",
+          label:
+            "Total energy",
+          sub:
+            "E = ½kA²",
+          x: 50,
+          y: 48,
+          core: true
+        },
+
+        {
+          id: "u",
+          label:
+            "Potential",
+          sub:
+            "U = ½kx²",
+          x: 20,
+          y: 24
+        },
+
+        {
+          id: "k",
+          label:
+            "Kinetic",
+          sub:
+            "K = ½mv²",
+          x: 80,
+          y: 24
+        },
+
+        {
+          id: "turn",
+          label:
+            "Turning points",
+          sub:
+            "K=0, U=E",
+          x: 18,
+          y: 73
+        },
+
+        {
+          id: "eq",
+          label:
+            "Equilibrium",
+          sub:
+            "U=0, K=E",
+          x: 82,
+          y: 73
+        },
+
+        {
+          id: "vx",
+          label:
+            "Velocity-position",
+          sub:
+            "v²=ω²(A²−x²)",
+          x: 50,
+          y: 86
+        }
+      ],
+
+      links: [
+        ["total", "u"],
+        ["total", "k"],
+        ["u", "turn"],
+        ["k", "eq"],
+        ["total", "vx"],
+        ["u", "vx"],
+        ["k", "vx"]
+      ]
+    },
+
+
+    module5: {
+      nodes: [
+        {
+          id: "angular",
+          label:
+            "Angular SHM",
+          sub:
+            "θ¨ + ω²θ = 0",
+          x: 50,
+          y: 46,
+          core: true
+        },
+
+        {
+          id: "torsion",
+          label:
+            "Torsion",
+          sub:
+            "τ = −κθ",
+          x: 18,
+          y: 22
+        },
+
+        {
+          id: "simple",
+          label:
+            "Simple pendulum",
+          sub:
+            "sinθ ≈ θ",
+          x: 82,
+          y: 22
+        },
+
+        {
+          id: "rot",
+          label:
+            "Rotation law",
+          sub:
+            "τ = Iθ¨",
+          x: 18,
+          y: 74
+        },
+
+        {
+          id: "torsomega",
+          label:
+            "Torsion frequency",
+          sub:
+            "ω = √(κ/I)",
+          x: 50,
+          y: 84
+        },
+
+        {
+          id: "pendomega",
+          label:
+            "Pendulum frequency",
+          sub:
+            "ω = √(g/L)",
+          x: 82,
+          y: 74
+        },
+
+        {
+          id: "physical",
+          label:
+            "Physical pendulum",
+          sub:
+            "T=2π√(I/mgh)",
+          x: 50,
+          y: 14
+        }
+      ],
+
+      links: [
+        ["torsion", "angular"],
+        ["simple", "angular"],
+        ["rot", "angular"],
+        ["angular", "torsomega"],
+        ["angular", "pendomega"],
+        ["physical", "angular"]
+      ]
+    },
+
+
+    module6: {
+      nodes: [
+        {
+          id: "eq",
+          label:
+            "Damped equation",
+          sub:
+            "mx¨+bx˙+kx=0",
+          x: 50,
+          y: 47,
+          core: true
+        },
+
+        {
+          id: "force",
+          label:
+            "Drag force",
+          sub:
+            "Fd = −bv",
+          x: 18,
+          y: 22
+        },
+
+        {
+          id: "under",
+          label:
+            "Underdamped",
+          sub:
+            "b < 2√mk",
+          x: 82,
+          y: 20
+        },
+
+        {
+          id: "critical",
+          label:
+            "Critical",
+          sub:
+            "b = 2√mk",
+          x: 82,
+          y: 49
+        },
+
+        {
+          id: "over",
+          label:
+            "Overdamped",
+          sub:
+            "b > 2√mk",
+          x: 82,
+          y: 78
+        },
+
+        {
+          id: "amp",
+          label:
+            "Amplitude envelope",
+          sub:
+            "A₀e^{-bt/2m}",
+          x: 18,
+          y: 73
+        },
+
+        {
+          id: "energy",
+          label:
+            "Energy decay",
+          sub:
+            "E₀e^{-bt/m}",
+          x: 50,
+          y: 85
+        }
+      ],
+
+      links: [
+        ["force", "eq"],
+        ["eq", "under"],
+        ["eq", "critical"],
+        ["eq", "over"],
+        ["eq", "amp"],
+        ["amp", "energy"]
+      ]
+    },
+
+
+    module7: {
+      nodes: [
+        {
+          id: "drive",
+          label:
+            "Driven oscillator",
+          sub:
+            "mx¨+bx˙+kx=F₀cosωt",
+          x: 50,
+          y: 47,
+          core: true
+        },
+
+        {
+          id: "natural",
+          label:
+            "Natural frequency",
+          sub:
+            "ω₀≈√(k/m)",
+          x: 18,
+          y: 20
+        },
+
+        {
+          id: "forcing",
+          label:
+            "Driving frequency",
+          sub:
+            "ω",
+          x: 82,
+          y: 20
+        },
+
+        {
+          id: "phase",
+          label:
+            "Relative phase",
+          sub:
+            "controls work transfer",
+          x: 20,
+          y: 74
+        },
+
+        {
+          id: "resonance",
+          label:
+            "Resonance",
+          sub:
+            "large response near ω₀",
+          x: 50,
+          y: 85
+        },
+
+        {
+          id: "damping",
+          label:
+            "Damping",
+          sub:
+            "lowers + broadens peak",
+          x: 82,
+          y: 74
+        },
+
+        {
+          id: "amp",
+          label:
+            "Response amplitude",
+          sub:
+            "X(ω)",
+          x: 50,
+          y: 14
+        }
+      ],
+
+      links: [
+        ["natural", "drive"],
+        ["forcing", "drive"],
+        ["drive", "phase"],
+        ["drive", "damping"],
+        ["phase", "resonance"],
+        ["damping", "resonance"],
+        ["amp", "drive"]
+      ]
+    }
   };
 
-  function updateChooser() {
-    const select =
-      $("givenSelect");
 
-    const answer =
-      $("chooserAnswer");
+  function renderMindmap(
+    element
+  ) {
+    const key =
+      element.dataset.map;
+
+    const map =
+      mindmaps[key];
+
+    if (!map) {
+      return;
+    }
+
+    element.innerHTML = "";
+
+    const svg =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg"
+      );
+
+    svg.setAttribute(
+      "viewBox",
+      "0 0 1000 400"
+    );
+
+    svg.setAttribute(
+      "preserveAspectRatio",
+      "none"
+    );
+
+    const nodeLookup =
+      Object.fromEntries(
+        map.nodes.map(
+          node => [
+            node.id,
+            node
+          ]
+        )
+      );
+
+
+    map.links.forEach(
+      ([from, to]) => {
+        const a =
+          nodeLookup[from];
+
+        const b =
+          nodeLookup[to];
+
+        if (!a || !b) {
+          return;
+        }
+
+        const line =
+          document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+          );
+
+        line.setAttribute(
+          "x1",
+          String(
+            a.x * 10
+          )
+        );
+
+        line.setAttribute(
+          "y1",
+          String(
+            a.y * 4
+          )
+        );
+
+        line.setAttribute(
+          "x2",
+          String(
+            b.x * 10
+          )
+        );
+
+        line.setAttribute(
+          "y2",
+          String(
+            b.y * 4
+          )
+        );
+
+        line.setAttribute(
+          "stroke",
+          "rgba(241,199,91,.45)"
+        );
+
+        line.setAttribute(
+          "stroke-width",
+          "3"
+        );
+
+        line.setAttribute(
+          "stroke-dasharray",
+          "7 6"
+        );
+
+        svg.appendChild(line);
+      }
+    );
+
+    element.appendChild(svg);
+
+
+    map.nodes.forEach(
+      node => {
+        const div =
+          document.createElement(
+            "div"
+          );
+
+        div.className =
+          `map-node ${
+            node.core
+              ? "core"
+              : ""
+          }`;
+
+        div.style.left =
+          `${node.x}%`;
+
+        div.style.top =
+          `${node.y}%`;
+
+        div.innerHTML = `
+          <span>
+            ${node.label}
+          </span>
+
+          ${
+            node.sub
+              ? `<small>${node.sub}</small>`
+              : ""
+          }
+        `;
+
+        element.appendChild(
+          div
+        );
+      }
+    );
+  }
+
+
+  $$(".mindmap")
+    .forEach(
+      renderMindmap
+    );
+
+
+  /* =========================================================
+     DIGITAL PEN NOTEBOOKS
+  ========================================================= */
+
+  const noteCanvases =
+    new Map();
+
+
+  function noteTemplate(key) {
+    return `
+      <div class="note-station mc-panel">
+
+        <div class="note-head">
+
+          <div>
+
+            <p class="pixel-kicker">
+              FIELD NOTEBOOK
+            </p>
+
+            <h3>
+              Draw, derive, annotate and retrieve
+            </h3>
+
+          </div>
+
+          <span
+            class="note-save-state"
+            data-note-status="${key}"
+          >
+            ready
+          </span>
+
+        </div>
+
+
+        <div class="note-grid">
+
+          <div class="note-canvas-wrap">
+
+            <canvas
+              class="note-canvas"
+              data-note-canvas="${key}"
+              width="1000"
+              height="600"
+            ></canvas>
+
+          </div>
+
+
+          <div class="note-side">
+
+            <div class="note-toolbar">
+
+              <button
+                class="mc-button"
+                data-note-pen="${key}"
+              >
+                Pen
+              </button>
+
+              <button
+                class="mc-button"
+                data-note-eraser="${key}"
+              >
+                Eraser
+              </button>
+
+              <button
+                class="mc-button"
+                data-note-undo="${key}"
+              >
+                Undo
+              </button>
+
+              <button
+                class="mc-button"
+                data-note-clear="${key}"
+              >
+                Clear
+              </button>
+
+              <button
+                class="mc-button"
+                data-note-save="${key}"
+              >
+                Save PNG
+              </button>
+
+              <input
+                class="note-colour"
+                data-note-colour="${key}"
+                type="color"
+                value="#1b3024"
+                title="Pen colour"
+              >
+
+            </div>
+
+
+            <textarea
+              data-note-text="${key}"
+              placeholder="Typed notes, mistakes to revisit, questions for office hours, derivation steps, memory cues..."
+            ></textarea>
+
+
+            <div class="tip-box">
+
+              <strong>
+                Retrieval trick:
+              </strong>
+
+              close the explanation above and reconstruct
+              the derivation here from memory before checking it.
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    `;
+  }
+
+
+  $$(".notepad-slot")
+    .forEach(
+      slot => {
+        const key =
+          slot.dataset.note;
+
+        slot.innerHTML =
+          noteTemplate(key);
+      }
+    );
+
+
+  function initialiseNoteCanvas(
+    canvas
+  ) {
+    const key =
+      canvas.dataset.noteCanvas;
+
+    const ctx =
+      canvas.getContext("2d");
+
+    const state = {
+      canvas,
+      ctx,
+      key,
+      drawing: false,
+      erasing: false,
+      colour: "#1b3024",
+      width: 3,
+      history: []
+    };
+
+    noteCanvases.set(
+      key,
+      state
+    );
+
+
+    function canvasPoint(
+      event
+    ) {
+      const rect =
+        canvas.getBoundingClientRect();
+
+      return {
+        x:
+          (
+            event.clientX -
+            rect.left
+          ) *
+          canvas.width /
+          rect.width,
+
+        y:
+          (
+            event.clientY -
+            rect.top
+          ) *
+          canvas.height /
+          rect.height
+      };
+    }
+
+
+    function saveHistory() {
+      try {
+        state.history.push(
+          canvas.toDataURL(
+            "image/png"
+          )
+        );
+
+        if (
+          state.history.length >
+          15
+        ) {
+          state.history.shift();
+        }
+      } catch {
+        /* ignored */
+      }
+    }
+
+
+    function persist() {
+      try {
+        localStorage.setItem(
+          `shm-note-drawing-${key}`,
+          canvas.toDataURL(
+            "image/png"
+          )
+        );
+
+        setNoteStatus(
+          key,
+          "saved"
+        );
+      } catch {
+        setNoteStatus(
+          key,
+          "storage full"
+        );
+      }
+    }
+
+
+    function startDrawing(
+      event
+    ) {
+      event.preventDefault();
+
+      canvas.setPointerCapture?.(
+        event.pointerId
+      );
+
+      saveHistory();
+
+      const p =
+        canvasPoint(event);
+
+      state.drawing = true;
+
+      ctx.beginPath();
+
+      ctx.moveTo(
+        p.x,
+        p.y
+      );
+
+      setNoteStatus(
+        key,
+        "writing…"
+      );
+    }
+
+
+    function draw(
+      event
+    ) {
+      if (
+        !state.drawing
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const p =
+        canvasPoint(event);
+
+      const pressure =
+        event.pressure > 0
+          ? event.pressure
+          : 0.55;
+
+      ctx.lineCap =
+        "round";
+
+      ctx.lineJoin =
+        "round";
+
+      if (
+        state.erasing
+      ) {
+        ctx.globalCompositeOperation =
+          "destination-out";
+
+        ctx.lineWidth =
+          18 +
+          pressure * 18;
+      } else {
+        ctx.globalCompositeOperation =
+          "source-over";
+
+        ctx.strokeStyle =
+          state.colour;
+
+        ctx.lineWidth =
+          state.width *
+          (
+            0.7 +
+            pressure *
+            0.9
+          );
+      }
+
+      ctx.lineTo(
+        p.x,
+        p.y
+      );
+
+      ctx.stroke();
+    }
+
+
+    function stopDrawing(
+      event
+    ) {
+      if (
+        !state.drawing
+      ) {
+        return;
+      }
+
+      state.drawing = false;
+
+      ctx.closePath();
+
+      canvas.releasePointerCapture?.(
+        event.pointerId
+      );
+
+      persist();
+    }
+
+
+    canvas.addEventListener(
+      "pointerdown",
+      startDrawing
+    );
+
+    canvas.addEventListener(
+      "pointermove",
+      draw
+    );
+
+    canvas.addEventListener(
+      "pointerup",
+      stopDrawing
+    );
+
+    canvas.addEventListener(
+      "pointercancel",
+      stopDrawing
+    );
+
+
+    const stored =
+      localStorage.getItem(
+        `shm-note-drawing-${key}`
+      );
+
+    if (stored) {
+      const image =
+        new Image();
+
+      image.onload =
+        () => {
+          ctx.drawImage(
+            image,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+        };
+
+      image.src =
+        stored;
+    }
+
+
+    const textArea =
+      document.querySelector(
+        `[data-note-text="${key}"]`
+      );
+
+    const savedText =
+      localStorage.getItem(
+        `shm-note-text-${key}`
+      );
 
     if (
-      select &&
-      answer
+      textArea &&
+      savedText !== null
     ) {
-      answer.innerHTML =
-        chooserText[
-          select.value
-        ];
+      textArea.value =
+        savedText;
+    }
+
+
+    let textTimer =
+      null;
+
+    textArea?.addEventListener(
+      "input",
+      () => {
+        setNoteStatus(
+          key,
+          "typing…"
+        );
+
+        clearTimeout(
+          textTimer
+        );
+
+        textTimer =
+          setTimeout(
+            () => {
+              localStorage.setItem(
+                `shm-note-text-${key}`,
+                textArea.value
+              );
+
+              setNoteStatus(
+                key,
+                "saved"
+              );
+            },
+            350
+          );
+      }
+    );
+
+
+    document
+      .querySelector(
+        `[data-note-pen="${key}"]`
+      )
+      ?.addEventListener(
+        "click",
+        () => {
+          state.erasing =
+            false;
+
+          setNoteStatus(
+            key,
+            "pen"
+          );
+        }
+      );
+
+
+    document
+      .querySelector(
+        `[data-note-eraser="${key}"]`
+      )
+      ?.addEventListener(
+        "click",
+        () => {
+          state.erasing =
+            true;
+
+          setNoteStatus(
+            key,
+            "eraser"
+          );
+        }
+      );
+
+
+    document
+      .querySelector(
+        `[data-note-colour="${key}"]`
+      )
+      ?.addEventListener(
+        "input",
+        event => {
+          state.colour =
+            event.target.value;
+
+          state.erasing =
+            false;
+        }
+      );
+
+
+    document
+      .querySelector(
+        `[data-note-clear="${key}"]`
+      )
+      ?.addEventListener(
+        "click",
+        () => {
+          saveHistory();
+
+          ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+
+          persist();
+        }
+      );
+
+
+    document
+      .querySelector(
+        `[data-note-undo="${key}"]`
+      )
+      ?.addEventListener(
+        "click",
+        () => {
+          const previous =
+            state.history.pop();
+
+          if (!previous) {
+            return;
+          }
+
+          const image =
+            new Image();
+
+          image.onload =
+            () => {
+              ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+              );
+
+              ctx.drawImage(
+                image,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+              );
+
+              persist();
+            };
+
+          image.src =
+            previous;
+        }
+      );
+
+
+    document
+      .querySelector(
+        `[data-note-save="${key}"]`
+      )
+      ?.addEventListener(
+        "click",
+        () => {
+          const link =
+            document.createElement(
+              "a"
+            );
+
+          link.download =
+            `${key}-physics-notes.png`;
+
+          link.href =
+            canvas.toDataURL(
+              "image/png"
+            );
+
+          link.click();
+        }
+      );
+  }
+
+
+  function setNoteStatus(
+    key,
+    text
+  ) {
+    const target =
+      document.querySelector(
+        `[data-note-status="${key}"]`
+      );
+
+    if (target) {
+      target.textContent =
+        text;
     }
   }
 
-  $("givenSelect")
-    ?.addEventListener(
-      "change",
-      updateChooser
-    );
 
-  updateChooser();
+  $$(
+    ".note-canvas"
+  ).forEach(
+    initialiseNoteCanvas
+  );
 
-  /* ========================================================
-     HERO GRAPH
-  ======================================================== */
 
-  function drawHero(now) {
-    const canvas =
-      prepCanvas(
+  /* =========================================================
+     HERO OSCILLATOR
+  ========================================================= */
+
+  function drawHero(
+    time
+  ) {
+    const prepared =
+      prepareCanvas(
         $("heroCanvas")
       );
 
-    if (!canvas) return;
+    if (!prepared) {
+      return;
+    }
 
     const {
       ctx,
       w,
       h
-    } = canvas;
-
-    const pad = 30;
-
-    const middle =
-      h * 0.53;
-
-    const amplitude =
-      h * 0.25;
+    } = prepared;
 
     drawGrid(
       ctx,
       w,
       h,
-      pad,
-      8,
-      4
+      30,
+      9,
+      5
     );
 
+    const midY =
+      h * 0.52;
+
+    const amplitude =
+      h * 0.27;
+
+    const phase =
+      time *
+      0.0014;
+
     ctx.strokeStyle =
-      "rgba(203,213,225,.25)";
+      "rgba(255,255,255,.20)";
+
+    ctx.lineWidth = 1;
 
     ctx.beginPath();
 
     ctx.moveTo(
-      pad,
-      middle
+      28,
+      midY
     );
 
     ctx.lineTo(
-      w - pad,
-      middle
+      w - 28,
+      midY
     );
 
     ctx.stroke();
 
+
     ctx.strokeStyle =
       css(
-        "--cyan",
+        "--diamond",
         "#67e8f9"
       );
 
@@ -683,25 +2020,27 @@
 
     for (
       let i = 0;
-      i <= 320;
+      i <= 400;
       i++
     ) {
-      const phase =
+      const theta =
         i /
-        320 *
+        400 *
         Math.PI *
         4;
 
       const x =
-        pad +
-        (w - 2 * pad) *
+        30 +
+        (
+          w - 60
+        ) *
         i /
-        320;
+        400;
 
       const y =
-        middle -
+        midY -
         amplitude *
-        Math.cos(phase);
+        Math.cos(theta);
 
       if (i) {
         ctx.lineTo(
@@ -718,46 +2057,50 @@
 
     ctx.stroke();
 
-    const phase =
+
+    const wrapped =
       (
-        now *
-        0.0012
-      ) %
+        phase %
+        (
+          Math.PI *
+          4
+        )
+      );
+
+    const ballX =
+      30 +
+      (
+        w - 60
+      ) *
+      wrapped /
       (
         Math.PI *
         4
       );
 
-    const x =
-      pad +
-      (w - 2 * pad) *
-      phase /
-      (
-        Math.PI *
-        4
-      );
-
-    const y =
-      middle -
+    const ballY =
+      midY -
       amplitude *
-      Math.cos(phase);
+      Math.cos(
+        wrapped
+      );
 
     ctx.fillStyle =
       css(
-        "--violet",
-        "#a78bfa"
+        "--cherry",
+        "#e79ab4"
       );
 
     ctx.shadowColor =
-      "rgba(167,139,250,.6)";
+      "rgba(231,154,180,.60)";
 
-    ctx.shadowBlur = 20;
+    ctx.shadowBlur = 18;
 
     ctx.beginPath();
 
     ctx.arc(
-      x,
-      y,
+      ballX,
+      ballY,
       8,
       0,
       Math.PI * 2
@@ -767,34 +2110,36 @@
 
     ctx.shadowBlur = 0;
 
-    label(
+    canvasLabel(
       ctx,
-      "displacement",
-      pad,
-      18
+      "x(t) = A cos(ωt + φ)",
+      20,
+      22
     );
 
-    label(
+    canvasLabel(
       ctx,
       "time →",
-      w - pad,
-      h - 10,
+      w - 20,
+      h - 12,
       "right"
     );
   }
 
-  /* ========================================================
-     SPRING MASS MOTION LAB
-  ======================================================== */
 
-  const motion = {
-    time: 0,
+  /* =========================================================
+     MASS-SPRING MOTION LAB
+  ========================================================= */
+
+  const motionState = {
     playing: false,
-    last:
+    time: 0,
+    lastTime:
       performance.now()
   };
 
-  function motionParams() {
+
+  function motionParameters() {
     const A =
       Number(
         $("AInput")
@@ -830,6 +2175,15 @@
         k / m
       );
 
+    const period =
+      2 *
+      Math.PI /
+      omega;
+
+    const frequency =
+      1 /
+      period;
+
     return {
       A,
       m,
@@ -837,52 +2191,39 @@
       phi,
       t,
       omega,
-
-      T:
-        2 *
-        Math.PI /
-        omega,
-
-      f:
-        omega /
-        (
-          2 *
-          Math.PI
-        )
+      period,
+      frequency
     };
   }
 
-  function updateMotion() {
-    const p =
-      motionParams();
 
-    motion.time =
+  function updateMotionLab() {
+    const p =
+      motionParameters();
+
+    motionState.time =
       p.t;
 
-    const phase =
+    const theta =
       p.omega *
       p.t +
       p.phi;
 
     const x =
       p.A *
-      Math.cos(
-        phase
-      );
+      Math.cos(theta);
 
     const v =
       -p.omega *
       p.A *
-      Math.sin(
-        phase
-      );
+      Math.sin(theta);
 
     const a =
       -(
-        p.omega **
-        2
+        p.omega ** 2
       ) *
       x;
+
 
     if ($("AOut")) {
       $("AOut")
@@ -942,7 +2283,7 @@
       $("periodMetric")
         .textContent =
         `${fmt(
-          p.T,
+          p.period,
           2
         )} s`;
     }
@@ -951,7 +2292,7 @@
       $("freqMetric")
         .textContent =
         `${fmt(
-          p.f,
+          p.frequency,
           2
         )} Hz`;
     }
@@ -983,115 +2324,111 @@
         )} m/s²`;
     }
 
-    drawSpring(
+
+    drawSpringMass(
       p,
       x,
-      v
+      v,
+      a
     );
 
-    drawMotionPlot(p);
+    drawMotionCurves(p);
 
-    drawCircleProjection(p);
+    drawCircleModel(p);
   }
 
-  function drawSpring(
+
+  function drawSpringMass(
     p,
     x,
-    v
+    v,
+    a
   ) {
-    const canvas =
-      prepCanvas(
+    const prepared =
+      prepareCanvas(
         $("springCanvas")
       );
 
-    if (!canvas) return;
+    if (!prepared) {
+      return;
+    }
 
     const {
       ctx,
       w,
       h
-    } = canvas;
-
-    const cyan =
-      css(
-        "--cyan",
-        "#67e8f9"
-      );
-
-    const violet =
-      css(
-        "--violet",
-        "#a78bfa"
-      );
+    } = prepared;
 
     const wallX =
       w * 0.08;
 
-    const equilibrium =
-      w * 0.58;
+    const equilibriumX =
+      w * 0.59;
 
     const travel =
       w * 0.25;
 
-    const massX =
-      equilibrium +
+    const blockX =
+      equilibriumX +
       travel *
       x /
       p.A;
 
     const y =
-      h * 0.56;
+      h * 0.54;
+
 
     ctx.fillStyle =
-      "rgba(148,163,184,.16)";
+      "#463526";
 
     ctx.fillRect(
-      wallX - 12,
-      h * 0.22,
-      12,
-      h * 0.62
+      wallX - 15,
+      h * 0.20,
+      15,
+      h * 0.64
     );
 
+
     ctx.strokeStyle =
-      "rgba(148,163,184,.35)";
+      "#8b5a2b";
+
+    ctx.lineWidth = 2;
 
     for (
-      let sy =
-        h * 0.24;
+      let yy =
+        h * 0.21;
 
-      sy <
+      yy <
         h * 0.84;
 
-      sy += 12
+      yy += 13
     ) {
       ctx.beginPath();
 
       ctx.moveTo(
-        wallX - 12,
-        sy
+        wallX - 15,
+        yy
       );
 
       ctx.lineTo(
         wallX,
-        sy - 8
+        yy - 9
       );
 
       ctx.stroke();
     }
 
-    const endX =
-      massX - 34;
 
-    const coils = 13;
-
-    const coilAmplitude =
-      10;
+    const springEnd =
+      blockX - 32;
 
     ctx.strokeStyle =
-      cyan;
+      css(
+        "--diamond",
+        "#67e8f9"
+      );
 
-    ctx.lineWidth =
-      2.2;
+    ctx.lineWidth = 2.5;
 
     ctx.beginPath();
 
@@ -1100,46 +2437,49 @@
       y
     );
 
+    const turns = 14;
+
     for (
       let i = 1;
-      i < coils * 2;
+      i < turns * 2;
       i++
     ) {
-      const springX =
+      const sx =
         wallX +
         (
-          endX -
+          springEnd -
           wallX
         ) *
         i /
         (
-          coils *
+          turns *
           2
         );
 
-      const springY =
+      const sy =
         y +
         (
           i % 2
-            ? -coilAmplitude
-            : coilAmplitude
+            ? -10
+            : 10
         );
 
       ctx.lineTo(
-        springX,
-        springY
+        sx,
+        sy
       );
     }
 
     ctx.lineTo(
-      endX,
+      springEnd,
       y
     );
 
     ctx.stroke();
 
+
     ctx.strokeStyle =
-      "rgba(148,163,184,.28)";
+      "rgba(255,255,255,.25)";
 
     ctx.setLineDash(
       [5, 5]
@@ -1148,12 +2488,12 @@
     ctx.beginPath();
 
     ctx.moveTo(
-      equilibrium,
-      h * 0.17
+      equilibriumX,
+      h * 0.14
     );
 
     ctx.lineTo(
-      equilibrium,
+      equilibriumX,
       h * 0.88
     );
 
@@ -1161,56 +2501,56 @@
 
     ctx.setLineDash([]);
 
-    label(
-      ctx,
-      "equilibrium",
-      equilibrium,
-      h * 0.14,
-      "center"
-    );
 
     ctx.fillStyle =
-      violet;
-
-    ctx.shadowColor =
-      "rgba(167,139,250,.38)";
-
-    ctx.shadowBlur = 20;
+      css(
+        "--cherry",
+        "#e79ab4"
+      );
 
     ctx.fillRect(
-      massX - 32,
-      y - 32,
-      64,
-      64
+      blockX - 31,
+      y - 31,
+      62,
+      62
     );
 
-    ctx.shadowBlur = 0;
+    ctx.strokeStyle =
+      "#613747";
+
+    ctx.lineWidth = 4;
+
+    ctx.strokeRect(
+      blockX - 31,
+      y - 31,
+      62,
+      62
+    );
+
 
     ctx.fillStyle =
-      "#08111f";
+      "#26131b";
 
     ctx.font =
-      "800 13px system-ui";
+      "bold 14px monospace";
 
     ctx.textAlign =
       "center";
 
     ctx.fillText(
       "m",
-      massX,
-      y + 4
+      blockX,
+      y + 5
     );
 
-    const maxVelocity =
-      p.omega *
-      p.A;
 
-    const velocityLength =
+    const velocityScale =
       55 *
       Math.abs(v) /
       Math.max(
-        maxVelocity,
-        1e-9
+        p.omega *
+        p.A,
+        1e-8
       );
 
     if (
@@ -1219,124 +2559,113 @@
     ) {
       drawArrow(
         ctx,
-
-        massX,
-        h * 0.30,
-
-        massX +
+        blockX,
+        h * 0.28,
+        blockX +
           Math.sign(v) *
-          velocityLength,
-
-        h * 0.30,
-
+          velocityScale,
+        h * 0.28,
         css(
-          "--green",
-          "#34d399"
+          "--emerald",
+          "#54d179"
         )
       );
-
-      label(
-        ctx,
-        "velocity",
-        massX,
-        h * 0.30 - 12,
-        "center"
-      );
     }
+
+
+    const accelScale =
+      60 *
+      Math.abs(a) /
+      Math.max(
+        p.omega **
+          2 *
+          p.A,
+        1e-8
+      );
 
     if (
-      Math.abs(x) >
-      0.00001
+      Math.abs(a) >
+      0.001
     ) {
-      const forceLength =
-        60 *
-        Math.abs(
-          x / p.A
-        );
-
       drawArrow(
         ctx,
-
-        massX,
-        h * 0.80,
-
-        massX -
-          Math.sign(x) *
-          forceLength,
-
-        h * 0.80,
-
+        blockX,
+        h * 0.81,
+        blockX +
+          Math.sign(a) *
+          accelScale,
+        h * 0.81,
         css(
-          "--amber",
-          "#fbbf24"
+          "--gold",
+          "#f1c75b"
         )
-      );
-
-      label(
-        ctx,
-        "restoring force / acceleration",
-        massX,
-        h * 0.80 + 20,
-        "center"
       );
     }
 
-    ctx.fillStyle =
-      "rgba(203,213,225,.72)";
 
-    ctx.font =
-      "12px ui-monospace, monospace";
+    canvasLabel(
+      ctx,
+      "equilibrium",
+      equilibriumX,
+      h * 0.11,
+      "center"
+    );
 
-    ctx.textAlign =
-      "left";
-
-    ctx.fillText(
+    canvasLabel(
+      ctx,
       `x = ${fmt(
         x,
-        2
+        3
       )} m`,
       16,
       22
     );
 
-    ctx.fillText(
-      `v = ${fmt(
-        v,
-        2
-      )} m/s`,
+    canvasLabel(
+      ctx,
+      "green = velocity",
       16,
-      40
+      42,
+      "left",
+      css(
+        "--emerald",
+        "#54d179"
+      )
+    );
+
+    canvasLabel(
+      ctx,
+      "gold = acceleration",
+      16,
+      60,
+      "left",
+      css(
+        "--gold",
+        "#f1c75b"
+      )
     );
   }
 
-  function drawMotionPlot(p) {
-    const canvas =
-      prepCanvas(
+
+  function drawMotionCurves(
+    p
+  ) {
+    const prepared =
+      prepareCanvas(
         $("motionPlot")
       );
 
-    if (!canvas) return;
+    if (!prepared) {
+      return;
+    }
 
     const {
       ctx,
       w,
       h
-    } = canvas;
+    } = prepared;
 
-    const pad = 44;
-
-    const span =
-      2 * p.T;
-
-    const middle =
-      h / 2;
-
-    const amplitude =
-      (
-        h -
-        2 * pad
-      ) *
-      0.38;
+    const pad = 45;
 
     drawGrid(
       ctx,
@@ -1347,8 +2676,23 @@
       6
     );
 
+    const middle =
+      h / 2;
+
+    const graphAmplitude =
+      (
+        h -
+        2 * pad
+      ) *
+      0.37;
+
+    const span =
+      2 *
+      p.period;
+
+
     ctx.strokeStyle =
-      "rgba(203,213,225,.35)";
+      "rgba(255,255,255,.23)";
 
     ctx.beginPath();
 
@@ -1364,106 +2708,100 @@
 
     ctx.stroke();
 
+
     const curves = [
       {
         name: "x/A",
-
         colour:
           css(
-            "--cyan",
+            "--diamond",
             "#67e8f9"
           ),
-
         fn:
-          t =>
+          time =>
             Math.cos(
               p.omega *
-              t +
+              time +
               p.phi
             )
       },
 
       {
-        name:
-          "v/vmax",
-
+        name: "v/vmax",
         colour:
           css(
-            "--green",
-            "#34d399"
+            "--emerald",
+            "#54d179"
           ),
-
         fn:
-          t =>
+          time =>
             -Math.sin(
               p.omega *
-              t +
+              time +
               p.phi
             )
       },
 
       {
-        name:
-          "a/amax",
-
+        name: "a/amax",
         colour:
           css(
-            "--violet",
-            "#a78bfa"
+            "--cherry",
+            "#e79ab4"
           ),
-
         fn:
-          t =>
+          time =>
             -Math.cos(
               p.omega *
-              t +
+              time +
               p.phi
             )
       }
     ];
+
 
     curves.forEach(
       curve => {
         ctx.strokeStyle =
           curve.colour;
 
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.2;
 
         ctx.beginPath();
 
         for (
           let i = 0;
-          i <= 420;
+          i <= 500;
           i++
         ) {
-          const t =
+          const time =
             span *
             i /
-            420;
+            500;
 
-          const x =
+          const px =
             pad +
             (
               w -
               2 * pad
             ) *
             i /
-            420;
+            500;
 
-          const y =
+          const py =
             middle -
-            amplitude *
-            curve.fn(t);
+            graphAmplitude *
+            curve.fn(time);
 
           if (i) {
             ctx.lineTo(
-              x,
-              y
+              px,
+              py
             );
           } else {
             ctx.moveTo(
-              x,
-              y
+              px,
+              py
             );
           }
         }
@@ -1472,7 +2810,8 @@
       }
     );
 
-    const time =
+
+    const wrappedTime =
       (
         (
           p.t %
@@ -1488,14 +2827,14 @@
         w -
         2 * pad
       ) *
-      time /
+      wrappedTime /
       span;
 
     ctx.strokeStyle =
       "rgba(255,255,255,.55)";
 
     ctx.setLineDash(
-      [4, 4]
+      [4, 5]
     );
 
     ctx.beginPath();
@@ -1514,35 +2853,6 @@
 
     ctx.setLineDash([]);
 
-    label(
-      ctx,
-      "0",
-      pad,
-      h - 12,
-      "center"
-    );
-
-    label(
-      ctx,
-      "T",
-      pad +
-        (
-          w -
-          2 * pad
-        ) /
-        2,
-
-      h - 12,
-      "center"
-    );
-
-    label(
-      ctx,
-      "2T",
-      w - pad,
-      h - 12,
-      "center"
-    );
 
     let legendX =
       pad;
@@ -1554,49 +2864,83 @@
 
         ctx.fillRect(
           legendX,
-          pad - 22,
-          12,
+          18,
+          14,
           3
         );
 
-        label(
+        canvasLabel(
           ctx,
           curve.name,
-          legendX + 18,
-          pad - 16
+          legendX + 20,
+          23
         );
 
-        legendX += 92;
+        legendX += 105;
       }
+    );
+
+
+    canvasLabel(
+      ctx,
+      "0",
+      pad,
+      h - 12,
+      "center"
+    );
+
+    canvasLabel(
+      ctx,
+      "T",
+      (
+        pad +
+        w - pad
+      ) /
+      2,
+      h - 12,
+      "center"
+    );
+
+    canvasLabel(
+      ctx,
+      "2T",
+      w - pad,
+      h - 12,
+      "center"
     );
   }
 
-  function drawCircleProjection(p) {
-    const canvas =
-      prepCanvas(
+
+  function drawCircleModel(
+    p
+  ) {
+    const prepared =
+      prepareCanvas(
         $("circleCanvas")
       );
 
-    if (!canvas) return;
+    if (!prepared) {
+      return;
+    }
 
     const {
       ctx,
       w,
       h
-    } = canvas;
+    } = prepared;
 
     const cx =
-      w * 0.38;
+      w * 0.40;
 
     const cy =
-      h * 0.5;
+      h * 0.52;
 
     const radius =
       Math.min(
         w,
         h
       ) *
-      0.29;
+      0.28;
 
     const theta =
       p.omega *
@@ -1613,11 +2957,11 @@
       radius *
       Math.sin(theta);
 
-    ctx.strokeStyle =
-      "rgba(203,213,225,.22)";
 
-    ctx.lineWidth =
-      1.5;
+    ctx.strokeStyle =
+      "rgba(255,255,255,.22)";
+
+    ctx.lineWidth = 2;
 
     ctx.beginPath();
 
@@ -1631,13 +2975,13 @@
 
     ctx.stroke();
 
+
     ctx.beginPath();
 
     ctx.moveTo(
       cx -
         radius -
         20,
-
       cy
     );
 
@@ -1645,17 +2989,19 @@
       cx +
         radius +
         30,
-
       cy
     );
 
     ctx.stroke();
 
+
     ctx.strokeStyle =
       css(
-        "--violet",
-        "#a78bfa"
+        "--cherry",
+        "#e79ab4"
       );
+
+    ctx.lineWidth = 3;
 
     ctx.beginPath();
 
@@ -1671,8 +3017,9 @@
 
     ctx.stroke();
 
+
     ctx.strokeStyle =
-      "rgba(103,232,249,.55)";
+      "rgba(103,232,249,.60)";
 
     ctx.beginPath();
 
@@ -1688,10 +3035,11 @@
 
     ctx.stroke();
 
+
     ctx.fillStyle =
       css(
-        "--violet",
-        "#a78bfa"
+        "--cherry",
+        "#e79ab4"
       );
 
     ctx.beginPath();
@@ -1706,9 +3054,10 @@
 
     ctx.fill();
 
+
     ctx.fillStyle =
       css(
-        "--cyan",
+        "--diamond",
         "#67e8f9"
       );
 
@@ -1724,38 +3073,40 @@
 
     ctx.fill();
 
-    label(
+
+    canvasLabel(
       ctx,
       "uniform circular motion",
       cx,
-      25,
+      23,
       "center"
     );
 
-    label(
+    canvasLabel(
       ctx,
-      "projection = x(t)",
+      "SHM projection",
       pointX,
-      h * 0.92,
+      h * 0.90,
       "center"
     );
 
-    label(
-      ctx,
-      "+A",
-      cx + radius,
-      cy + 22,
-      "center"
-    );
-
-    label(
+    canvasLabel(
       ctx,
       "−A",
       cx - radius,
-      cy + 22,
+      cy + 23,
+      "center"
+    );
+
+    canvasLabel(
+      ctx,
+      "+A",
+      cx + radius,
+      cy + 23,
       "center"
     );
   }
+
 
   [
     "AInput",
@@ -1768,413 +3119,50 @@
       $(id)
         ?.addEventListener(
           "input",
-          () => {
-            if (
-              id ===
-              "tInput"
-            ) {
-              motion.time =
-                Number(
-                  $(id)
-                    .value
-                );
-            }
-
-            updateMotion();
-          }
+          updateMotionLab
         );
     }
   );
+
 
   $("playMotion")
     ?.addEventListener(
       "click",
       () => {
-        motion.playing =
-          !motion.playing;
+        motionState.playing =
+          !motionState.playing;
 
         $("playMotion")
           .textContent =
-          motion.playing
+          motionState.playing
             ? "Pause"
             : "Play";
 
-        motion.last =
+        motionState.lastTime =
           performance.now();
       }
     );
+
 
   $("resetMotion")
     ?.addEventListener(
       "click",
       () => {
-        motion.time = 0;
+        motionState.time = 0;
 
         if ($("tInput")) {
           $("tInput")
             .value = "0";
         }
 
-        updateMotion();
+        updateMotionLab();
       }
     );
 
-  /* ========================================================
-     ENERGY LAB
-  ======================================================== */
 
-  function updateEnergy() {
-    const ratio =
-      Number(
-        $("energyXInput")
-          ?.value || 0
-      );
-
-    const potential =
-      ratio ** 2;
-
-    const kinetic =
-      1 -
-      potential;
-
-    if ($("energyXOut")) {
-      $("energyXOut")
-        .textContent =
-        fmt(
-          ratio,
-          2
-        );
-    }
-
-    if ($("uBar")) {
-      $("uBar")
-        .style.width =
-        `${100 *
-          potential}%`;
-    }
-
-    if ($("kBar")) {
-      $("kBar")
-        .style.width =
-        `${100 *
-          kinetic}%`;
-    }
-
-    if ($("uPct")) {
-      $("uPct")
-        .textContent =
-        `${Math.round(
-          100 *
-          potential
-        )}%`;
-    }
-
-    if ($("kPct")) {
-      $("kPct")
-        .textContent =
-        `${Math.round(
-          100 *
-          kinetic
-        )}%`;
-    }
-
-    drawEnergy(ratio);
-  }
-
-  function drawEnergy(ratio) {
-    const canvas =
-      prepCanvas(
-        $("energyCanvas")
-      );
-
-    if (!canvas) return;
-
-    const {
-      ctx,
-      w,
-      h
-    } = canvas;
-
-    const pad = 48;
-
-    drawGrid(
-      ctx,
-      w,
-      h,
-      pad,
-      8,
-      5
-    );
-
-    const xPixel =
-      x =>
-        pad +
-        (
-          w -
-          2 * pad
-        ) *
-        (
-          x + 1
-        ) /
-        2;
-
-    const yPixel =
-      energy =>
-        h -
-        pad -
-        (
-          h -
-          2 * pad
-        ) *
-        energy;
-
-    const curves = [
-      {
-        colour:
-          css(
-            "--violet",
-            "#a78bfa"
-          ),
-
-        fn:
-          x =>
-            x * x,
-
-        name:
-          "U/E = (x/A)²"
-      },
-
-      {
-        colour:
-          css(
-            "--green",
-            "#34d399"
-          ),
-
-        fn:
-          x =>
-            1 -
-            x * x,
-
-        name:
-          "K/E = 1 − (x/A)²"
-      }
-    ];
-
-    curves.forEach(
-      curve => {
-        ctx.strokeStyle =
-          curve.colour;
-
-        ctx.lineWidth =
-          2.4;
-
-        ctx.beginPath();
-
-        for (
-          let i = 0;
-          i <= 300;
-          i++
-        ) {
-          const x =
-            -1 +
-            2 *
-            i /
-            300;
-
-          const px =
-            xPixel(x);
-
-          const py =
-            yPixel(
-              curve.fn(x)
-            );
-
-          if (i) {
-            ctx.lineTo(
-              px,
-              py
-            );
-          } else {
-            ctx.moveTo(
-              px,
-              py
-            );
-          }
-        }
-
-        ctx.stroke();
-      }
-    );
-
-    ctx.strokeStyle =
-      css(
-        "--cyan",
-        "#67e8f9"
-      );
-
-    ctx.setLineDash(
-      [5, 5]
-    );
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-      pad,
-      yPixel(1)
-    );
-
-    ctx.lineTo(
-      w - pad,
-      yPixel(1)
-    );
-
-    ctx.stroke();
-
-    ctx.setLineDash([]);
-
-    const potential =
-      ratio ** 2;
-
-    const kinetic =
-      1 -
-      potential;
-
-    [
-      {
-        energy:
-          potential,
-
-        colour:
-          css(
-            "--violet",
-            "#a78bfa"
-          )
-      },
-
-      {
-        energy:
-          kinetic,
-
-        colour:
-          css(
-            "--green",
-            "#34d399"
-          )
-      }
-    ].forEach(
-      point => {
-        ctx.fillStyle =
-          point.colour;
-
-        ctx.beginPath();
-
-        ctx.arc(
-          xPixel(
-            ratio
-          ),
-          yPixel(
-            point.energy
-          ),
-          7,
-          0,
-          Math.PI *
-            2
-        );
-
-        ctx.fill();
-      }
-    );
-
-    ctx.strokeStyle =
-      "rgba(255,255,255,.35)";
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-      xPixel(
-        ratio
-      ),
-      pad
-    );
-
-    ctx.lineTo(
-      xPixel(
-        ratio
-      ),
-      h - pad
-    );
-
-    ctx.stroke();
-
-    label(
-      ctx,
-      "−A",
-      xPixel(-1),
-      h - 16,
-      "center"
-    );
-
-    label(
-      ctx,
-      "0",
-      xPixel(0),
-      h - 16,
-      "center"
-    );
-
-    label(
-      ctx,
-      "+A",
-      xPixel(1),
-      h - 16,
-      "center"
-    );
-
-    label(
-      ctx,
-      "E",
-      pad - 10,
-      yPixel(1) + 4,
-      "right"
-    );
-
-    let legendX =
-      pad;
-
-    curves.forEach(
-      curve => {
-        ctx.fillStyle =
-          curve.colour;
-
-        ctx.fillRect(
-          legendX,
-          20,
-          12,
-          3
-        );
-
-        label(
-          ctx,
-          curve.name,
-          legendX + 18,
-          25
-        );
-
-        legendX += 170;
-      }
-    );
-  }
-
-  $("energyXInput")
-    ?.addEventListener(
-      "input",
-      updateEnergy
-    );
-
-  /* ========================================================
-     INITIAL CONDITIONS + PHASE
-  ======================================================== */
+  /* =========================================================
+     PHASE / INITIAL CONDITION SOLVER
+  ========================================================= */
 
   function solvePhase() {
     const x0 =
@@ -2201,25 +3189,21 @@
           ?.value
       );
 
-    const box =
+    const result =
       $("phaseResult");
 
-    if (!box) return;
+    if (!result) {
+      return;
+    }
 
     if (
-      !(
-        m > 0 &&
-        k > 0 &&
-        Number.isFinite(
-          x0
-        ) &&
-        Number.isFinite(
-          v0
-        )
-      )
+      !Number.isFinite(x0) ||
+      !Number.isFinite(v0) ||
+      !(m > 0) ||
+      !(k > 0)
     ) {
-      box.textContent =
-        "Enter finite x₀ and v₀, with positive m and k.";
+      result.textContent =
+        "Enter valid finite values with m > 0 and k > 0.";
 
       return;
     }
@@ -2229,7 +3213,7 @@
         k / m
       );
 
-    const A =
+    const amplitude =
       Math.sqrt(
         x0 ** 2 +
         (
@@ -2238,92 +3222,72 @@
         ) ** 2
       );
 
-    const phi =
+    const phase =
       Math.atan2(
         -v0 /
           omega,
-
         x0
       );
 
-    const T =
+    const period =
       2 *
       Math.PI /
       omega;
 
-    box.innerHTML = `
-      <b>
-        ω =
-        ${fmt(
-          omega,
-          3
-        )}
-        rad/s
-      </b>
+    result.innerHTML = `
+      <strong>
+        Step 1:
+      </strong>
 
-      <br>
+      ω = √(k/m)
+      = ${fmt(omega, 4)}
+      rad s⁻¹
 
-      T =
-      ${fmt(
-        T,
-        3
-      )}
-      s
+      <br><br>
 
-      <br>
+      <strong>
+        Step 2:
+      </strong>
 
       A =
       √[x₀² + (v₀/ω)²]
       =
-      <b>
-        ${fmt(
-          A,
-          4
-        )}
-        m
-      </b>
+      ${fmt(amplitude, 5)}
+      m
 
-      <br>
+      <br><br>
+
+      <strong>
+        Step 3:
+      </strong>
 
       φ =
       atan2(−v₀/ω, x₀)
       =
-      <b>
-        ${fmt(
-          phi,
-          3
-        )}
-        rad
-      </b>
+      ${fmt(phase, 4)}
+      rad
 
       <br><br>
 
-      <span class="subtle">
+      <strong>
+        Final motion:
+      </strong>
 
-        Check:
+      x(t) =
+      ${fmt(amplitude, 5)}
+      cos(
+      ${fmt(omega, 4)}t
+      ${phase >= 0 ? "+" : "−"}
+      ${fmt(Math.abs(phase), 4)}
+      )
 
-        x(0) =
-        ${fmt(
-          A *
-          Math.cos(phi),
-          4
-        )}
-        m
+      <br><br>
 
-        and
-
-        v(0) =
-        ${fmt(
-          -omega *
-          A *
-          Math.sin(phi),
-          4
-        )}
-        m/s.
-
-      </span>
+      Period:
+      ${fmt(period, 4)} s
     `;
   }
+
 
   $("solvePhase")
     ?.addEventListener(
@@ -2331,24 +3295,390 @@
       solvePhase
     );
 
+
   solvePhase();
 
-  /* ========================================================
-     PENDULUM
-  ======================================================== */
 
-  const pendulum = {
-    time: 0
-  };
+  /* =========================================================
+     ENERGY LAB
+  ========================================================= */
 
-  function pendulumParams() {
+  function updateEnergyLab() {
+    const ratio =
+      Number(
+        $("energyXInput")
+          ?.value || 0
+      );
+
+    const potentialFraction =
+      ratio ** 2;
+
+    const kineticFraction =
+      1 -
+      potentialFraction;
+
+
+    if ($("energyXOut")) {
+      $("energyXOut")
+        .textContent =
+        fmt(
+          ratio,
+          2
+        );
+    }
+
+    if ($("uBar")) {
+      $("uBar")
+        .style.width =
+        `${
+          potentialFraction *
+          100
+        }%`;
+    }
+
+    if ($("kBar")) {
+      $("kBar")
+        .style.width =
+        `${
+          kineticFraction *
+          100
+        }%`;
+    }
+
+    if ($("uPct")) {
+      $("uPct")
+        .textContent =
+        `${Math.round(
+          potentialFraction *
+          100
+        )}%`;
+    }
+
+    if ($("kPct")) {
+      $("kPct")
+        .textContent =
+        `${Math.round(
+          kineticFraction *
+          100
+        )}%`;
+    }
+
+    drawEnergyGraph(
+      ratio
+    );
+  }
+
+
+  function drawEnergyGraph(
+    ratio
+  ) {
+    const prepared =
+      prepareCanvas(
+        $("energyCanvas")
+      );
+
+    if (!prepared) {
+      return;
+    }
+
+    const {
+      ctx,
+      w,
+      h
+    } = prepared;
+
+    const pad = 48;
+
+    drawGrid(
+      ctx,
+      w,
+      h,
+      pad,
+      8,
+      5
+    );
+
+
+    const xToPixel =
+      x =>
+        pad +
+        (
+          w -
+          2 * pad
+        ) *
+        (
+          x + 1
+        ) /
+        2;
+
+    const yToPixel =
+      energy =>
+        h -
+        pad -
+        (
+          h -
+          2 * pad
+        ) *
+        energy;
+
+
+    const curves = [
+      {
+        name:
+          "U/E = (x/A)²",
+        colour:
+          css(
+            "--cherry",
+            "#e79ab4"
+          ),
+        fn:
+          x =>
+            x ** 2
+      },
+
+      {
+        name:
+          "K/E = 1−(x/A)²",
+        colour:
+          css(
+            "--emerald",
+            "#54d179"
+          ),
+        fn:
+          x =>
+            1 -
+            x ** 2
+      }
+    ];
+
+
+    curves.forEach(
+      curve => {
+        ctx.strokeStyle =
+          curve.colour;
+
+        ctx.lineWidth = 2.5;
+
+        ctx.beginPath();
+
+        for (
+          let i = 0;
+          i <= 400;
+          i++
+        ) {
+          const x =
+            -1 +
+            2 *
+            i /
+            400;
+
+          const px =
+            xToPixel(x);
+
+          const py =
+            yToPixel(
+              curve.fn(x)
+            );
+
+          if (i) {
+            ctx.lineTo(
+              px,
+              py
+            );
+          } else {
+            ctx.moveTo(
+              px,
+              py
+            );
+          }
+        }
+
+        ctx.stroke();
+      }
+    );
+
+
+    ctx.strokeStyle =
+      css(
+        "--gold",
+        "#f1c75b"
+      );
+
+    ctx.setLineDash(
+      [6, 5]
+    );
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      pad,
+      yToPixel(1)
+    );
+
+    ctx.lineTo(
+      w - pad,
+      yToPixel(1)
+    );
+
+    ctx.stroke();
+
+    ctx.setLineDash([]);
+
+
+    const potential =
+      ratio ** 2;
+
+    const kinetic =
+      1 -
+      potential;
+
+
+    [
+      {
+        value:
+          potential,
+        colour:
+          css(
+            "--cherry",
+            "#e79ab4"
+          )
+      },
+
+      {
+        value:
+          kinetic,
+        colour:
+          css(
+            "--emerald",
+            "#54d179"
+          )
+      }
+    ].forEach(
+      point => {
+        ctx.fillStyle =
+          point.colour;
+
+        ctx.beginPath();
+
+        ctx.arc(
+          xToPixel(
+            ratio
+          ),
+          yToPixel(
+            point.value
+          ),
+          7,
+          0,
+          Math.PI * 2
+        );
+
+        ctx.fill();
+      }
+    );
+
+
+    ctx.strokeStyle =
+      "rgba(255,255,255,.35)";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      xToPixel(
+        ratio
+      ),
+      pad
+    );
+
+    ctx.lineTo(
+      xToPixel(
+        ratio
+      ),
+      h - pad
+    );
+
+    ctx.stroke();
+
+
+    canvasLabel(
+      ctx,
+      "−A",
+      xToPixel(-1),
+      h - 14,
+      "center"
+    );
+
+    canvasLabel(
+      ctx,
+      "0",
+      xToPixel(0),
+      h - 14,
+      "center"
+    );
+
+    canvasLabel(
+      ctx,
+      "+A",
+      xToPixel(1),
+      h - 14,
+      "center"
+    );
+
+    canvasLabel(
+      ctx,
+      "total E",
+      pad - 6,
+      yToPixel(1) + 4,
+      "right"
+    );
+
+
+    let legendX =
+      pad;
+
+    curves.forEach(
+      curve => {
+        ctx.fillStyle =
+          curve.colour;
+
+        ctx.fillRect(
+          legendX,
+          19,
+          13,
+          3
+        );
+
+        canvasLabel(
+          ctx,
+          curve.name,
+          legendX + 19,
+          24
+        );
+
+        legendX += 175;
+      }
+    );
+  }
+
+
+  $("energyXInput")
+    ?.addEventListener(
+      "input",
+      updateEnergyLab
+    );
+
+
+  /* =========================================================
+     PENDULUM LAB
+  ========================================================= */
+
+  function pendulumParameters() {
     const L =
       Number(
         $("pendLength")
           ?.value || 1
       );
 
-    const angleDeg =
+    const angleDegrees =
       Number(
         $("pendAngle")
           ?.value || 10
@@ -2362,32 +3692,34 @@
         g / L
       );
 
+    const period =
+      2 *
+      Math.PI /
+      omega;
+
     return {
       L,
-
-      angleDeg,
-
-      theta0:
-        angleDeg *
+      angleDegrees,
+      angleRadians:
+        angleDegrees *
         Math.PI /
         180,
-
-      g,
-
       omega,
-
-      T:
-        2 *
-        Math.PI /
-        omega
+      period
     };
   }
 
-  function updatePendulum() {
-    const p =
-      pendulumParams();
 
-    if ($("pendLengthOut")) {
+  function updatePendulumLab(
+    time = 0
+  ) {
+    const p =
+      pendulumParameters();
+
+
+    if (
+      $("pendLengthOut")
+    ) {
       $("pendLengthOut")
         .textContent =
         `${fmt(
@@ -2396,25 +3728,31 @@
         )} m`;
     }
 
-    if ($("pendAngleOut")) {
+    if (
+      $("pendAngleOut")
+    ) {
       $("pendAngleOut")
         .textContent =
         `${fmt(
-          p.angleDeg,
+          p.angleDegrees,
           0
         )}°`;
     }
 
-    if ($("pendPeriod")) {
+    if (
+      $("pendPeriod")
+    ) {
       $("pendPeriod")
         .textContent =
         `${fmt(
-          p.T,
+          p.period,
           2
         )} s`;
     }
 
-    if ($("pendOmega")) {
+    if (
+      $("pendOmega")
+    ) {
       $("pendOmega")
         .textContent =
         `${fmt(
@@ -2423,39 +3761,49 @@
         )} rad/s`;
     }
 
-    drawPendulum(p);
+
+    drawPendulum(
+      p,
+      time
+    );
   }
 
-  function drawPendulum(p) {
-    const canvas =
-      prepCanvas(
+
+  function drawPendulum(
+    p,
+    time
+  ) {
+    const prepared =
+      prepareCanvas(
         $("pendulumCanvas")
       );
 
-    if (!canvas) return;
+    if (!prepared) {
+      return;
+    }
 
     const {
       ctx,
       w,
       h
-    } = canvas;
+    } = prepared;
 
     const theta =
-      p.theta0 *
+      p.angleRadians *
       Math.cos(
         p.omega *
-        pendulum.time
+        time
       );
 
     const pivotX =
       w / 2;
 
     const pivotY =
-      h * 0.14;
+      h * 0.13;
 
     const length =
       Math.min(
-        h * 0.62,
+        h * 0.63,
         w * 0.34
       );
 
@@ -2469,8 +3817,20 @@
       length *
       Math.cos(theta);
 
+
+    ctx.fillStyle =
+      "#4b3926";
+
+    ctx.fillRect(
+      pivotX - 85,
+      pivotY - 12,
+      170,
+      12
+    );
+
+
     ctx.strokeStyle =
-      "rgba(203,213,225,.25)";
+      "rgba(255,255,255,.26)";
 
     ctx.setLineDash(
       [5, 5]
@@ -2487,26 +3847,17 @@
       pivotX,
       pivotY +
         length +
-        25
+        30
     );
 
     ctx.stroke();
 
     ctx.setLineDash([]);
 
-    ctx.fillStyle =
-      "rgba(203,213,225,.60)";
-
-    ctx.fillRect(
-      pivotX - 60,
-      pivotY - 9,
-      120,
-      9
-    );
 
     ctx.strokeStyle =
       css(
-        "--cyan",
+        "--diamond",
         "#67e8f9"
       );
 
@@ -2526,16 +3877,17 @@
 
     ctx.stroke();
 
+
     ctx.fillStyle =
       css(
-        "--violet",
-        "#a78bfa"
+        "--cherry",
+        "#e79ab4"
       );
 
-    ctx.shadowColor =
-      "rgba(167,139,250,.45)";
+    ctx.strokeStyle =
+      "#693d50";
 
-    ctx.shadowBlur = 20;
+    ctx.lineWidth = 4;
 
     ctx.beginPath();
 
@@ -2549,80 +3901,85 @@
 
     ctx.fill();
 
-    ctx.shadowBlur = 0;
+    ctx.stroke();
 
-    label(
+
+    canvasLabel(
       ctx,
-      `θ(t) ≈ ${fmt(
+      `θ ≈ ${fmt(
         theta *
         180 /
         Math.PI,
         1
       )}°`,
       16,
-      24
+      22
     );
 
-    label(
+    canvasLabel(
       ctx,
-      `T ≈ ${fmt(
-        p.T,
-        2
+      `T = ${fmt(
+        p.period,
+        3
       )} s`,
       16,
       42
     );
 
+
     if (
-      p.angleDeg >
+      p.angleDegrees >
       10
     ) {
-      ctx.fillStyle =
-        css(
-          "--amber",
-          "#fbbf24"
-        );
-
-      ctx.font =
-        "11px system-ui";
-
-      ctx.textAlign =
-        "center";
-
-      ctx.fillText(
-        "Large-angle warning: SHM approximation becomes less accurate",
+      canvasLabel(
+        ctx,
+        "large-angle warning: sinθ ≈ θ becomes progressively less accurate",
         w / 2,
-        h - 18
+        h - 16,
+        "center",
+        css(
+          "--gold",
+          "#f1c75b"
+        )
       );
     }
   }
 
+
   $("pendLength")
     ?.addEventListener(
       "input",
-      updatePendulum
+      () =>
+        updatePendulumLab(
+          performance.now() /
+          1000
+        )
     );
+
 
   $("pendAngle")
     ?.addEventListener(
       "input",
-      updatePendulum
+      () =>
+        updatePendulumLab(
+          performance.now() /
+          1000
+        )
     );
 
-  /* ========================================================
-     DAMPING
-  ======================================================== */
 
-  function dampingParams() {
+  /* =========================================================
+     DAMPING LAB
+  ========================================================= */
+
+  function dampingParameters() {
     /*
-      The HTML exposes only b,
-      so the simulator uses
-
+      Fixed demonstration values:
       m = 1 kg
       k = 16 N/m
 
-      This gives natural
-      angular frequency 4 rad/s.
+      Thus ω0 = 4 rad/s
+      and bcritical = 8 kg/s.
     */
 
     const m = 1;
@@ -2640,45 +3997,79 @@
         k / m
       );
 
-    const inside =
+    const critical =
+      2 *
+      Math.sqrt(
+        m * k
+      );
+
+    const discriminant =
       k / m -
-      b ** 2 /
+      (
+        b **
+        2
+      ) /
       (
         4 *
-        m ** 2
+        m **
+        2
       );
+
+    let regime =
+      "critical";
+
+    if (
+      b <
+      critical -
+      1e-6
+    ) {
+      regime =
+        "underdamped";
+    }
+
+    if (
+      b >
+      critical +
+      1e-6
+    ) {
+      regime =
+        "overdamped";
+    }
+
+    const omegaD =
+      discriminant > 0
+        ? Math.sqrt(
+            discriminant
+          )
+        : 0;
+
+    const ampHalf =
+      b > 0
+        ?
+        2 *
+        m *
+        Math.log(2) /
+        b
+        :
+        Infinity;
 
     return {
       m,
       k,
       b,
       omega0,
-
-      underdamped:
-        inside > 0,
-
-      omegaD:
-        inside > 0
-          ? Math.sqrt(
-              inside
-            )
-          : 0,
-
-      ampHalfLife:
-        b > 0
-          ?
-          2 *
-          m *
-          Math.log(2) /
-          b
-          :
-          Infinity
+      critical,
+      regime,
+      omegaD,
+      ampHalf
     };
   }
 
-  function updateDamping() {
+
+  function updateDampingLab() {
     const p =
-      dampingParams();
+      dampingParameters();
+
 
     if ($("dampingOut")) {
       $("dampingOut")
@@ -2689,70 +4080,199 @@
         )} kg/s`;
     }
 
+
     if ($("dampedOmega")) {
-      $("dampedOmega")
-        .textContent =
-        p.underdamped
-          ?
+      if (
+        p.regime ===
+        "underdamped"
+      ) {
+        $("dampedOmega")
+          .textContent =
           `${fmt(
             p.omegaD,
             2
-          )} rad/s`
-          :
-          "not oscillatory";
+          )} rad/s`;
+      } else {
+        $("dampedOmega")
+          .textContent =
+          p.regime;
+      }
     }
+
 
     if ($("ampHalfLife")) {
       $("ampHalfLife")
         .textContent =
         Number.isFinite(
-          p.ampHalfLife
+          p.ampHalf
         )
           ?
           `${fmt(
-            p.ampHalfLife,
+            p.ampHalf,
             2
           )} s`
           :
           "∞";
     }
 
-    drawDamping(p);
+
+    drawDampingGraph(p);
   }
 
-  function drawDamping(p) {
-    const canvas =
-      prepCanvas(
+
+  function dampedDisplacement(
+    p,
+    t
+  ) {
+    const {
+      m,
+      k,
+      b,
+      critical,
+      regime
+    } = p;
+
+
+    if (
+      regime ===
+      "underdamped"
+    ) {
+      return (
+        Math.exp(
+          -b *
+          t /
+          (
+            2 *
+            m
+          )
+        ) *
+        Math.cos(
+          p.omegaD *
+          t
+        )
+      );
+    }
+
+
+    if (
+      Math.abs(
+        b -
+        critical
+      ) < 1e-6
+    ) {
+      const gamma =
+        b /
+        (
+          2 *
+          m
+        );
+
+      return (
+        1 +
+        gamma *
+        t
+      ) *
+      Math.exp(
+        -gamma *
+        t
+      );
+    }
+
+
+    const discriminant =
+      Math.sqrt(
+        b ** 2 -
+        4 *
+        m *
+        k
+      );
+
+    const r1 =
+      (
+        -b +
+        discriminant
+      ) /
+      (
+        2 *
+        m
+      );
+
+    const r2 =
+      (
+        -b -
+        discriminant
+      ) /
+      (
+        2 *
+        m
+      );
+
+
+    /*
+      Choose constants so that
+      x(0)=1 and v(0)=0.
+    */
+
+    const c1 =
+      -r2 /
+      (
+        r1 -
+        r2
+      );
+
+    const c2 =
+      r1 /
+      (
+        r1 -
+        r2
+      );
+
+    return (
+      c1 *
+      Math.exp(
+        r1 *
+        t
+      ) +
+      c2 *
+      Math.exp(
+        r2 *
+        t
+      )
+    );
+  }
+
+
+  function drawDampingGraph(
+    p
+  ) {
+    const prepared =
+      prepareCanvas(
         $("dampingCanvas")
       );
 
-    if (!canvas) return;
+    if (!prepared) {
+      return;
+    }
 
     const {
       ctx,
       w,
       h
-    } = canvas;
+    } = prepared;
 
-    const pad = 46;
+    const pad = 45;
+
+    const timeMax =
+      8;
 
     drawGrid(
       ctx,
       w,
       h,
       pad,
-      10,
+      8,
       6
     );
-
-    const T0 =
-      2 *
-      Math.PI /
-      p.omega0;
-
-    const timeMax =
-      6 *
-      T0;
 
     const xPixel =
       time =>
@@ -2765,129 +4285,18 @@
         timeMax;
 
     const yPixel =
-      displacement =>
+      value =>
         h / 2 -
         (
           h -
           2 * pad
         ) *
-        0.39 *
-        displacement;
+        0.38 *
+        value;
 
-    if (
-      p.underdamped
-    ) {
-      ctx.strokeStyle =
-        css(
-          "--cyan",
-          "#67e8f9"
-        );
-
-      ctx.lineWidth =
-        2.2;
-
-      ctx.beginPath();
-
-      for (
-        let i = 0;
-        i <= 600;
-        i++
-      ) {
-        const time =
-          timeMax *
-          i /
-          600;
-
-        const x =
-          Math.exp(
-            -p.b *
-            time /
-            (
-              2 *
-              p.m
-            )
-          ) *
-          Math.cos(
-            p.omegaD *
-            time
-          );
-
-        if (i) {
-          ctx.lineTo(
-            xPixel(time),
-            yPixel(x)
-          );
-        } else {
-          ctx.moveTo(
-            xPixel(time),
-            yPixel(x)
-          );
-        }
-      }
-
-      ctx.stroke();
-
-      [
-        1,
-        -1
-      ].forEach(
-        sign => {
-          ctx.strokeStyle =
-            "rgba(167,139,250,.58)";
-
-          ctx.setLineDash(
-            [5, 5]
-          );
-
-          ctx.beginPath();
-
-          for (
-            let i = 0;
-            i <= 300;
-            i++
-          ) {
-            const time =
-              timeMax *
-              i /
-              300;
-
-            const envelope =
-              sign *
-              Math.exp(
-                -p.b *
-                time /
-                (
-                  2 *
-                  p.m
-                )
-              );
-
-            if (i) {
-              ctx.lineTo(
-                xPixel(time),
-                yPixel(
-                  envelope
-                )
-              );
-            } else {
-              ctx.moveTo(
-                xPixel(time),
-                yPixel(
-                  envelope
-                )
-              );
-            }
-          }
-
-          ctx.stroke();
-
-          ctx.setLineDash([]);
-        }
-      );
-    }
 
     ctx.strokeStyle =
-      "rgba(203,213,225,.32)";
+      "rgba(255,255,255,.24)";
 
     ctx.beginPath();
 
@@ -2903,59 +4312,192 @@
 
     ctx.stroke();
 
-    label(
-      ctx,
-      "time →",
-      w - pad,
-      h - 14,
-      "right"
-    );
 
-    label(
+    ctx.strokeStyle =
+      css(
+        "--diamond",
+        "#67e8f9"
+      );
+
+    ctx.lineWidth = 2.5;
+
+    ctx.beginPath();
+
+    for (
+      let i = 0;
+      i <= 600;
+      i++
+    ) {
+      const t =
+        timeMax *
+        i /
+        600;
+
+      const x =
+        dampedDisplacement(
+          p,
+          t
+        );
+
+      const px =
+        xPixel(t);
+
+      const py =
+        yPixel(x);
+
+      if (i) {
+        ctx.lineTo(
+          px,
+          py
+        );
+      } else {
+        ctx.moveTo(
+          px,
+          py
+        );
+      }
+    }
+
+    ctx.stroke();
+
+
+    if (
+      p.regime ===
+      "underdamped"
+    ) {
+      [
+        1,
+        -1
+      ].forEach(
+        sign => {
+          ctx.strokeStyle =
+            "rgba(231,154,180,.55)";
+
+          ctx.setLineDash(
+            [6, 5]
+          );
+
+          ctx.beginPath();
+
+          for (
+            let i = 0;
+            i <= 300;
+            i++
+          ) {
+            const t =
+              timeMax *
+              i /
+              300;
+
+            const envelope =
+              sign *
+              Math.exp(
+                -p.b *
+                t /
+                (
+                  2 *
+                  p.m
+                )
+              );
+
+            const px =
+              xPixel(t);
+
+            const py =
+              yPixel(
+                envelope
+              );
+
+            if (i) {
+              ctx.lineTo(
+                px,
+                py
+              );
+            } else {
+              ctx.moveTo(
+                px,
+                py
+              );
+            }
+          }
+
+          ctx.stroke();
+
+          ctx.setLineDash([]);
+        }
+      );
+    }
+
+
+    canvasLabel(
       ctx,
-      "damped displacement with ± exponential envelope",
+      `regime: ${p.regime}`,
       pad,
       20
     );
+
+    canvasLabel(
+      ctx,
+      `bcritical = ${fmt(
+        p.critical,
+        2
+      )} kg/s`,
+      pad + 170,
+      20
+    );
+
+    canvasLabel(
+      ctx,
+      "time →",
+      w - pad,
+      h - 13,
+      "right"
+    );
   }
+
 
   $("dampingInput")
     ?.addEventListener(
       "input",
-      updateDamping
+      updateDampingLab
     );
 
-  /* ========================================================
-     RESONANCE
-  ======================================================== */
 
-  function responseMagnification(
-    ratio,
-    zeta
+  /* =========================================================
+     RESONANCE LAB
+  ========================================================= */
+
+  function responseMagnitude(
+    omega,
+    m,
+    k,
+    b,
+    force = 1
   ) {
     return (
-      1 /
+      force /
       Math.sqrt(
         (
-          1 -
-          ratio ** 2
-        ) ** 2 +
+          k -
+          m *
+          omega **
+          2
+        ) **
+          2 +
         (
-          2 *
-          zeta *
-          ratio
-        ) ** 2
+          b *
+          omega
+        ) **
+          2
       )
     );
   }
 
-  function resonanceParams() {
-    /*
-      Fixed natural angular
-      frequency for the graph.
-    */
 
-    const omega0 = 4;
+  function resonanceParameters() {
+    const m = 1;
+
+    const k = 16;
 
     const dampingControl =
       Number(
@@ -2963,15 +4505,8 @@
           ?.value || 0.3
       );
 
-    /*
-      Convert the simple slider
-      into a damping-ratio-style
-      quantity.
-    */
-
-    const zeta =
-      dampingControl /
-      5;
+    const b =
+      dampingControl;
 
     const omegaDrive =
       Number(
@@ -2979,27 +4514,31 @@
           ?.value || 4
       );
 
-    const ratio =
-      omegaDrive /
-      omega0;
+    const omega0 =
+      Math.sqrt(
+        k / m
+      );
 
     return {
-      omega0,
-      dampingControl,
-      zeta,
+      m,
+      k,
+      b,
       omegaDrive,
-      ratio
+      omega0
     };
   }
 
-  function updateResonance() {
-    const p =
-      resonanceParams();
 
-    const magnification =
-      responseMagnification(
-        p.ratio,
-        p.zeta
+  function updateResonanceLab() {
+    const p =
+      resonanceParameters();
+
+    const amplitude =
+      responseMagnitude(
+        p.omegaDrive,
+        p.m,
+        p.k,
+        p.b
       );
 
     if (
@@ -3008,7 +4547,7 @@
       $("resDampingOut")
         .textContent =
         fmt(
-          p.dampingControl,
+          p.b,
           2
         );
     }
@@ -3027,106 +4566,74 @@
     if (
       $("resonanceReadout")
     ) {
+      const ratio =
+        p.omegaDrive /
+        p.omega0;
+
       $("resonanceReadout")
         .innerHTML = `
-        Natural angular frequency:
-        <b>
-          ω₀ = 4.00 rad/s
-        </b>
+          Natural frequency:
+          <strong>
+            ω₀ =
+            ${fmt(
+              p.omega0,
+              2
+            )}
+            rad/s
+          </strong>
 
-        <br>
+          <br>
 
-        Drive ratio:
+          Driving ratio:
+          <strong>
+            ω/ω₀ =
+            ${fmt(
+              ratio,
+              2
+            )}
+          </strong>
 
-        <b>
-          ωdrive/ω₀ =
-          ${fmt(
-            p.ratio,
-            2
-          )}
-        </b>
+          <br>
 
-        <br>
-
-        Relative steady-state
-        response:
-
-        <b>
-          ${fmt(
-            magnification,
-            2
-          )}
-        </b>
-
-        <br>
-
-        <span class="subtle">
-
-          Move the driving
-          frequency through
-          4 rad/s.
-
-          Then increase damping
-          and notice that the
-          resonance peak becomes
-          lower and broader.
-
-        </span>
-      `;
+          Response amplitude
+          for F₀=1 N:
+          <strong>
+            X =
+            ${fmt(
+              amplitude,
+              4
+            )}
+            m
+          </strong>
+        `;
     }
 
-    drawResonance(p);
+    drawResonanceGraph(p);
   }
 
-  function drawResonance(p) {
-    const canvas =
-      prepCanvas(
+
+  function drawResonanceGraph(
+    p
+  ) {
+    const prepared =
+      prepareCanvas(
         $("resonanceCanvas")
       );
 
-    if (!canvas) return;
+    if (!prepared) {
+      return;
+    }
 
     const {
       ctx,
       w,
       h
-    } = canvas;
+    } = prepared;
 
-    const pad = 44;
+    const pad = 46;
 
-    const maxOmega = 8;
-
-    let peak = 0;
-
-    for (
-      let i = 0;
-      i <= 500;
-      i++
-    ) {
-      const omega =
-        maxOmega *
-        i /
-        500;
-
-      peak =
-        Math.max(
-          peak,
-
-          responseMagnification(
-            omega /
-            p.omega0,
-
-            p.zeta
-          )
-        );
-    }
-
-    const yMax =
-      Math.max(
-        2,
-        peak *
-        1.12
-      );
+    const omegaMax =
+      8;
 
     drawGrid(
       ctx,
@@ -3137,6 +4644,43 @@
       5
     );
 
+
+    let maximum =
+      0;
+
+    for (
+      let i = 0;
+      i <= 600;
+      i++
+    ) {
+      const omega =
+        omegaMax *
+        i /
+        600;
+
+      maximum =
+        Math.max(
+          maximum,
+          responseMagnitude(
+            omega,
+            p.m,
+            p.k,
+            p.b
+          )
+        );
+    }
+
+
+    maximum =
+      Math.min(
+        Math.max(
+          maximum,
+          0.1
+        ),
+        5
+      );
+
+
     const xPixel =
       omega =>
         pad +
@@ -3145,7 +4689,7 @@
           2 * pad
         ) *
         omega /
-        maxOmega;
+        omegaMax;
 
     const yPixel =
       amplitude =>
@@ -3156,16 +4700,16 @@
           2 * pad
         ) *
         amplitude /
-        yMax;
+        maximum;
+
 
     ctx.strokeStyle =
       css(
-        "--cyan",
+        "--diamond",
         "#67e8f9"
       );
 
-    ctx.lineWidth =
-      2.4;
+    ctx.lineWidth = 2.5;
 
     ctx.beginPath();
 
@@ -3175,45 +4719,52 @@
       i++
     ) {
       const omega =
-        maxOmega *
+        omegaMax *
         i /
         600;
 
       const amplitude =
-        responseMagnification(
-          omega /
-          p.omega0,
+        Math.min(
+          responseMagnitude(
+            omega,
+            p.m,
+            p.k,
+            p.b
+          ),
+          maximum
+        );
 
-          p.zeta
+      const px =
+        xPixel(
+          omega
+        );
+
+      const py =
+        yPixel(
+          amplitude
         );
 
       if (i) {
         ctx.lineTo(
-          xPixel(
-            omega
-          ),
-
-          yPixel(
-            amplitude
-          )
+          px,
+          py
         );
       } else {
         ctx.moveTo(
-          xPixel(
-            omega
-          ),
-
-          yPixel(
-            amplitude
-          )
+          px,
+          py
         );
       }
     }
 
     ctx.stroke();
 
+
     ctx.strokeStyle =
-      "rgba(251,191,36,.62)";
+      css(
+        "--gold",
+        "#f1c75b"
+      );
 
     ctx.setLineDash(
       [5, 5]
@@ -3225,7 +4776,6 @@
       xPixel(
         p.omega0
       ),
-
       pad
     );
 
@@ -3233,7 +4783,6 @@
       xPixel(
         p.omega0
       ),
-
       h - pad
     );
 
@@ -3241,16 +4790,22 @@
 
     ctx.setLineDash([]);
 
-    const chosenAmplitude =
-      responseMagnification(
-        p.ratio,
-        p.zeta
+
+    const selectedAmplitude =
+      Math.min(
+        responseMagnitude(
+          p.omegaDrive,
+          p.m,
+          p.k,
+          p.b
+        ),
+        maximum
       );
 
     ctx.fillStyle =
       css(
-        "--violet",
-        "#a78bfa"
+        "--cherry",
+        "#e79ab4"
       );
 
     ctx.beginPath();
@@ -3259,111 +4814,1101 @@
       xPixel(
         p.omegaDrive
       ),
-
       yPixel(
-        chosenAmplitude
+        selectedAmplitude
       ),
-
       7,
       0,
-      Math.PI * 2
+      Math.PI *
+        2
     );
 
     ctx.fill();
 
-    label(
-      ctx,
-      "0",
-      xPixel(0),
-      h - 14,
-      "center"
-    );
 
-    label(
+    canvasLabel(
       ctx,
-      "ω₀ = 4",
-      xPixel(4),
-      h - 14,
-      "center"
-    );
-
-    label(
-      ctx,
-      "8 rad/s",
-      xPixel(8),
-      h - 14,
-      "center"
-    );
-
-    label(
-      ctx,
-      "relative amplitude",
+      "response amplitude X",
       pad,
       20
     );
+
+    canvasLabel(
+      ctx,
+      "ω₀",
+      xPixel(
+        p.omega0
+      ),
+      h - 13,
+      "center"
+    );
+
+    canvasLabel(
+      ctx,
+      "driving angular frequency →",
+      w - pad,
+      h - 13,
+      "right"
+    );
   }
+
 
   $("resDamping")
     ?.addEventListener(
       "input",
-      updateResonance
+      updateResonanceLab
     );
+
 
   $("driveFreq")
     ?.addEventListener(
       "input",
-      updateResonance
+      updateResonanceLab
     );
 
-  /* ========================================================
-     PRACTICE QUESTION GENERATOR
-  ======================================================== */
 
-  const random =
-    (
-      min,
-      max,
-      step = 1
-    ) =>
-      Math.round(
+  /* =========================================================
+     PRACTICE PAPERS
+  ========================================================= */
+
+  let currentPaper =
+    "physics";
+
+  let paperTimerSeconds =
+    60 * 60;
+
+  let paperTimerRunning =
+    false;
+
+  let paperTimerInterval =
+    null;
+
+
+  function physicsPaper() {
+    const m1 =
+      choose(
+        [
+          0.4,
+          0.5,
+          0.8,
+          1.2
+        ]
+      );
+
+    const k1 =
+      choose(
+        [
+          32,
+          50,
+          72,
+          98
+        ]
+      );
+
+    const A1 =
+      choose(
+        [
+          0.08,
+          0.10,
+          0.12,
+          0.15
+        ]
+      );
+
+    const omega1 =
+      Math.sqrt(
+        k1 / m1
+      );
+
+    const T1 =
+      2 *
+      Math.PI /
+      omega1;
+
+    const vmax =
+      omega1 *
+      A1;
+
+
+    const L =
+      choose(
+        [
+          0.6,
+          0.8,
+          1.0,
+          1.2
+        ]
+      );
+
+    const pendT =
+      2 *
+      Math.PI *
+      Math.sqrt(
+        L /
+        9.81
+      );
+
+
+    return [
+      {
+        marks: 6,
+        question:
+          `A block of mass ${m1} kg is attached to an ideal horizontal spring of spring constant ${k1} N m⁻¹. Derive the equation of motion and determine its angular frequency and period.`,
+
+        scheme: `
+          <strong>Method:</strong>
+          use F = −kx and F = mx¨.
+
+          <br><br>
+
+          mx¨ = −kx
+
+          <br>
+
+          x¨ + (k/m)x = 0.
+
+          <br><br>
+
+          Compare with x¨ + ω²x = 0:
+
+          <br>
+
+          ω = √(k/m)
+          = ${fmt(omega1, 3)} rad s⁻¹.
+
+          <br>
+
+          T = 2π/ω
+          = ${fmt(T1, 3)} s.
+
+          <br><br>
+
+          <strong>Physics:</strong>
+          the minus sign represents the restoring direction.
+        `
+      },
+
+
+      {
+        marks: 5,
+        question:
+          `The oscillator above has amplitude ${A1} m. Find its maximum speed and state where in the motion that speed occurs.`,
+
+        scheme: `
+          v = −ωA sin(ωt+φ).
+
+          Therefore the largest possible magnitude is
+
+          <br><br>
+
+          vmax = ωA
+          = ${fmt(vmax, 3)} m s⁻¹.
+
+          <br><br>
+
+          This occurs at equilibrium, x = 0.
+        `
+      },
+
+
+      {
+        marks: 6,
+        question:
+          `Show, without using time explicitly, that the speed of an SHM oscillator satisfies v² = ω²(A²−x²). Explain what the equation predicts at x = 0 and x = ±A.`,
+
+        scheme: `
+          Start from
+
+          x/A = cosθ
+
+          and
+
+          v/(ωA) = −sinθ.
+
+          <br><br>
+
+          Square and add:
+
+          x²/A² +
+          v²/(ω²A²)
+          = 1.
+
+          <br><br>
+
+          Therefore
+
+          v² = ω²(A²−x²).
+
+          <br><br>
+
+          At x = 0:
+          |v| = ωA, maximum.
+
+          <br>
+
+          At x = ±A:
+          v = 0.
+        `
+      },
+
+
+      {
+        marks: 7,
+        question:
+          `For a spring oscillator, derive K = ½k(A²−x²) from conservation of energy. Use the result to explain why the acceleration can be maximum while the speed is zero.`,
+
+        scheme: `
+          Total energy:
+
+          E = ½kA².
+
+          <br>
+
+          Potential energy:
+
+          U = ½kx².
+
+          <br>
+
+          K = E − U
+
+          <br>
+
+          = ½k(A²−x²).
+
+          <br><br>
+
+          At x = ±A,
+          K = 0 and therefore v = 0.
+
+          But |a| = ω²|x| is then maximum.
+
+          <br><br>
+
+          Zero speed does not mean zero acceleration.
+        `
+      },
+
+
+      {
+        marks: 6,
+        question:
+          `A simple pendulum has length ${L} m. Derive the small-angle SHM equation and calculate its approximate period near Earth's surface.`,
+
+        scheme: `
+          Tangential equation:
+
+          mLθ¨ = −mg sinθ.
+
+          <br><br>
+
+          For small θ in radians:
+
+          sinθ ≈ θ.
+
+          <br><br>
+
+          Therefore
+
+          θ¨ + (g/L)θ = 0.
+
+          <br><br>
+
+          ω = √(g/L),
+
+          T = 2π√(L/g)
+
+          = ${fmt(pendT, 3)} s.
+        `
+      },
+
+
+      {
+        marks: 6,
+        question:
+          `Explain why a pendulum with a large angular amplitude is not an exact simple harmonic oscillator. Your answer should refer to the form of the restoring term.`,
+
+        scheme: `
+          Exact pendulum motion obeys a restoring term proportional to sinθ, not θ.
+
+          <br><br>
+
+          SHM requires restoring acceleration proportional directly to displacement.
+
+          <br><br>
+
+          Only when |θ| is sufficiently small can sinθ ≈ θ be used, converting the nonlinear equation into a linear SHM equation.
+        `
+      },
+
+
+      {
+        marks: 7,
+        question:
+          `For the damped oscillator mx¨ + bx˙ + kx = 0, explain physically the meaning of each term and distinguish underdamped, critically damped and overdamped motion.`,
+
+        scheme: `
+          mx¨:
+          inertial response.
+
+          <br>
+
+          bx˙:
+          dissipative drag proportional to velocity.
+
+          <br>
+
+          kx:
+          restoring force.
+
+          <br><br>
+
+          Underdamped:
+          b < 2√mk;
+          oscillatory decay.
+
+          <br>
+
+          Critical:
+          b = 2√mk;
+          fastest non-oscillatory return.
+
+          <br>
+
+          Overdamped:
+          b > 2√mk;
+          slower non-oscillatory return.
+        `
+      },
+
+
+      {
+        marks: 7,
+        question:
+          `A periodically driven oscillator exhibits resonance. Explain resonance in terms of energy transfer and describe qualitatively how increased damping changes the response curve.`,
+
+        scheme: `
+          A periodic driver performs work on the oscillator.
+
+          <br><br>
+
+          Near the natural frequency the force remains favourably phased with the motion, so energy added over successive cycles can accumulate efficiently.
+
+          <br><br>
+
+          Increased damping removes more energy per cycle.
+
+          Therefore the resonance peak becomes lower and broader.
+
+          <br><br>
+
+          The steady-state motion occurs at the driving frequency.
+        `
+      }
+    ];
+  }
+
+
+  function mathsPaper() {
+    const omega =
+      choose(
+        [
+          2,
+          3,
+          4,
+          5
+        ]
+      );
+
+    const A =
+      choose(
+        [
+          2,
+          3,
+          4
+        ]
+      );
+
+    const m =
+      choose(
+        [
+          1,
+          2,
+          3
+        ]
+      );
+
+    const k =
+      m *
+      omega **
+      2;
+
+
+    return [
+      {
+        marks: 6,
+        question:
+          `Verify directly that x(t) = ${A} cos(${omega}t) satisfies x¨ + ${omega ** 2}x = 0.`,
+
+        scheme: `
+          Differentiate:
+
+          <br>
+
+          x˙ =
+          −${A * omega}
+          sin(${omega}t).
+
+          <br><br>
+
+          Differentiate again:
+
+          <br>
+
+          x¨ =
+          −${A * omega ** 2}
+          cos(${omega}t).
+
+          <br><br>
+
+          Since
+
+          ${omega ** 2}x =
+          ${A * omega ** 2}
+          cos(${omega}t),
+
+          <br><br>
+
+          x¨ + ${omega ** 2}x = 0.
+        `
+      },
+
+
+      {
+        marks: 7,
+        question:
+          `Solve x¨ + ${omega ** 2}x = 0 using a trial solution x = e^{rt}.`,
+
+        scheme: `
+          Assume x=e^{rt}.
+
+          <br>
+
+          Then x¨=r²e^{rt}.
+
+          <br><br>
+
+          r²e^{rt}
+          + ${omega ** 2}e^{rt}
+          = 0.
+
+          <br><br>
+
+          Since e^{rt} ≠ 0:
+
+          <br>
+
+          r² + ${omega ** 2} = 0.
+
+          <br>
+
+          r = ±${omega}i.
+
+          <br><br>
+
+          Hence the real general solution is
+
+          <br>
+
+          x = C cos(${omega}t)
+          + D sin(${omega}t).
+        `
+      },
+
+
+      {
+        marks: 7,
+        question:
+          `Show how x = C cos(ωt) + D sin(ωt) can be rewritten as x = A cos(ωt + φ). Give A in terms of C and D.`,
+
+        scheme: `
+          Expand:
+
+          <br><br>
+
+          A cos(ωt+φ)
+          =
+          A cosφ cosωt
+          −
+          A sinφ sinωt.
+
+          <br><br>
+
+          Compare coefficients:
+
+          <br>
+
+          C = A cosφ,
+
+          D = −A sinφ.
+
+          <br><br>
+
+          Therefore
+
+          A² = C² + D²,
+
+          so
+
+          <br>
+
+          A = √(C²+D²).
+
+          <br><br>
+
+          A consistent phase is
+
+          φ = atan2(−D,C).
+        `
+      },
+
+
+      {
+        marks: 6,
+        question:
+          `Starting from sin²θ + cos²θ = 1, derive v² = ω²(A²−x²) for x=A cosθ and v=−ωA sinθ.`,
+
+        scheme: `
+          cosθ = x/A.
+
+          <br>
+
+          sinθ = −v/(ωA).
+
+          <br><br>
+
+          Square and substitute:
+
+          <br>
+
+          x²/A² +
+          v²/(ω²A²)
+          = 1.
+
+          <br><br>
+
+          Multiply by ω²A²:
+
+          <br>
+
+          ω²x² + v²
+          = ω²A².
+
+          <br><br>
+
+          Therefore
+
+          v² = ω²(A²−x²).
+        `
+      },
+
+
+      {
+        marks: 7,
+        question:
+          `For a spring with mass m=${m} kg and k=${k} N m⁻¹, find the natural angular frequency. Then use dimensional analysis to verify that √(k/m) has dimensions of inverse time.`,
+
+        scheme: `
+          ω = √(k/m)
+
+          = √(${k}/${m})
+
+          = ${omega} rad s⁻¹.
+
+          <br><br>
+
+          Dimensions:
+
+          <br>
+
+          [k]
+          =
+          force / length
+
+          =
+          (M L T⁻²)/L
+
+          =
+          M T⁻².
+
+          <br><br>
+
+          [k/m]
+          =
+          T⁻².
+
+          <br><br>
+
+          Therefore
+
+          [√(k/m)]
+          =
+          T⁻¹,
+
+          as required for angular frequency.
+        `
+      },
+
+
+      {
+        marks: 7,
+        question:
+          `Use the Taylor expansion of sinθ to explain mathematically why the small-angle approximation becomes less accurate as |θ| increases.`,
+
+        scheme: `
+          Taylor expansion in radians:
+
+          <br>
+
+          sinθ
+          =
+          θ
+          − θ³/6
+          + θ⁵/120
+          − ...
+
+          <br><br>
+
+          The approximation sinθ≈θ discards terms beginning with −θ³/6.
+
+          <br><br>
+
+          For very small |θ|,
+          θ³ is much smaller than θ.
+
+          <br><br>
+
+          As |θ| grows,
+          the cubic and higher-order terms become significant, so the restoring force is no longer proportional to θ.
+        `
+      },
+
+
+      {
+        marks: 7,
+        question:
+          `Starting from E = ½mv² + ½kx², differentiate E with respect to time and prove that dE/dt = 0 for ideal SHM.`,
+
+        scheme: `
+          Differentiate:
+
+          <br>
+
+          dE/dt
+          =
+          mv(dv/dt)
+          +
+          kx(dx/dt).
+
+          <br><br>
+
+          Since dv/dt=a and dx/dt=v:
+
+          <br>
+
+          dE/dt
+          =
+          mav + kxv
+
+          =
+          v(ma+kx).
+
+          <br><br>
+
+          SHM obeys ma=−kx.
+
+          <br><br>
+
+          Therefore
+
+          dE/dt=0.
+        `
+      },
+
+
+      {
+        marks: 8,
+        question:
+          `For mx¨+bx˙+kx=0, substitute x=e^{rt} and obtain the characteristic equation. Explain how its discriminant separates the three damping regimes.`,
+
+        scheme: `
+          Substitute x=e^{rt}:
+
+          <br>
+
+          mr²e^{rt}
+          +
+          bre^{rt}
+          +
+          ke^{rt}
+          =0.
+
+          <br><br>
+
+          Therefore
+
+          mr² + br + k = 0.
+
+          <br><br>
+
+          Roots:
+
+          r =
+          [−b ± √(b²−4mk)]/(2m).
+
+          <br><br>
+
+          If b²−4mk < 0:
+          complex roots,
+          underdamped oscillation.
+
+          <br><br>
+
+          If b²−4mk = 0:
+          repeated real root,
+          critical damping.
+
+          <br><br>
+
+          If b²−4mk > 0:
+          two real negative roots,
+          overdamped decay.
+        `
+      }
+    ];
+  }
+
+
+  function renderPaper() {
+    const container =
+      $("paperContainer");
+
+    if (!container) {
+      return;
+    }
+
+    const questions =
+      currentPaper ===
+      "physics"
+        ? physicsPaper()
+        : mathsPaper();
+
+
+    const totalMarks =
+      questions.reduce(
         (
-          min +
-          Math.random() *
+          total,
+          q
+        ) =>
+          total +
+          q.marks,
+        0
+      );
+
+
+    if ($("paperTitle")) {
+      $("paperTitle")
+        .textContent =
+        currentPaper ===
+        "physics"
+          ?
+          "Physics Paper — Oscillations"
+          :
+          "Mathematical Methods Paper — Oscillations";
+    }
+
+
+    if ($("paperInfo")) {
+      $("paperInfo")
+        .textContent =
+        `60 min · ${totalMarks} marks · original generated questions`;
+    }
+
+
+    container.innerHTML =
+      questions
+        .map(
           (
-            max -
-            min
-          )
-        ) /
-        step
-      ) *
-      step;
+            item,
+            index
+          ) => `
+          <article class="paper-question mc-panel">
 
-  const pick =
-    array =>
-      array[
-        Math.floor(
-          Math.random() *
-          array.length
+            <div class="paper-qhead">
+
+              <strong>
+                Question ${index + 1}
+              </strong>
+
+              <span>
+                [${item.marks} marks]
+              </span>
+
+            </div>
+
+            <p>
+              ${item.question}
+            </p>
+
+            <div class="paper-answer-area"></div>
+
+            <button
+              class="mc-button mark-toggle"
+              data-mark="${index}"
+            >
+              Reveal mark scheme
+            </button>
+
+            <div
+              class="mark-scheme"
+              data-mark-scheme="${index}"
+            >
+              ${item.scheme}
+            </div>
+
+          </article>
+        `
         )
-      ];
+        .join("");
 
-  function numeric(
+
+    $$(".mark-toggle")
+      .forEach(
+        button => {
+          button.addEventListener(
+            "click",
+            () => {
+              const index =
+                button.dataset.mark;
+
+              const scheme =
+                document.querySelector(
+                  `[data-mark-scheme="${index}"]`
+                );
+
+              scheme
+                ?.classList
+                .toggle(
+                  "show"
+                );
+
+              button.textContent =
+                scheme
+                  ?.classList
+                  .contains(
+                    "show"
+                  )
+                  ?
+                  "Hide mark scheme"
+                  :
+                  "Reveal mark scheme";
+            }
+          );
+        }
+      );
+  }
+
+
+  $$(".paper-tab")
+    .forEach(
+      button => {
+        button.addEventListener(
+          "click",
+          () => {
+            currentPaper =
+              button.dataset.paper;
+
+            $$(".paper-tab")
+              .forEach(
+                tab =>
+                  tab.classList.remove(
+                    "active"
+                  )
+              );
+
+            button.classList.add(
+              "active"
+            );
+
+            resetPaperTimer();
+
+            renderPaper();
+          }
+        );
+      }
+    );
+
+
+  $("newPaper")
+    ?.addEventListener(
+      "click",
+      renderPaper
+    );
+
+
+  $("printPaper")
+    ?.addEventListener(
+      "click",
+      () =>
+        window.print()
+    );
+
+
+  function renderPaperTimer() {
+    const minutes =
+      Math.floor(
+        paperTimerSeconds /
+        60
+      );
+
+    const seconds =
+      paperTimerSeconds %
+      60;
+
+    if ($("paperTimer")) {
+      $("paperTimer")
+        .textContent =
+        `${String(minutes)
+          .padStart(
+            2,
+            "0"
+          )}:${String(seconds)
+          .padStart(
+            2,
+            "0"
+          )}`;
+    }
+  }
+
+
+  function resetPaperTimer() {
+    paperTimerRunning =
+      false;
+
+    clearInterval(
+      paperTimerInterval
+    );
+
+    paperTimerInterval =
+      null;
+
+    paperTimerSeconds =
+      60 * 60;
+
+    if ($("startTimer")) {
+      $("startTimer")
+        .textContent =
+        "Start timer";
+    }
+
+    renderPaperTimer();
+  }
+
+
+  $("startTimer")
+    ?.addEventListener(
+      "click",
+      () => {
+        if (
+          paperTimerRunning
+        ) {
+          paperTimerRunning =
+            false;
+
+          clearInterval(
+            paperTimerInterval
+          );
+
+          paperTimerInterval =
+            null;
+
+          $("startTimer")
+            .textContent =
+            "Resume timer";
+
+          return;
+        }
+
+
+        paperTimerRunning =
+          true;
+
+        $("startTimer")
+          .textContent =
+          "Pause timer";
+
+        paperTimerInterval =
+          setInterval(
+            () => {
+              if (
+                !paperTimerRunning
+              ) {
+                return;
+              }
+
+              paperTimerSeconds =
+                Math.max(
+                  0,
+                  paperTimerSeconds -
+                  1
+                );
+
+              renderPaperTimer();
+
+              if (
+                paperTimerSeconds ===
+                0
+              ) {
+                clearInterval(
+                  paperTimerInterval
+                );
+
+                paperTimerRunning =
+                  false;
+
+                $("startTimer")
+                  .textContent =
+                  "Time finished";
+              }
+            },
+            1000
+          );
+      }
+    );
+
+
+  resetPaperTimer();
+
+  renderPaper();
+
+
+  /* =========================================================
+     QUICK PRACTICE GENERATOR
+  ========================================================= */
+
+  function numericQuestion({
     topic,
-    difficulty,
-    text,
+    question,
     answer,
     tolerance,
-    unit,
+    unit = "",
     hint,
     solution
-  ) {
+  }) {
     return {
-      type:
-        "numeric",
-
+      type: "numeric",
       topic,
-      difficulty,
-      text,
+      question,
       answer,
       tolerance,
       unit,
@@ -3372,22 +5917,19 @@
     };
   }
 
-  function mcq(
+
+  function multipleChoice({
     topic,
-    difficulty,
-    text,
+    question,
     options,
     answer,
     hint,
     solution
-  ) {
+  }) {
     return {
-      type:
-        "mcq",
-
+      type: "mcq",
       topic,
-      difficulty,
-      text,
+      question,
       options,
       answer,
       hint,
@@ -3395,13 +5937,14 @@
     };
   }
 
-  const generators = {
+
+  const quickGenerators = {
 
     basics: [
 
       () => {
-        const c =
-          pick(
+        const coefficient =
+          choose(
             [
               4,
               9,
@@ -3411,198 +5954,269 @@
             ]
           );
 
-        return mcq(
-          "Foundations",
-          "Core",
+        return multipleChoice({
+          topic:
+            "Foundations",
 
-          `Which acceleration law describes SHM with ω² = ${c} s⁻²?`,
+          question:
+            `Which acceleration law represents SHM with ω² = ${coefficient} s⁻²?`,
 
-          [
-            `a = +${c}x`,
-            `a = −${c}x`,
-            `a = −${c}x²`,
-            `a = ${c}/x`
+          options: [
+            `a = +${coefficient}x`,
+            `a = −${coefficient}x`,
+            `a = −${coefficient}x²`,
+            `a = ${coefficient}/x`
           ],
 
-          1,
+          answer: 1,
 
-          "For SHM, acceleration must point toward equilibrium and be proportional to x.",
+          hint:
+            "SHM requires acceleration proportional to displacement and opposite in direction.",
 
-          `The defining relation is a = −ω²x, so a = −${c}x.`
-        );
+          solution:
+            `The defining relation is a = −ω²x, so a = −${coefficient}x.`
+        });
       },
+
 
       () => {
         const T =
-          random(
-            0.5,
-            4,
-            0.25
+          choose(
+            [
+              0.5,
+              0.8,
+              1.0,
+              1.25,
+              2.0,
+              2.5
+            ]
           );
 
-        return numeric(
-          "Foundations",
-          "Core",
+        return numericQuestion({
+          topic:
+            "Frequency",
 
-          `An oscillator has period T = ${fmt(T, 2)} s. Find f.`,
+          question:
+            `An oscillator has period T = ${T} s. Find its frequency.`,
 
-          1 / T,
+          answer:
+            1 / T,
 
-          0.01,
+          tolerance:
+            0.01,
 
-          "Hz",
+          unit:
+            "Hz",
 
-          "Use f = 1/T.",
+          hint:
+            "Frequency counts cycles per second.",
 
-          `f = 1/${fmt(T, 2)} = ${fmt(1/T, 3)} Hz.`
-        );
+          solution:
+            `f = 1/T = 1/${T} = ${fmt(1/T, 3)} Hz.`
+        });
       },
+
 
       () => {
         const f =
-          random(
-            0.5,
-            5,
-            0.5
+          choose(
+            [
+              0.5,
+              1,
+              1.5,
+              2,
+              3,
+              4
+            ]
           );
 
-        return numeric(
-          "Foundations",
-          "Core",
-
-          `An oscillator has frequency f = ${fmt(f,1)} Hz. Find ω.`,
-
+        const omega =
           2 *
           Math.PI *
-          f,
+          f;
 
-          0.03,
+        return numericQuestion({
+          topic:
+            "Angular frequency",
 
-          "rad/s",
+          question:
+            `An oscillator has f = ${f} Hz. Find ω.`,
 
-          "Use ω = 2πf.",
+          answer:
+            omega,
 
-          `ω = 2π(${fmt(f,1)}) = ${fmt(2*Math.PI*f,3)} rad/s.`
-        );
+          tolerance:
+            0.03,
+
+          unit:
+            "rad/s",
+
+          hint:
+            "One cycle corresponds to 2π radians.",
+
+          solution:
+            `ω = 2πf = 2π(${f}) = ${fmt(omega, 3)} rad/s.`
+        });
       }
 
     ],
+
 
     kinematics: [
 
       () => {
         const A =
-          random(
-            0.04,
-            0.20,
-            0.01
+          choose(
+            [
+              0.05,
+              0.08,
+              0.10,
+              0.12,
+              0.15
+            ]
           );
 
         const omega =
-          random(
-            2,
-            10,
-            1
+          choose(
+            [
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
           );
 
-        return numeric(
-          "Kinematics",
-          "Core",
+        return numericQuestion({
+          topic:
+            "Kinematics",
 
-          `For x(t) = ${fmt(A,2)} cos(${omega}t + 0.40) m, find the maximum speed.`,
+          question:
+            `For x = ${A} cos(${omega}t + 0.30) m, determine the maximum speed.`,
 
-          omega * A,
+          answer:
+            omega *
+            A,
 
-          0.015,
+          tolerance:
+            0.01,
 
-          "m/s",
+          unit:
+            "m/s",
 
-          "The sine factor in v can reach magnitude 1.",
+          hint:
+            "Differentiate x and use |sin| ≤ 1.",
 
-          `vmax = ωA = ${omega} × ${fmt(A,2)} = ${fmt(omega*A,3)} m/s.`
-        );
+          solution:
+            `v = −ωA sin(...), so vmax = ωA = ${omega}×${A} = ${fmt(omega*A, 3)} m/s.`
+        });
       },
+
 
       () => {
         const omega =
-          random(
-            2,
-            8,
-            1
+          choose(
+            [
+              2,
+              3,
+              4,
+              5
+            ]
           );
 
         const x =
-          random(
-            -0.18,
-            0.18,
-            0.03
+          choose(
+            [
+              -0.12,
+              -0.08,
+              0.05,
+              0.10,
+              0.15
+            ]
           );
 
         const a =
           -(
-            omega ** 2
+            omega **
+            2
           ) *
           x;
 
-        return numeric(
-          "Kinematics",
-          "Core",
+        return numericQuestion({
+          topic:
+            "Acceleration",
 
-          `At an instant, x = ${fmt(x,2)} m and ω = ${omega} rad/s. Find a.`,
+          question:
+            `At one instant x = ${x} m and ω = ${omega} rad/s. Find a.`,
 
-          a,
+          answer:
+            a,
 
-          0.03,
+          tolerance:
+            0.02,
 
-          "m/s²",
+          unit:
+            "m/s²",
 
-          "Use a = −ω²x.",
+          hint:
+            "Use the defining SHM relation.",
 
-          `a = −(${omega})²(${fmt(x,2)}) = ${fmt(a,3)} m/s².`
-        );
+          solution:
+            `a = −ω²x = −(${omega})²(${x}) = ${fmt(a, 3)} m/s².`
+        });
       },
 
+
       () =>
-        mcq(
-          "Kinematics",
-          "Core",
+        multipleChoice({
+          topic:
+            "Phase",
 
-          "A mass is at x = +A. Which statement is correct?",
+          question:
+            "At x = +A, which statement is correct?",
 
-          [
+          options: [
             "v is maximum and a = 0",
-
-            "v = 0 and acceleration points toward −x",
-
-            "v = 0 and acceleration points toward +x",
-
-            "v = 0 and a = 0"
+            "v = 0 and acceleration points toward negative x",
+            "v = 0 and acceleration points toward positive x",
+            "both v and a are zero"
           ],
 
-          1,
+          answer: 1,
 
-          "A turning point has zero speed but maximum restoring acceleration.",
+          hint:
+            "A turning point has zero instantaneous speed but the largest restoring force.",
 
-          "At x = +A, v = 0 and a = −ω²A, so acceleration points back toward equilibrium."
-        )
+          solution:
+            "At x = +A, v = 0 and a = −ω²A, so acceleration points back toward equilibrium."
+        })
 
     ],
+
 
     springs: [
 
       () => {
         const m =
-          random(
-            0.2,
-            2,
-            0.1
+          choose(
+            [
+              0.25,
+              0.4,
+              0.5,
+              0.8,
+              1
+            ]
           );
 
         const k =
-          random(
-            10,
-            100,
-            5
+          choose(
+            [
+              20,
+              32,
+              50,
+              72,
+              100
+            ]
           );
 
         const omega =
@@ -3610,37 +6224,51 @@
             k / m
           );
 
-        return numeric(
-          "Springs",
-          "Core",
+        return numericQuestion({
+          topic:
+            "Mass–spring",
 
-          `A ${fmt(m,1)} kg mass is attached to a ${k} N/m spring. Find ω.`,
+          question:
+            `A ${m} kg mass is attached to a spring with k = ${k} N/m. Find ω.`,
 
-          omega,
+          answer:
+            omega,
 
-          0.02,
+          tolerance:
+            0.02,
 
-          "rad/s",
+          unit:
+            "rad/s",
 
-          "Use ω = √(k/m).",
+          hint:
+            "Compare mx¨ = −kx with x¨ = −ω²x.",
 
-          `ω = √(${k}/${fmt(m,1)}) = ${fmt(omega,3)} rad/s.`
-        );
+          solution:
+            `ω = √(k/m) = √(${k}/${m}) = ${fmt(omega, 3)} rad/s.`
+        });
       },
+
 
       () => {
         const m =
-          random(
-            0.3,
-            2,
-            0.1
+          choose(
+            [
+              0.4,
+              0.6,
+              0.8,
+              1,
+              1.2
+            ]
           );
 
         const k =
-          random(
-            15,
-            90,
-            5
+          choose(
+            [
+              18,
+              32,
+              50,
+              72
+            ]
           );
 
         const T =
@@ -3650,121 +6278,143 @@
             m / k
           );
 
-        return numeric(
-          "Springs",
-          "Core",
+        return numericQuestion({
+          topic:
+            "Mass–spring",
 
-          `A spring oscillator has m = ${fmt(m,1)} kg and k = ${k} N/m. Find T.`,
+          question:
+            `For m = ${m} kg and k = ${k} N/m, calculate the period.`,
 
-          T,
+          answer:
+            T,
 
-          0.015,
+          tolerance:
+            0.015,
 
-          "s",
+          unit:
+            "s",
 
-          "Use T = 2π√(m/k).",
+          hint:
+            "Use T = 2π/ω together with ω = √(k/m).",
 
-          `T = 2π√(${fmt(m,1)}/${k}) = ${fmt(T,3)} s.`
-        );
+          solution:
+            `T = 2π√(m/k) = 2π√(${m}/${k}) = ${fmt(T, 3)} s.`
+        });
       }
 
     ],
 
+
     energy: [
 
       () => {
-        const A =
-          pick(
-            [
-              0.08,
-              0.10,
-              0.12,
-              0.15
-            ]
-          );
-
-        const fraction =
-          pick(
-            [
-              0,
-              0.5,
-              0.6,
-              0.8,
-              1
-            ]
-          );
-
-        const ratio =
-          1 -
-          fraction ** 2;
-
-        return numeric(
-          "Energy",
-          "Core",
-
-          `At x = ${fmt(fraction*A,3)} m, the amplitude is A = ${fmt(A,2)} m. What fraction K/E is kinetic?`,
-
-          ratio,
-
-          0.01,
-
-          "",
-
-          "Use U/E = x²/A², then K/E = 1 − U/E.",
-
-          `K/E = 1 − (${fmt(fraction*A,3)}/${fmt(A,2)})² = ${fmt(ratio,3)}.`
-        );
-      },
-
-      () => {
         const k =
-          random(
-            20,
-            80,
-            5
+          choose(
+            [
+              20,
+              40,
+              60,
+              80
+            ]
           );
 
         const A =
-          random(
-            0.05,
-            0.18,
-            0.01
+          choose(
+            [
+              0.05,
+              0.10,
+              0.15,
+              0.20
+            ]
           );
 
         const E =
           0.5 *
           k *
-          A *
-          A;
+          A **
+          2;
 
-        return numeric(
-          "Energy",
-          "Core",
+        return numericQuestion({
+          topic:
+            "Energy",
 
-          `A spring has k = ${k} N/m and amplitude A = ${fmt(A,2)} m. Find total mechanical energy.`,
+          question:
+            `A spring oscillator has k=${k} N/m and amplitude A=${A} m. Find the total mechanical energy.`,
 
-          E,
+          answer:
+            E,
 
-          0.005,
+          tolerance:
+            0.005,
 
-          "J",
+          unit:
+            "J",
 
-          "At a turning point all energy is elastic potential energy.",
+          hint:
+            "Evaluate the energy at a turning point.",
 
-          `E = ½kA² = ½(${k})(${fmt(A,2)})² = ${fmt(E,4)} J.`
-        );
+          solution:
+            `E = ½kA² = ½(${k})(${A})² = ${fmt(E, 4)} J.`
+        });
+      },
+
+
+      () => {
+        const ratio =
+          choose(
+            [
+              0,
+              0.25,
+              0.5,
+              0.6,
+              0.8
+            ]
+          );
+
+        const kinetic =
+          1 -
+          ratio **
+          2;
+
+        return numericQuestion({
+          topic:
+            "Energy",
+
+          question:
+            `At an instant x/A = ${ratio}. What fraction of the total energy is kinetic?`,
+
+          answer:
+            kinetic,
+
+          tolerance:
+            0.01,
+
+          unit:
+            "",
+
+          hint:
+            "U/E = x²/A².",
+
+          solution:
+            `K/E = 1 − x²/A² = 1 − (${ratio})² = ${fmt(kinetic, 3)}.`
+        });
       }
 
     ],
+
 
     pendulum: [
 
       () => {
         const L =
-          random(
-            0.25,
-            2,
-            0.05
+          choose(
+            [
+              0.4,
+              0.6,
+              0.8,
+              1,
+              1.2
+            ]
           );
 
         const T =
@@ -3775,184 +6425,182 @@
             9.81
           );
 
-        return numeric(
-          "Pendulums",
-          "Core",
+        return numericQuestion({
+          topic:
+            "Pendulum",
 
-          `A small-angle pendulum has L = ${fmt(L,2)} m. Find its period on Earth.`,
+          question:
+            `A small-angle pendulum has length ${L} m. Calculate its period near Earth's surface.`,
 
-          T,
+          answer:
+            T,
 
-          0.02,
+          tolerance:
+            0.02,
 
-          "s",
+          unit:
+            "s",
 
-          "Use T = 2π√(L/g).",
+          hint:
+            "Use T = 2π√(L/g).",
 
-          `T = 2π√(${fmt(L,2)}/9.81) = ${fmt(T,3)} s.`
-        );
+          solution:
+            `T = 2π√(${L}/9.81) = ${fmt(T, 3)} s.`
+        });
       },
 
+
       () =>
-        mcq(
-          "Pendulums",
-          "Core",
+        multipleChoice({
+          topic:
+            "Pendulum",
 
-          "Two ideal small-angle pendulums have the same length but different bob masses. How do their periods compare?",
+          question:
+            "Why does the simple-pendulum SHM model fail at sufficiently large amplitude?",
 
-          [
-            "Heavier is slower",
-
-            "Lighter is slower",
-
-            "Their periods are equal",
-
-            "Impossible to tell"
+          options: [
+            "Gravity stops acting",
+            "Mass no longer cancels",
+            "sinθ is no longer well approximated by θ",
+            "The string becomes massless"
           ],
 
-          2,
+          answer: 2,
 
-          "Look at the variables in T = 2π√(L/g).",
+          hint:
+            "Look at the exact restoring torque.",
 
-          "Mass does not appear in the ideal small-angle period formula, so the periods are equal."
-        )
+          solution:
+            "The exact restoring term is proportional to sinθ. Only for small angles in radians is sinθ ≈ θ."
+        })
 
     ],
+
 
     damping: [
 
       () => {
         const m =
-          random(
-            0.2,
-            1.2,
-            0.1
+          choose(
+            [
+              0.5,
+              1,
+              1.5,
+              2
+            ]
           );
 
         const b =
-          random(
-            0.05,
-            0.4,
-            0.05
+          choose(
+            [
+              0.2,
+              0.4,
+              0.8,
+              1
+            ]
           );
 
-        const time =
+        const half =
           2 *
           m *
           Math.log(2) /
           b;
 
-        return numeric(
-          "Damping",
-          "Core",
+        return numericQuestion({
+          topic:
+            "Damping",
 
-          `For m = ${fmt(m,1)} kg and b = ${fmt(b,2)} kg/s, find the amplitude half-life.`,
+          question:
+            `For amplitude envelope A=A₀e^(−bt/2m), with m=${m} kg and b=${b} kg/s, calculate the amplitude half-life.`,
 
-          time,
+          answer:
+            half,
 
-          0.04,
+          tolerance:
+            0.03,
 
-          "s",
+          unit:
+            "s",
 
-          "Set e^(−bt/2m) = 1/2.",
+          hint:
+            "Set A/A₀ = 1/2 and take logarithms.",
 
-          `t½ = 2m ln2 / b = ${fmt(time,3)} s.`
-        );
+          solution:
+            `t½ = 2m ln2 / b = ${fmt(half, 3)} s.`
+        });
       },
 
+
       () =>
-        mcq(
-          "Resonance",
-          "Core",
+        multipleChoice({
+          topic:
+            "Resonance",
 
-          "What happens to a resonance curve when damping increases?",
+          question:
+            "Increasing damping usually changes the resonance curve in which way?",
 
-          [
-            "It becomes taller and narrower",
-
-            "It becomes lower and broader",
-
-            "It moves to infinite frequency",
-
-            "Nothing changes"
+          options: [
+            "Taller and narrower",
+            "Lower and broader",
+            "Same height but translated upward",
+            "It eliminates the driving frequency"
           ],
 
-          1,
+          answer: 1,
 
-          "Damping removes mechanical energy.",
+          hint:
+            "More energy is removed each cycle.",
 
-          "More damping suppresses the peak response and broadens the resonance curve."
-        ),
+          solution:
+            "Greater damping suppresses the peak response and broadens the range of frequencies over which the response is appreciable."
+        }),
 
-      () => {
-        const natural =
-          random(
-            2,
-            7,
-            0.5
-          );
 
-        const options =
-          [
-            natural *
-            0.45,
+      () =>
+        multipleChoice({
+          topic:
+            "Driven motion",
 
-            natural *
-            0.82,
+          question:
+            "After transients have decayed, at what frequency does a forced oscillator move?",
 
-            natural *
-            1.02,
+          options: [
+            "Always its natural frequency",
+            "Always zero frequency",
+            "The driving frequency",
+            "Twice the driving frequency"
+          ],
 
-            natural *
-            1.75
-          ].map(
-            value =>
-              Number(
-                value.toFixed(2)
-              )
-          );
+          answer: 2,
 
-        return mcq(
-          "Resonance",
-          "Core",
+          hint:
+            "Think about the particular solution to the driven equation.",
 
-          `The natural frequency is ${fmt(natural,1)} Hz. Which drive frequency is closest to resonance?`,
-
-          options.map(
-            value =>
-              `${value} Hz`
-          ),
-
-          2,
-
-          "Resonance occurs when the driving frequency is near the natural frequency.",
-
-          `The closest option is ${options[2]} Hz.`
-        );
-      }
+          solution:
+            "The steady-state response occurs at the driving frequency. The natural frequency influences amplitude and phase."
+        })
 
     ]
 
   };
 
+
   let currentQuestion =
     null;
 
-  let answered =
+  let questionAnswered =
     false;
 
-  let hintVisible =
-    false;
-
-  let score =
+  let quickScore =
     JSON.parse(
       localStorage.getItem(
-        "shm-practice-score"
+        "oscillation-grove-score"
       ) ||
       '{"correct":0,"total":0}'
     );
 
-  function selectedQuestionPool() {
+
+  function practicePool() {
     const topic =
       $("practiceTopic")
         ?.value ||
@@ -3964,61 +6612,69 @@
     ) {
       return Object
         .values(
-          generators
+          quickGenerators
         )
         .flat();
     }
 
     return (
-      generators[
+      quickGenerators[
         topic
       ] ||
       Object
         .values(
-          generators
+          quickGenerators
         )
         .flat()
     );
   }
 
-  function updateScore() {
+
+  function saveQuickScore() {
+    localStorage.setItem(
+      "oscillation-grove-score",
+      JSON.stringify(
+        quickScore
+      )
+    );
+
     if ($("scoreCorrect")) {
       $("scoreCorrect")
         .textContent =
-        score.correct;
+        quickScore.correct;
     }
 
     if ($("scoreTotal")) {
       $("scoreTotal")
         .textContent =
-        score.total;
+        quickScore.total;
     }
-
-    localStorage.setItem(
-      "shm-practice-score",
-      JSON.stringify(
-        score
-      )
-    );
   }
 
-  function renderQuestion() {
+
+  function newQuickQuestion() {
     const pool =
-      selectedQuestionPool();
+      practicePool();
 
     currentQuestion =
-      pick(pool)();
+      choose(pool)();
 
-    answered = false;
-
-    hintVisible = false;
+    questionAnswered =
+      false;
 
     const card =
       $("questionCard");
 
-    if (!card) return;
+    const feedback =
+      $("practiceFeedback");
 
-    let answerHTML = "";
+    if (!card) {
+      return;
+    }
+
+
+    let answerHTML =
+      "";
 
     if (
       currentQuestion.type ===
@@ -4039,7 +6695,7 @@
             }
 
             <input
-              id="practiceNumericAnswer"
+              id="practiceNumeric"
               type="number"
               step="any"
               inputmode="decimal"
@@ -4083,105 +6739,92 @@
       `;
     }
 
+
     card.innerHTML = `
-
-      <div class="question-meta">
-
-        <span>
-          ${currentQuestion.topic}
-        </span>
-
-        <span>
-          ${currentQuestion.difficulty}
-        </span>
-
-      </div>
+      <p class="pixel-kicker">
+        ${currentQuestion.topic}
+      </p>
 
       <h3>
-        ${currentQuestion.text}
+        ${currentQuestion.question}
       </h3>
 
       ${answerHTML}
     `;
 
-    if (
-      $("practiceFeedback")
-    ) {
-      $("practiceFeedback")
-        .textContent = "";
 
-      $("practiceFeedback")
-        .className =
-        "feedback";
-    }
-  }
-
-  function showHint() {
-    if (!currentQuestion) {
-      return;
-    }
-
-    hintVisible =
-      !hintVisible;
-
-    const box =
-      $("practiceFeedback");
-
-    if (!box) return;
-
-    if (
-      hintVisible
-    ) {
-      box.className =
-        "feedback hint";
-
-      box.innerHTML =
-        `<b>Hint:</b> ${currentQuestion.hint}`;
-    } else {
-      box.className =
+    if (feedback) {
+      feedback.className =
         "feedback";
 
-      box.textContent =
+      feedback.innerHTML =
         "";
     }
   }
 
-  function checkPracticeAnswer() {
-    if (!currentQuestion) {
+
+  function showPracticeHint() {
+    if (
+      !currentQuestion
+    ) {
+      return;
+    }
+
+    const feedback =
+      $("practiceFeedback");
+
+    if (!feedback) {
+      return;
+    }
+
+    feedback.className =
+      "feedback hint";
+
+    feedback.innerHTML = `
+      <strong>
+        Hint:
+      </strong>
+
+      ${currentQuestion.hint}
+    `;
+  }
+
+
+  function checkQuickAnswer() {
+    if (
+      !currentQuestion
+    ) {
       return;
     }
 
     let correct = false;
 
-    let provided = false;
+    let answered =
+      false;
+
 
     if (
       currentQuestion.type ===
       "numeric"
     ) {
       const input =
-        $("practiceNumericAnswer");
-
-      const value =
-        Number(
-          input?.value
-        );
-
-      provided =
-        !!input &&
-        input.value !== "" &&
-        Number.isFinite(
-          value
-        );
+        $("practiceNumeric");
 
       if (
-        provided
+        input &&
+        input.value !== ""
       ) {
-        correct =
-          Math.abs(
-            value -
-            currentQuestion.answer
-          ) <=
+        const value =
+          Number(
+            input.value
+          );
+
+        answered =
+          Number.isFinite(
+            value
+          );
+
+        const tolerance =
           Math.max(
             currentQuestion.tolerance,
 
@@ -4190,6 +6833,14 @@
             ) *
             0.005
           );
+
+        correct =
+          answered &&
+          Math.abs(
+            value -
+            currentQuestion.answer
+          ) <=
+          tolerance;
       }
     } else {
       const selected =
@@ -4197,12 +6848,9 @@
           'input[name="practiceChoice"]:checked'
         );
 
-      provided =
-        !!selected;
+      if (selected) {
+        answered = true;
 
-      if (
-        selected
-      ) {
         correct =
           Number(
             selected.value
@@ -4211,51 +6859,56 @@
       }
     }
 
-    const box =
+
+    const feedback =
       $("practiceFeedback");
 
-    if (!box) return;
+    if (!feedback) {
+      return;
+    }
+
 
     if (
-      !provided
+      !answered
     ) {
-      box.className =
+      feedback.className =
         "feedback incorrect";
 
-      box.textContent =
+      feedback.innerHTML =
         "Enter or select an answer first.";
 
       return;
     }
 
+
     if (
-      !answered
+      !questionAnswered
     ) {
-      score.total++;
+      quickScore.total++;
 
       if (
         correct
       ) {
-        score.correct++;
+        quickScore.correct++;
       }
 
-      answered = true;
+      questionAnswered =
+        true;
 
-      updateScore();
+      saveQuickScore();
     }
 
-    box.className =
+
+    feedback.className =
       `feedback ${
         correct
-          ?
-          "correct"
-          :
-          "incorrect"
+          ? "correct"
+          : "incorrect"
       }`;
 
-    box.innerHTML = `
 
-      <b>
+    feedback.innerHTML = `
+      <strong>
         ${
           correct
             ?
@@ -4263,47 +6916,60 @@
             :
             "Not quite."
         }
-      </b>
+      </strong>
 
-      <div class="solution">
+      <br><br>
 
-        ${currentQuestion.solution}
+      ${currentQuestion.solution}
 
-      </div>
+      <br><br>
+
+      <em>
+        Retrieval step:
+        before moving on,
+        explain the method aloud
+        without looking at this solution.
+      </em>
     `;
   }
+
 
   $("practiceTopic")
     ?.addEventListener(
       "change",
-      renderQuestion
+      newQuickQuestion
     );
 
-  $("nextQuestion")
-    ?.addEventListener(
-      "click",
-      renderQuestion
-    );
 
   $("showHint")
     ?.addEventListener(
       "click",
-      showHint
+      showPracticeHint
     );
+
 
   $("checkAnswer")
     ?.addEventListener(
       "click",
-      checkPracticeAnswer
+      checkQuickAnswer
     );
 
-  updateScore();
 
-  renderQuestion();
+  $("nextQuestion")
+    ?.addEventListener(
+      "click",
+      newQuickQuestion
+    );
 
-  /* ========================================================
+
+  saveQuickScore();
+
+  newQuickQuestion();
+
+
+  /* =========================================================
      FORMULA SEARCH
-  ======================================================== */
+  ========================================================= */
 
   $("formulaSearch")
     ?.addEventListener(
@@ -4318,7 +6984,7 @@
         $$(".formula-card")
           .forEach(
             card => {
-              const searchable =
+              const text =
                 `${
                   card.dataset
                     .keywords ||
@@ -4330,9 +6996,8 @@
 
               card.classList.toggle(
                 "hidden",
-
                 query &&
-                !searchable.includes(
+                !text.includes(
                   query
                 )
               );
@@ -4341,39 +7006,44 @@
       }
     );
 
-  /* ========================================================
-     CHECKLIST STORAGE
-  ======================================================== */
 
-  const checklist =
+  /* =========================================================
+     FINAL CHECKLIST STORAGE
+  ========================================================= */
+
+  const checkboxes =
     $$(".check-grid input[type='checkbox']");
 
-  const savedChecks =
+  const storedChecklist =
     JSON.parse(
       localStorage.getItem(
-        "shm-checklist"
-      ) ||
-      "[]"
+        "oscillation-grove-checklist"
+      ) || "[]"
     );
 
-  checklist.forEach(
+
+  checkboxes.forEach(
     (
       checkbox,
       index
     ) => {
       checkbox.checked =
-        !!savedChecks[index];
+        Boolean(
+          storedChecklist[
+            index
+          ]
+        );
 
       checkbox.addEventListener(
         "change",
         () => {
           localStorage.setItem(
-            "shm-checklist",
+            "oscillation-grove-checklist",
 
             JSON.stringify(
-              checklist.map(
-                item =>
-                  item.checked
+              checkboxes.map(
+                box =>
+                  box.checked
               )
             )
           );
@@ -4382,99 +7052,131 @@
     }
   );
 
-  /* ========================================================
-     ANIMATION LOOP
-  ======================================================== */
 
-  function animate(now) {
-    const dt =
+  /* =========================================================
+     RESIZE REDRAW
+  ========================================================= */
+
+  function redrawEverything() {
+    updateMotionLab();
+
+    updateEnergyLab();
+
+    updatePendulumLab(
+      performance.now() /
+      1000
+    );
+
+    updateDampingLab();
+
+    updateResonanceLab();
+
+    $$(".mindmap")
+      .forEach(
+        renderMindmap
+      );
+  }
+
+
+  window.addEventListener(
+    "resize",
+    () => {
+      clearTimeout(
+        window.__shmResizeTimer
+      );
+
+      window.__shmResizeTimer =
+        setTimeout(
+          redrawEverything,
+          120
+        );
+    }
+  );
+
+
+  /* =========================================================
+     MAIN ANIMATION LOOP
+  ========================================================= */
+
+  function animate(
+    now
+  ) {
+    const delta =
       Math.min(
         0.05,
-
         (
           now -
-          motion.last
+          motionState.lastTime
         ) /
         1000
       );
 
-    motion.last =
+    motionState.lastTime =
       now;
 
+
     if (
-      motion.playing &&
+      motionState.playing &&
       $("tInput")
     ) {
-      motion.time += dt;
+      motionState.time +=
+        delta;
 
-      const max =
+      const maximum =
         Number(
           $("tInput")
             .max || 12
         );
 
       if (
-        motion.time >
-        max
+        motionState.time >
+        maximum
       ) {
-        motion.time = 0;
+        motionState.time =
+          0;
       }
 
       $("tInput")
         .value =
         String(
-          motion.time
+          motionState.time
         );
 
-      updateMotion();
+      updateMotionLab();
     }
 
-    pendulum.time =
-      now / 1000;
 
     drawHero(now);
 
-    drawPendulum(
-      pendulumParams()
+    updatePendulumLab(
+      now /
+      1000
     );
+
 
     requestAnimationFrame(
       animate
     );
   }
 
-  /* ========================================================
+
+  /* =========================================================
      INITIAL RENDER
-  ======================================================== */
+  ========================================================= */
 
-  updateMotion();
+  updateMotionLab();
 
-  updateEnergy();
+  updateEnergyLab();
 
-  updatePendulum();
+  updatePendulumLab(0);
 
-  updateDamping();
+  updateDampingLab();
 
-  updateResonance();
-
-  addEventListener(
-    "resize",
-    () => {
-      updateMotion();
-
-      updateEnergy();
-
-      updatePendulum();
-
-      updateDamping();
-
-      updateResonance();
-    }
-  );
+  updateResonanceLab();
 
   requestAnimationFrame(
     now => {
-      motion.last =
+      motionState.lastTime =
         now;
 
       requestAnimationFrame(
